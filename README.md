@@ -10,3 +10,4 @@ I'll come up with a better name for it soon. This is a prototype of a game I wan
 - [ ] Allow surfaces to reflect from certain sides of themselves, or have it change depending on the direction the light comes from
 - [ ] Allow puzzles to have multiple targets
 - [ ] Mousing over something movable in the puzzle causes an outline to appear
+- [ ] Moving lasers--this gives us a way to make the transversive sections more engaging.
