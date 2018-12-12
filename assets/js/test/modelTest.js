@@ -163,7 +163,7 @@ QUnit.test('incompletePuzzle', (assert) => {
 	}));
 
 	puzzle.getLaserPath();
-	assert.notOk(puzzle.complete)
+	assert.notOk(puzzle.solved)
 });
 
 QUnit.test('completePuzzle', (assert) => {
@@ -190,5 +190,5 @@ QUnit.test('completePuzzle', (assert) => {
 	}));
 
 	puzzle.getLaserPath();
-	assert.ok(puzzle.complete)
+	assert.ok(puzzle.solved)
 });

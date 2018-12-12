@@ -14,7 +14,7 @@ export class Puzzle {
 		this.dimensions = { width: width, height: height };
 
 		this.surfaces = [];
-		this.complete = false;
+		this.solved = false;
 	}
 
 	/** Add surface to the puzzle. */
@@ -38,6 +38,7 @@ export class Puzzle {
 
 		let closestSurface;
 		let terminated = false;
+		let solved = false;
 
 		do {
 			closestSurface = null;
@@ -51,7 +52,7 @@ export class Puzzle {
 				currentPoint = newPoint;
 
 				if (closestSurface.isTarget) {
-					this.complete = true;
+					solved = true;
 				}
 
 				if (closestSurface.type === Surface.OPAQUE) {
@@ -81,6 +82,8 @@ export class Puzzle {
 				break;
 			}
 		}
+
+		this.solved = solved;
 
 		return points;
 	}
