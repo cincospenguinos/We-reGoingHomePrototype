@@ -5,12 +5,25 @@
  */
 class Surface {
 
-	constructor(type) {
+	constructor(image, type) {
+		this.img = image;
 		this.type = type || Surface.OPAQUE;
 	}
 
-	setImg(img) {
-		this.img = img;
+	/** Returns true if the point provided is in range. */
+	isInRange(point) {
+		let extrema = { 
+			x: {
+				min: this.img.x - this.img.displayWidth / 2,
+				max: this.img.x + this.img.displayWidth / 2
+			},
+			y: {
+				min: this.img.y - this.img.displayHeight / 2,
+				max: this.img.y + this.img.displayHeight / 2
+			}
+		};
+
+		return point.y > extrema.y.min && point.y < extrema.y.max;
 	}
 }
 
