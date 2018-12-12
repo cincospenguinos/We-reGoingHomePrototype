@@ -4,7 +4,7 @@
  * Represents a puzzle.
  *
  */
-class Puzzle {
+export class Puzzle {
 
 	constructor(width, height) {
 		this.dimensions = { width: width, height: height };
@@ -13,9 +13,16 @@ class Puzzle {
 	}
 
 	/** Adds the surface provided to the set. */
-	addSurface(surface, type) {
+	addSurface(surfaceImg, type) {
 		surface = new Surface(surface, type);
 		this.surfaces.push(surface);
+	}
+
+	/** */
+	addSurfaceObj(surfaceObj) {
+		if (surfaceObj instanceof Surface) {
+
+		}
 	}
 
 	/** Returns the various points the laser passes through. To be used by graphics to draw laser. */

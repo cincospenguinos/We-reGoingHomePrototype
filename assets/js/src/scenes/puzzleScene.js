@@ -1,12 +1,14 @@
 /**
- * sceneMain.js
+ * puzzleScene.js
  *
- * Main scene for the game.
+ * Scene for the puzzle component of the game.
  */
-class ScenePuzzle extends Phaser.Scene {
+import { KEYS } from '../../lib/CONST.js';
+
+export class PuzzleScene extends Phaser.Scene {
 
 	constructor() {
-		super({ key: 'ScenePuzzle'});
+		super({ key: KEYS.scene.puzzleScene });
 	}
 
 	preload() {

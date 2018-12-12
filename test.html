@@ -4,6 +4,7 @@
 		<title>Laser Game</title>
 
 		<!-- Stylesheets -->
+		<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.8.0.css"/>
 
 		<!-- Libs -->
 		<script src='assets/js/lib/phaser.min.js'></script>
@@ -13,9 +14,12 @@
 		<script type='module' src='assets/js/src/model/surface.js'></script>
 		<script type='module' src='assets/js/src/model/laser.js'></script>
 		<script type='module' src='assets/js/src/model/puzzle.js'></script>
-		<script type='module' src='assets/js/src/scenes/puzzleScene.js'></script>
-		<script type='module' src='assets/js/src/main.js'></script>
 	</head>
+
 	<body>
+		<div id="qunit"></div>
+		<div id="qunit-fixture"></div>
+		<script src="https://code.jquery.com/qunit/qunit-2.8.0.js"></script>
+		<script type='module' src="assets/js/test/modelTest.js"></script>
 	</body>
 </html>
