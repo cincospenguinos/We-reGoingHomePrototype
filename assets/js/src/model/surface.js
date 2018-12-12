@@ -17,6 +17,8 @@ export class Surface {
 	constructor(opts) {
 		this.type = opts.type;
 		this.reflectiveDirection = opts.reflectiveDirection;
+		this.isTarget = opts.isTarget || false;
+		this.movable = opts.movable || false;
 
 		if (opts.img) {
 			this.img = opts.img

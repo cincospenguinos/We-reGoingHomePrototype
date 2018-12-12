@@ -4,6 +4,8 @@
  * Tests the model components. Uses QUnit.
  */
 import { Surface } from '../src/model/surface.js';
+import { Laser } from '../src/model/laser.js';
+import { Puzzle } from '../src/model/puzzle.js';
 import { DIRECTION } from '../lib/CONST.js';
 
 /*--- Surface tests */
@@ -105,7 +107,88 @@ QUnit.test('collisionPointWest', (assert) => {
 	assert.notOk(surface2.getCollisionPoint(originPoint, direction), 'No collision point should be available for surface2');
 });
 
-/*--- Laser tests */
-
 /*--- Puzzle tests */
+QUnit.test('correctLaserPaths', (assert) => {
+	let puzzle = new Puzzle(200, 200);
 
+	puzzle.laser = new Laser({
+		direction: DIRECTION.EAST,
+		position: { x: 10, y: 10 },
+		dimensions: { width: 0, height: 0 }
+	});
+
+	puzzle.addSurface(new Surface({
+		type: Surface.REFLECTIVE,
+		reflectiveDirection: DIRECTION.SOUTH,
+		position: { x: 100, y: 10 },
+		dimensions: { width: 20, height: 20 }
+	}));
+
+	puzzle.addSurface(new Surface({
+		type: Surface.OPAQUE,
+		position: { x: 90, y: 100 },
+		dimensions: { width: 20, height: 20 },
+		isTarget: true
+	}));
+
+	let path = puzzle.getLaserPath();
+
+	assert.equal(path.length, 3, 'Path has the right number of points');
+	assert.deepEqual(path[0], { x: 10, y: 10 }, 'First point is correct');
+	assert.deepEqual(path[1], { x: 90, y: 10 }, 'Second point is correct');
+	assert.deepEqual(path[2], { x: 90, y: 90 }, 'Third point is correct');
+});
+
+QUnit.test('incompletePuzzle', (assert) => {
+	let puzzle = new Puzzle(200, 200);
+
+	puzzle.laser = new Laser({
+		direction: DIRECTION.EAST,
+		position: { x: 10, y: 10 },
+		dimensions: { width: 0, height: 0 }
+	});
+
+	puzzle.addSurface(new Surface({
+		type: Surface.REFLECTIVE,
+		reflectiveDirection: DIRECTION.SOUTH,
+		position: { x: 100, y: 10 },
+		dimensions: { width: 20, height: 20 }
+	}));
+
+	puzzle.addSurface(new Surface({
+		type: Surface.OPAQUE,
+		position: { x: 10, y: 100 },
+		dimensions: { width: 20, height: 20 },
+		isTarget: true
+	}));
+
+	puzzle.getLaserPath();
+	assert.notOk(puzzle.complete)
+});
+
+QUnit.test('completePuzzle', (assert) => {
+	let puzzle = new Puzzle(200, 200);
+
+	puzzle.laser = new Laser({
+		direction: DIRECTION.EAST,
+		position: { x: 10, y: 10 },
+		dimensions: { width: 0, height: 0 }
+	});
+
+	puzzle.addSurface(new Surface({
+		type: Surface.REFLECTIVE,
+		reflectiveDirection: DIRECTION.SOUTH,
+		position: { x: 100, y: 10 },
+		dimensions: { width: 20, height: 20 }
+	}));
+
+	puzzle.addSurface(new Surface({
+		type: Surface.OPAQUE,
+		position: { x: 90, y: 100 },
+		dimensions: { width: 20, height: 20 },
+		isTarget: true
+	}));
+
+	puzzle.getLaserPath();
+	assert.ok(puzzle.complete)
+});
