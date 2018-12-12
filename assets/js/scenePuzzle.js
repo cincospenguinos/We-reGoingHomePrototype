@@ -14,6 +14,7 @@ class ScenePuzzle extends Phaser.Scene {
 
 		this.load.image('redLaser', 'assets/sprites/redLaser.png');
 		this.load.image('opaqueSurface', 'assets/sprites/opaqueSurface.png');
+		this.load.image('mirrorSurface', 'assets/sprites/mirror.png')
 	}
 
 	create() {
@@ -25,6 +26,10 @@ class ScenePuzzle extends Phaser.Scene {
 		let opaqueSurface = this.add.image(this.sys.game.canvas.width / 3, 2 * this.sys.game.canvas.height / 3, 'opaqueSurface').setInteractive();
 		this.input.setDraggable(opaqueSurface);
 		this.puzzle.addSurface(opaqueSurface, Surface.OPAQUE);
+
+		let mirrorSurface = this.add.image(3 * this.sys.game.canvas.width / 4, this.sys.game.canvas.height / 2, 'mirrorSurface').setInteractive();
+		this.input.setDraggable(mirrorSurface);
+		this.puzzle.addSurface(mirrorSurface, Surface.REFLECTIVE);
 
 		this.input.on('drag', (pointer, gameObject, dragX, dragY) => {
 			gameObject.x = dragX;
@@ -44,7 +49,7 @@ class ScenePuzzle extends Phaser.Scene {
 	update() {
 		// TODO: Calculate some things
 
-		
+
 		let points = this.puzzle.getLaserPath();
 
 		this.graphics.clear();

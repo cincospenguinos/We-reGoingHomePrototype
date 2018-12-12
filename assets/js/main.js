@@ -7,7 +7,13 @@ var config = {
 	width: 800,
 	height: 600,
 	scene: [ ScenePuzzle ],
-	debug: true
+	physics: {
+		default: 'arcade',
+		arcade: {
+			gravity: {},
+			debug: true
+		}
+	}
 };
 
 var game = new Phaser.Game(config);

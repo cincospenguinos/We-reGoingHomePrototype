@@ -25,27 +25,56 @@ class Puzzle {
 		}
 
 		let currentPoint = { x: this.laser.img.x + this.laser.img.displayWidth / 2, y: this.laser.img.y };
+		let currentDirection = this.laser.direction;
 		let points = [currentPoint];
 
-		for (let i = 0; i < this.surfaces.length; i++) {
-			let surface = this.surfaces[i];
+		let closestSurface;
+		let terminated = false;
 
-			if (surface.isInRange(currentPoint)) {
-				currentPoint = { x: surface.img.x - surface.img.displayWidth / 2, y: this.laser.img.y };
-				points.push(currentPoint);
+		do {
+			closestSurface = null;
+			this.getSurfacesInRange(currentPoint, currentDirection).forEach((s) => {
+				!closestSurface ? closestSurface = s : closestSurface = Surface.closestSurface(currentPoint, closestSurface, s);
+			});
 
-				if (surface.type === Surface.OPAQUE) {
+			if (closestSurface) {
+				let newPoint = closestSurface.getCollisionPoint(currentPoint, currentDirection);
+				points.push(newPoint);
+				currentPoint = newPoint;
+
+				if (closestSurface.type === Surface.OPAQUE) {
+					terminated = true;
 					break;
 				} else {
-					i = 0;
+					currentDirection = closestSurface.reflectiveDirection;
 				}
+			} else {
+				break;
+			}
+		} while (closestSurface)
+
+		if (points.length === 1 || !terminated) {
+			switch(currentDirection) {
+			case Laser.DIRECTIONS.EAST:
+				points.push({ x: currentPoint.x + this.dimensions.width, y: currentPoint.y });
+				break;
+			case Laser.DIRECTIONS.SOUTH:
+				points.push({ x: currentPoint.x, y: currentPoint.y + this.dimensions.height });
+				break;
+			case Laser.DIRECTIONS.WEST:
+				points.push({ x: currentPoint.x - this.dimensions.width, y: currentPoint.y });
+				break;
+			case Laser.DIRECTIONS.NORTH:
+				points.push({ x: currentPoint.x, y: currentPoint.y - this.dimensions.height });
+				break;
 			}
 		}
 
-		if (points.length === 1) {
-			points.push({ x: this.dimensions.width, y: this.laser.img.y });
-		}
-
 		return points;
+	}
+
+	/** Helper method. Returns all of the surfaces in range. */
+	getSurfacesInRange(currentPoint, currentDirection) {
+		return this.surfaces.filter((s) => s.getCollisionPoint(currentPoint, currentDirection) !== null);
 	}
 }
