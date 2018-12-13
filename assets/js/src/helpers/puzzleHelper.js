@@ -29,6 +29,24 @@ export class PuzzleHelper {
 			dimensions: { width: 64, height: 64 }
 		}));
 
+		puzzle.addSurface(new Surface({
+			type: Surface.REFLECTIVE,
+			isTarget: false,
+			movable: true,
+			position: { x: 2 * width / 3, y: 3 * height / 5 },
+			dimensions: { width: 64, height: 64 },
+			reflectiveDirection: DIRECTION.SOUTH
+		}));
+
+		puzzle.addSurface(new Surface({
+			type: Surface.REFLECTIVE,
+			isTarget: false,
+			movable: true,
+			position: { x: 1 * width / 6, y: 5 * height / 6 },
+			dimensions: { width: 64, height: 64 },
+			reflectiveDirection: DIRECTION.EAST
+		}));
+
 		return puzzle;
 	}	
 }

@@ -17,3 +17,5 @@ I'll come up with a better name for it soon. This is a prototype of a game I wan
 
 * To add physics to an existing sprite, do `this.physics.add.existing(spriteHere)`
 	* Seriously though: just [watch this](https://www.youtube.com/watch?v=55DzXMkCfVA)
+* Use [this](https://www.mapeditor.org/)
+* The canvas element is 800x600

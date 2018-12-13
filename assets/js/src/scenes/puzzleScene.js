@@ -5,6 +5,7 @@
  */
 import { KEYS } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
+import { Surface } from '../model/surface.js';
 
 export class PuzzleScene extends Phaser.Scene {
 
@@ -48,6 +49,7 @@ export class PuzzleScene extends Phaser.Scene {
 			} else if (surface.type === Surface.OPAQUE) {
 				surfaceImage = this.add.image(position.x, position.y, KEYS.sprites.opaqueSurface.key);
 			} else {
+				console.log('HEY!');
 				surfaceImage = this.add.image(position.x, position.y, KEYS.sprites.mirror.key);
 			}
 
@@ -79,13 +81,13 @@ export class PuzzleScene extends Phaser.Scene {
 		let targetSurface = this.puzzle.getTargetSurface();
 
 		if (this.puzzle.solved) {
-			targetSurface.img.setFrame(1)
+			targetSurface.img.setFrame(1);
 
 			// TODO: Show the complete button
 
 		} else {
 			// TODO: replace the lit target for the unlit one
-			targetSurface.img.setFrame(0)
+			targetSurface.img.setFrame(0);
 		}
 
 		let points = this.puzzle.getLaserPath();
