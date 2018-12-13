@@ -16,7 +16,11 @@ export const KEYS = {
 		mirror: { key: 'mirror', location: spriteDir + 'mirror.png' },
 		opaqueSurface: { key: 'opaqueSurface', location: spriteDir + 'opaqueSurface.png' },
 		menuOne: { key: 'menuOne', location: spriteDir + 'one.png' },
-		target: { key: 'target', location: spriteDir + 'target.png' }
+		target: { key: 'target', location: spriteDir + 'target.png', animations: {
+			lit: { key: 'lit', indexes: [1, 1] },
+			unlit: { key: 'unlit', indexes: [0, 0] }
+		}},
+		completeButton: { key: 'completeButton', location: spriteDir + 'complete.png' }
 	}
 };
 

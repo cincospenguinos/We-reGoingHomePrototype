@@ -88,6 +88,11 @@ export class Puzzle {
 		return points;
 	}
 
+	/** Returns the target surface in the set of surfaces. */
+	getTargetSurface() {
+		return this.surfaces.filter((s) => s.isTarget)[0];
+	}
+
 	/** Helper method. Returns all of the surfaces in range. */
 	getSurfacesInRange(currentPoint, currentDirection) {
 		return this.surfaces.filter((s) => s.getCollisionPoint(currentPoint, currentDirection) !== null);

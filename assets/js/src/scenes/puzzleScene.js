@@ -18,7 +18,11 @@ export class PuzzleScene extends Phaser.Scene {
 
 	preload() {
 		SceneHelper.loadImage(this, KEYS.sprites.laser);
-		SceneHelper.loadImage(this, KEYS.sprites.target);
+		SceneHelper.loadImage(this, KEYS.sprites.completeButton);
+		this.load.spritesheet(KEYS.sprites.target.key, KEYS.sprites.target.location, {
+			frameWidth: 64,
+			frameHeight: 64
+		});
 	}
 
 	create() {
@@ -39,7 +43,8 @@ export class PuzzleScene extends Phaser.Scene {
 			let surfaceImage;
 
 			if (surface.isTarget) {
-				surfaceImage = this.add.image(position.x, position.y, KEYS.sprites.target.key);
+				surfaceImage = this.add.sprite(position.x, position.y, KEYS.sprites.target.key);
+				surfaceImage.setFrame(0);
 			} else if (surface.type === Surface.OPAQUE) {
 				surfaceImage = this.add.image(position.x, position.y, KEYS.sprites.opaqueSurface.key);
 			} else {
@@ -71,9 +76,16 @@ export class PuzzleScene extends Phaser.Scene {
 	}
 
 	update() {
+		let targetSurface = this.puzzle.getTargetSurface();
+
 		if (this.puzzle.solved) {
-			// TODO: Show some sort of thing to click on to move to the transverse section
-			console.log('Solved!');
+			targetSurface.img.setFrame(1)
+
+			// TODO: Show the complete button
+
+		} else {
+			// TODO: replace the lit target for the unlit one
+			targetSurface.img.setFrame(0)
 		}
 
 		let points = this.puzzle.getLaserPath();
