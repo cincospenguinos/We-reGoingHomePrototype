@@ -3,7 +3,7 @@
  *
  * Scene for the puzzle component of the game.
  */
-import { KEYS } from '../../lib/CONST.js';
+import { KEYS, SPRITES } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
 import { Surface } from '../model/surface.js';
 
@@ -18,9 +18,11 @@ export class PuzzleScene extends Phaser.Scene {
 	}
 
 	preload() {
-		SceneHelper.loadImage(this, KEYS.sprites.laser);
-		SceneHelper.loadImage(this, KEYS.sprites.completeButton);
-		this.load.spritesheet(KEYS.sprites.target.key, KEYS.sprites.target.location, {
+		SceneHelper.loadImage(this, SPRITES.laser);
+		SceneHelper.loadImage(this, SPRITES.completeButton);
+		SceneHelper.loadImage(this, SPRITES.mirror);
+
+		this.load.spritesheet(SPRITES.target.key, SPRITES.target.location, {
 			frameWidth: 64,
 			frameHeight: 64
 		});
@@ -29,7 +31,7 @@ export class PuzzleScene extends Phaser.Scene {
 	create() {
 		// Create the laser
 		let laserPosition = this.puzzle.laser.getPosition();
-		let laserImage = this.add.image(laserPosition.x, laserPosition.y, KEYS.sprites.laser.key);
+		let laserImage = this.add.image(laserPosition.x, laserPosition.y, SPRITES.laser.key);
 
 		if (this.puzzle.laser.movable) {
 			laserImage.setInteractive();
@@ -44,13 +46,12 @@ export class PuzzleScene extends Phaser.Scene {
 			let surfaceImage;
 
 			if (surface.isTarget) {
-				surfaceImage = this.add.sprite(position.x, position.y, KEYS.sprites.target.key);
+				surfaceImage = this.add.sprite(position.x, position.y, SPRITES.target.key);
 				surfaceImage.setFrame(0);
 			} else if (surface.type === Surface.OPAQUE) {
-				surfaceImage = this.add.image(position.x, position.y, KEYS.sprites.opaqueSurface.key);
+				surfaceImage = this.add.image(position.x, position.y, SPRITES.opaqueSurface.key);
 			} else {
-				console.log('HEY!');
-				surfaceImage = this.add.image(position.x, position.y, KEYS.sprites.mirror.key);
+				surfaceImage = this.add.image(position.x, position.y, SPRITES.mirror.key);
 			}
 
 			if (surface.movable) {
