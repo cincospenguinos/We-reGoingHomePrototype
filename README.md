@@ -19,3 +19,5 @@ I'll come up with a better name for it soon. This is a prototype of a game I wan
 	* Seriously though: just [watch this](https://www.youtube.com/watch?v=55DzXMkCfVA)
 * Use [this](https://www.mapeditor.org/)
 * The canvas element is 800x600
+* USE JSON FILES TO KEEP PUZZLE DATA! Instead of a "PuzzleHelper", just put all that data into a JSON file and then
+make a static method on Puzzle take that data and convert it to a game object.

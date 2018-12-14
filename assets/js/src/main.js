@@ -3,13 +3,13 @@
  */
 import { MenuScene } from './scenes/menuScene.js';
 import { PuzzleScene } from './scenes/puzzleScene.js';
-import { TransverseScene } from './scenes/transverseScene.js';
+import { TraverseScene } from './scenes/traverseScene.js';
 
 var config = {
 	type: Phaser.AUTO,
 	width: 800,
 	height: 600,
-	scene: [ MenuScene, PuzzleScene, TransverseScene ],
+	scene: [ MenuScene, PuzzleScene, TraverseScene ],
 	physics: {
 		default: 'arcade',
 		arcade: {

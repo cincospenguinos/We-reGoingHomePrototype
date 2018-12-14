@@ -6,7 +6,7 @@
  */
 export class Player {
 	constructor(opts) {
-		this.maxVelocity = opts.maxVelocity || 200;
+		this.maxVelocity = opts.maxVelocity || 192;
 
 		this.position = opts.position;
 	}

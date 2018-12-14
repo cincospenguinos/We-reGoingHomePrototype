@@ -29,7 +29,7 @@ export class MenuScene extends Phaser.Scene {
 				position: { x: 10, y: this.sys.canvas.height - 20 }
 			});
 			// this.scene.start(KEYS.scene.puzzleScene, puzzle);
-			this.scene.start(KEYS.scene.transverseScene, { puzzle: puzzle, player: player });
+			this.scene.start(KEYS.scene.traverseScene, { puzzle: puzzle, player: player });
 		});
 	}
 }

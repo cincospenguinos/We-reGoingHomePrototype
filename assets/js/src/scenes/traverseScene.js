@@ -7,10 +7,10 @@ import { KEYS, SPRITES } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
 import { Surface } from '../model/surface.js';
 
-export class TransverseScene extends Phaser.Scene {
+export class TraverseScene extends Phaser.Scene {
 
 	constructor() {
-		super({ key: KEYS.scene.transverseScene });
+		super({ key: KEYS.scene.traverseScene });
 	}
 
 	init(data) {
@@ -23,15 +23,13 @@ export class TransverseScene extends Phaser.Scene {
 		SceneHelper.loadImage(this, SPRITES.background);
 		SceneHelper.loadImage(this, SPRITES.laser);
 		SceneHelper.loadImage(this, SPRITES.mirror);
-		this.load.spritesheet(SPRITES.target.key, SPRITES.target.location, {
-			frameWidth: 64,
-			frameHeight: 64
-		});
+		SceneHelper.loadSpritesheet(this, SPRITES.target)
+		SceneHelper.loadSpritesheet(this, SPRITES.panel);
 	}
 
 	create() {
 		// Setup input information
-		this.keyboard = this.input.keyboard.addKeys('W, A, S, D');
+		this.keyboard = this.input.keyboard.addKeys('W, A, S, D, E');
 
 		// Add the background
 		this.add.image(this.sys.canvas.width / 2, this.sys.canvas.height / 2, SPRITES.background.key);

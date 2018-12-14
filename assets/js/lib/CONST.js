@@ -7,7 +7,7 @@ let spriteDir = 'assets/sprites/';
 export const KEYS = {
 	scene: {
 		puzzleScene: 'PuzzleScene',
-		transverseScene: 'TransverseScene',
+		traverseScene: 'TraverseScene',
 		menuScene: 'MenuScene'
 	}
 };
@@ -17,11 +17,12 @@ export const SPRITES = {
 	mirror: { key: 'mirror', location: spriteDir + 'mirror.png' },
 	opaqueSurface: { key: 'opaqueSurface', location: spriteDir + 'opaqueSurface.png' },
 	menuOne: { key: 'menuOne', location: spriteDir + 'one.png' },
-	target: { key: 'target', location: spriteDir + 'target.png' },
+	target: { key: 'target', location: spriteDir + 'target.png', frameWidth: 64, frameHeight: 64 },
 	completeButton: { key: 'completeButton', location: spriteDir + 'complete.png' },
 	// mainCharacter: { key: 'somethingelse', location: spriteDir + 'nameoffile.png' }
 	mainCharacter: { key: 'theguy', location: spriteDir + 'guy.png' },
-	background: { key: 'shittyBackground', location: spriteDir + 'shittyBackground.png' }
+	background: { key: 'shittyBackground', location: spriteDir + 'shittyBackground.png' },
+	panel: { key: 'panel', location: spriteDir + 'panel.png', frameWidth: 16, frameHeight: 32 }
 };
 
 export const DIRECTION = {
