@@ -7,52 +7,68 @@ import { Puzzle } from '../model/puzzle.js';
 import { Surface } from '../model/surface.js';
 import { Laser } from '../model/laser.js';
 import { Panel } from '../model/panel.js';
-import { DIRECTION } from '../../lib/CONST.js';
+import { KEYS, DIRECTION } from '../../lib/CONST.js';
 
 export class PuzzleHelper {
 
-	/** Returns the first puzzle of the demo given the width and height of the canvas. */
-	static puzzleOne(width, height) {
-		let puzzle = new Puzzle(width, height);
+	/** Returns a puzzle object with all of the data outlined in the data hash provided. */
+	static getPuzzle(scene, puzzleKey) {
+		let puzzleData = scene.cache.json.get(KEYS.puzzles.key)[puzzleKey];
+		console.log(puzzleData);
 
+		let puzzle = new Puzzle(puzzleData.dimensions.width, puzzleData.dimensions.height);
 		puzzle.laser = new Laser({
-			direction: DIRECTION.EAST,
-			movable: false,
-			position: { x: 32, y: 32 },
-			dimensions: { width: 64, height: 64}
+			direction: this.directionFromString(puzzleData.laser.direction),
+			dimensions: puzzleData.laser.dimensions,
+			movable: puzzleData.laser.movable,
+			position: puzzleData.laser.position
 		});
 
-		puzzle.addSurface(new Surface({
-			type: Surface.OPAQUE,
-			isTarget: true,
-			movable: true,
-			position: { x: 3 * width / 4, y: 4 * height / 5 },
-			dimensions: { width: 64, height: 64 }
-		}));
+		puzzleData.surfaces.forEach((surfaceData) => {
+			puzzle.addSurface(new Surface({
+				type: this.surfaceTypeFromString(surfaceData.type),
+				isTarget: surfaceData.isTarget,
+				movable: surfaceData.movable,
+				position: surfaceData.position,
+				dimensions: surfaceData.dimensions
+			}));
+		});
 
-		puzzle.addSurface(new Surface({
-			type: Surface.REFLECTIVE,
-			isTarget: false,
-			movable: true,
-			position: { x: 2 * width / 3, y: 3 * height / 5 },
-			dimensions: { width: 64, height: 64 },
-			reflectiveDirection: DIRECTION.SOUTH
-		}));
+		puzzleData.panels.forEach((panelData) => {
+			puzzle.addPanel(new Panel({
+				position: panelData.position,
+				dimensions: panelData.dimensions
+			}));
+		});
 
-		puzzle.addSurface(new Surface({
-			type: Surface.REFLECTIVE,
-			isTarget: false,
-			movable: true,
-			position: { x: 1 * width / 6, y: 5 * height / 6 },
-			dimensions: { width: 64, height: 64 },
-			reflectiveDirection: DIRECTION.EAST
-		}));
-
-		puzzle.addPanel(new Panel({
-			position: { x: 8, y: 5 * height / 6 },
-			dimensions: { width: 16, height: 32 }
-		}));
+		// TODO: Exits?
 
 		return puzzle;
-	}	
+	}
+
+	/** Helper method. Returns the direction given a direction string. */
+	static directionFromString(str) {
+		if (str === 'EAST') {
+			return DIRECTION.EAST;
+		} else if (str === 'SOUTH') {
+			return DIRECTION.SOUTH;
+		} else if (str === 'WEST') {
+			return DIRECTION.WEST;
+		} else if (str === 'NORTH') {
+			return DIRECTION.NORTH;
+		}
+
+		throw 'Direction "' + str + '" is an invalid direction!'
+	}
+
+	/** Helper method. Returns the surface type given the string provided. */
+	static surfaceTypeFromString(str) {
+		if (str === 'OPAQUE') {
+			return Surface.OPAQUE;
+		} else if (str === 'REFLECTIVE') {
+			return Surface.REFLECTIVE;
+		}
+
+		throw 'Surface type "' + str + '" is invalid!';
+	}
 }

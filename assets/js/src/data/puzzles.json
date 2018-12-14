@@ -1,0 +1,30 @@
+{
+	"puzzle0": {
+		"dimensions": { "width": 800, "height": 600 },
+		"surfaces": [
+			{
+				"type":"OPAQUE",
+				"isTarget":true,
+				"movable": true,
+				"position": { "x": 600, "y": 480 },
+				"dimensions": { "width": 64, "height": 64 }
+			}
+		],
+		"panels": [
+			{
+				"position": { "x": 8, "y": 500 },
+				"dimensions": { "width": 16, "height": 32 }
+			}
+		],
+		"laser": {
+			"direction":"EAST",
+			"movable": false,
+			"position": { "x": 32, "y": 32 },
+			"dimensions": { "width": 64, "height": 64}
+		},
+		"exits": {
+			"direction": "EAST",
+			"puzzle": "puzzle1"
+		}
+	}
+}
