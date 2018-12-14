@@ -29,13 +29,15 @@ export class TraverseScene extends Phaser.Scene {
 
 	create() {
 		// Setup input information
-		this.keyboard = this.input.keyboard.addKeys('W, A, S, D, E');
+		this.keyboard = this.input.keyboard.addKeys('W, A, S, D');
+
 
 		// Add the background
 		this.add.image(this.sys.canvas.width / 2, this.sys.canvas.height / 2, SPRITES.background.key);
 
 		// Put together a new player
-		this.player.img = this.physics.add.image(this.player.position.x, this.player.position.y, SPRITES.mainCharacter.key);
+		let playerPosition = this.player.getPosition();
+		this.player.img = this.physics.add.image(playerPosition.x, playerPosition.y, SPRITES.mainCharacter.key);
 		this.player.img.setCollideWorldBounds(true);
 
 		let puzzleObjects = this.physics.add.staticGroup();
@@ -63,6 +65,27 @@ export class TraverseScene extends Phaser.Scene {
 			surface.img = surfaceImage;
 		});
 
+		// Create the panel as well
+		this.puzzle.panels.forEach((panel) => {
+			let panelPosition = panel.getPosition();
+			let panelImage = puzzleObjects.create(panelPosition.x, panelPosition.y, SPRITES.panel.key).setInteractive();
+			panelImage.setFrame(0);
+
+			panelImage.on('pointerover', (evt, objects) => {
+				panelImage.setFrame(1);
+			});
+
+			panelImage.on('pointerout', (evt, objects) => {
+				panelImage.setFrame(0);
+			});
+
+			panelImage.on('pointerdown', (evt, objects) => {
+				this.scene.start(KEYS.scene.puzzleScene, { puzzle: this.puzzle, player: this.player });
+			});
+
+			panel.img = panelImage;
+		})
+
 		this.physics.add.collider(this.player.img, puzzleObjects);
 
 		this.laserGraphics = this.add.graphics({
@@ -80,7 +103,7 @@ export class TraverseScene extends Phaser.Scene {
 
 		// TODO: Check collision with the laser
 
-		// TODO: Draw the laser and shit
+		// Draw the laser and shit
 		let points = this.puzzle.getLaserPath();
 
 		this.laserGraphics.clear();

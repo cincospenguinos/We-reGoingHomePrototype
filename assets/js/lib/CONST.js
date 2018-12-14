@@ -22,7 +22,8 @@ export const SPRITES = {
 	// mainCharacter: { key: 'somethingelse', location: spriteDir + 'nameoffile.png' }
 	mainCharacter: { key: 'theguy', location: spriteDir + 'guy.png' },
 	background: { key: 'shittyBackground', location: spriteDir + 'shittyBackground.png' },
-	panel: { key: 'panel', location: spriteDir + 'panel.png', frameWidth: 16, frameHeight: 32 }
+	panel: { key: 'panel', location: spriteDir + 'panel.png', frameWidth: 16, frameHeight: 32 },
+	exit: { key: 'exitButton', location: spriteDir + 'exit.png' }
 };
 
 export const DIRECTION = {

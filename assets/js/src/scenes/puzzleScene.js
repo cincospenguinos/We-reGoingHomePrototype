@@ -13,19 +13,17 @@ export class PuzzleScene extends Phaser.Scene {
 		super({ key: KEYS.scene.puzzleScene });
 	}
 
-	init (puzzle) {
-		this.puzzle = puzzle;
+	init (data) {
+		this.puzzle = data.puzzle;
+		this.player = data.player;
 	}
 
 	preload() {
 		SceneHelper.loadImage(this, SPRITES.laser);
 		SceneHelper.loadImage(this, SPRITES.completeButton);
 		SceneHelper.loadImage(this, SPRITES.mirror);
-
-		this.load.spritesheet(SPRITES.target.key, SPRITES.target.location, {
-			frameWidth: 64,
-			frameHeight: 64
-		});
+		SceneHelper.loadImage(this, SPRITES.exit);
+		SceneHelper.loadSpritesheet(this, SPRITES.target);
 	}
 
 	create() {
@@ -60,6 +58,12 @@ export class PuzzleScene extends Phaser.Scene {
 			}
 
 			surface.img = surfaceImage;
+		});
+
+		// Create the exit button in the top right-hand corner
+		let exitImage = this.add.image(this.sys.canvas.width - 16, 8, SPRITES.exit.key).setInteractive();
+		exitImage.on('pointerdown', (evt, objects) => {
+			this.scene.start(KEYS.scene.traverseScene, { puzzle: this.puzzle, player: this.player });
 		});
 
 		// Handle other input bits

@@ -11,6 +11,10 @@ export class Player {
 		this.position = opts.position;
 	}
 
+	getPosition() {
+		return this.img ? { x: this.img.x, y: this.img.y } : this.position;
+	}
+
 	/** Set the velocity of the player object in the X direction. */
 	setVelocityX(velocity) {
 		if (!this.img) {

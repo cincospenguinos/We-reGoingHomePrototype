@@ -6,6 +6,7 @@
  */
 import { Surface } from './surface.js';
 import { Laser } from './laser.js';
+import { Panel } from './panel.js';
 import { DIRECTION } from '../../lib/CONST.js';
 
 export class Puzzle {
@@ -14,6 +15,7 @@ export class Puzzle {
 		this.dimensions = { width: width, height: height };
 
 		this.surfaces = [];
+		this.panels = [];
 		this.solved = false;
 	}
 
@@ -23,6 +25,14 @@ export class Puzzle {
 			this.surfaces.push(surface);
 		} else {
 			throw 'Expected "' + surface + '" to be a surface object';
+		}
+	}
+
+	addPanel(panel) {
+		if (panel instanceof Panel) {
+			this.panels.push(panel);
+		} else {
+			throw 'Expected "' + panel + '" to be a panel object!'
 		}
 	}
 
