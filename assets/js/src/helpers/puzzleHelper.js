@@ -6,6 +6,7 @@
 import { Puzzle } from '../model/puzzle.js';
 import { Surface } from '../model/surface.js';
 import { Laser } from '../model/laser.js';
+import { Panel } from '../model/panel.js';
 import { DIRECTION } from '../../lib/CONST.js';
 
 export class PuzzleHelper {
@@ -27,6 +28,29 @@ export class PuzzleHelper {
 			movable: true,
 			position: { x: 3 * width / 4, y: 4 * height / 5 },
 			dimensions: { width: 64, height: 64 }
+		}));
+
+		puzzle.addSurface(new Surface({
+			type: Surface.REFLECTIVE,
+			isTarget: false,
+			movable: true,
+			position: { x: 2 * width / 3, y: 3 * height / 5 },
+			dimensions: { width: 64, height: 64 },
+			reflectiveDirection: DIRECTION.SOUTH
+		}));
+
+		puzzle.addSurface(new Surface({
+			type: Surface.REFLECTIVE,
+			isTarget: false,
+			movable: true,
+			position: { x: 1 * width / 6, y: 5 * height / 6 },
+			dimensions: { width: 64, height: 64 },
+			reflectiveDirection: DIRECTION.EAST
+		}));
+
+		puzzle.addPanel(new Panel({
+			position: { x: 8, y: 5 * height / 6 },
+			dimensions: { width: 16, height: 32 }
 		}));
 
 		return puzzle;

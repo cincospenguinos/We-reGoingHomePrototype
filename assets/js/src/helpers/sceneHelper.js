@@ -9,4 +9,11 @@ export class SceneHelper {
 	static loadImage(scene, constHash) {
 		return scene.load.image(constHash.key, constHash.location);
 	}
+
+	static loadSpritesheet(scene, constHash) {
+		return scene.load.spritesheet(constHash.key, constHash.location, { 
+			frameWidth: constHash.frameWidth, 
+			frameHeight: constHash.frameHeight
+		});
+	}
 }

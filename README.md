@@ -10,3 +10,14 @@ I'll come up with a better name for it soon. This is a prototype of a game I wan
 - [ ] Allow surfaces to reflect from certain sides of themselves, or have it change depending on the direction the light comes from
 - [ ] Allow puzzles to have multiple targets
 - [ ] Mousing over something movable in the puzzle causes an outline to appear
+- [ ] Moving lasers--this gives us a way to make the transversive sections more engaging.
+- [ ] There should be some sort of cue to the player when they solve the puzzle
+
+## Notes
+
+* To add physics to an existing sprite, do `this.physics.add.existing(spriteHere)`
+	* Seriously though: just [watch this](https://www.youtube.com/watch?v=55DzXMkCfVA)
+* Use [this](https://www.mapeditor.org/)
+* The canvas element is 800x600
+* USE JSON FILES TO KEEP PUZZLE DATA! Instead of a "PuzzleHelper", just put all that data into a JSON file and then
+make a static method on Puzzle take that data and convert it to a game object.

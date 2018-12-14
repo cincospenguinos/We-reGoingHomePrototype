@@ -3,8 +3,9 @@
  *
  * Scene for the puzzle component of the game.
  */
-import { KEYS } from '../../lib/CONST.js';
+import { KEYS, SPRITES } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
+import { Surface } from '../model/surface.js';
 
 export class PuzzleScene extends Phaser.Scene {
 
@@ -12,19 +13,23 @@ export class PuzzleScene extends Phaser.Scene {
 		super({ key: KEYS.scene.puzzleScene });
 	}
 
-	init (puzzle) {
-		this.puzzle = puzzle;
+	init (data) {
+		this.puzzle = data.puzzle;
+		this.player = data.player;
 	}
 
 	preload() {
-		SceneHelper.loadImage(this, KEYS.sprites.laser);
-		SceneHelper.loadImage(this, KEYS.sprites.target);
+		SceneHelper.loadImage(this, SPRITES.laser);
+		SceneHelper.loadImage(this, SPRITES.completeButton);
+		SceneHelper.loadImage(this, SPRITES.mirror);
+		SceneHelper.loadImage(this, SPRITES.exit);
+		SceneHelper.loadSpritesheet(this, SPRITES.target);
 	}
 
 	create() {
 		// Create the laser
 		let laserPosition = this.puzzle.laser.getPosition();
-		let laserImage = this.add.image(laserPosition.x, laserPosition.y, KEYS.sprites.laser.key);
+		let laserImage = this.add.image(laserPosition.x, laserPosition.y, SPRITES.laser.key);
 
 		if (this.puzzle.laser.movable) {
 			laserImage.setInteractive();
@@ -39,11 +44,12 @@ export class PuzzleScene extends Phaser.Scene {
 			let surfaceImage;
 
 			if (surface.isTarget) {
-				surfaceImage = this.add.image(position.x, position.y, KEYS.sprites.target.key);
+				surfaceImage = this.add.sprite(position.x, position.y, SPRITES.target.key);
+				surfaceImage.setFrame(0);
 			} else if (surface.type === Surface.OPAQUE) {
-				surfaceImage = this.add.image(position.x, position.y, KEYS.sprites.opaqueSurface.key);
+				surfaceImage = this.add.image(position.x, position.y, SPRITES.opaqueSurface.key);
 			} else {
-				surfaceImage = this.add.image(position.x, position.y, KEYS.sprites.mirror.key);
+				surfaceImage = this.add.image(position.x, position.y, SPRITES.mirror.key);
 			}
 
 			if (surface.movable) {
@@ -52,6 +58,12 @@ export class PuzzleScene extends Phaser.Scene {
 			}
 
 			surface.img = surfaceImage;
+		});
+
+		// Create the exit button in the top right-hand corner
+		let exitImage = this.add.image(this.sys.canvas.width - 16, 8, SPRITES.exit.key).setInteractive();
+		exitImage.on('pointerdown', (evt, objects) => {
+			this.scene.start(KEYS.scene.traverseScene, { puzzle: this.puzzle, player: this.player });
 		});
 
 		// Handle other input bits
@@ -71,9 +83,16 @@ export class PuzzleScene extends Phaser.Scene {
 	}
 
 	update() {
+		let targetSurface = this.puzzle.getTargetSurface();
+
 		if (this.puzzle.solved) {
-			// TODO: Show some sort of thing to click on to move to the transverse section
-			console.log('Solved!');
+			targetSurface.img.setFrame(1);
+
+			// TODO: Show the complete button
+
+		} else {
+			// TODO: replace the lit target for the unlit one
+			targetSurface.img.setFrame(0);
 		}
 
 		let points = this.puzzle.getLaserPath();
