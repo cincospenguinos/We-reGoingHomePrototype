@@ -6,9 +6,10 @@
  *
  * TODO: Design a good scene.
  */
-import { KEYS, SPRITES } from '../../lib/CONST.js';
+import { KEYS, SPRITES, PUZZLES } from '../../lib/CONST.js';
 import { PuzzleHelper } from '../helpers/puzzleHelper.js';
 import { Player } from '../model/player.js';
+import { SceneHelper } from '../helpers/sceneHelper.js';
 
 export class MenuScene extends Phaser.Scene {
 
@@ -18,17 +19,19 @@ export class MenuScene extends Phaser.Scene {
 
 	preload() {
 		this.load.image(SPRITES.menuOne.key, SPRITES.menuOne.location);
+		SceneHelper.loadJson(this, KEYS.puzzles);
 	}
 
 	create() {
 		let puzzle1 = this.add.image(100, 100, SPRITES.menuOne.key).setInteractive();
 
 		puzzle1.on('pointerdown', (ptr) => {
-			let puzzle = PuzzleHelper.puzzleOne(this.sys.canvas.width, this.sys.canvas.height);
+			let puzzle = PuzzleHelper.getPuzzle(this, PUZZLES.puzzle0.key);
 			let player = new Player({
-				position: { x: 10, y: this.sys.canvas.height - 20 }
+				position: { x: 10, y: this.sys.canvas.height - 20 },
+				dimensions: { width: 16, height: 16 }
 			});
-			// this.scene.start(KEYS.scene.puzzleScene, puzzle);
+
 			this.scene.start(KEYS.scene.traverseScene, { puzzle: puzzle, player: player });
 		});
 	}

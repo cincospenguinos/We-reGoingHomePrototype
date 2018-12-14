@@ -11,31 +11,17 @@
  * algorithms work without having to write tons of code to do it.
  */
 import { DIRECTION } from '../../lib/CONST.js';
+import { PuzzleItem } from './puzzleItem.js';
 
-export class Surface {
+export class Surface extends PuzzleItem {
 
 	constructor(opts) {
+		super(opts);
+
 		this.type = opts.type;
 		this.reflectiveDirection = opts.reflectiveDirection;
 		this.isTarget = opts.isTarget || false;
 		this.movable = opts.movable || false;
-
-		if (opts.img) {
-			this.img = opts.img
-		} else {
-			this.position = opts.position;
-			this.dimensions = opts.dimensions;
-		}
-	}
-
-	/** Returns the position of this surface object. */
-	getPosition() {
-		return this.img ? { x: this.img.x, y: this.img.y } : this.position;
-	}
-
-	/** Returns the dimensions of this surface. */
-	getDimensions() {
-		return this.img ? { width: this.img.displayWidth, height: this.img.displayHeight } : this.dimensions;
 	}
 
 	/** Returns a collision point, or null if none exists. */
