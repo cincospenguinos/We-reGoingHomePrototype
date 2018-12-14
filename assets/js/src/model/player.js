@@ -4,15 +4,13 @@
  * Class representing the player.
  *
  */
-export class Player {
+import { PuzzleItem } from './puzzleItem.js';
+
+export class Player extends PuzzleItem {
 	constructor(opts) {
+		super(opts);
+		
 		this.maxVelocity = opts.maxVelocity || 192;
-
-		this.position = opts.position;
-	}
-
-	getPosition() {
-		return this.img ? { x: this.img.x, y: this.img.y } : this.position;
 	}
 
 	/** Set the velocity of the player object in the X direction. */

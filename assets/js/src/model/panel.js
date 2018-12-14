@@ -3,15 +3,11 @@
  *
  * Panel the player interacts with to modify the puzzle.
  */
+import { PuzzleItem } from './puzzleItem.js';
 
-export class Panel {
+export class Panel extends PuzzleItem {
 
-	constructor(opts) {
-		this.position = opts.position;
-		this.dimensions = opts.dimensions;
-	}
-
-	getPosition() {
-		return this.img ? { x: this.img.x, y: this.img.y } : this.position;
+	constructor(opts) { 
+		super(opts);
 	}
 }

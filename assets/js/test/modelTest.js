@@ -3,6 +3,7 @@
  *
  * Tests the model components. Uses QUnit.
  */
+import { PuzzleItem } from '../src/model/puzzleItem.js';
 import { Surface } from '../src/model/surface.js';
 import { Laser } from '../src/model/laser.js';
 import { Puzzle } from '../src/model/puzzle.js';

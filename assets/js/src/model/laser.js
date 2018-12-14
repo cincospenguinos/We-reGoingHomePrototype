@@ -4,19 +4,15 @@
  * Represents a laser in a puzzle.
  */
 import { DIRECTION } from '../../lib/CONST.js';
+import { PuzzleItem } from './puzzleItem.js';
 
-export class Laser {
+export class Laser extends PuzzleItem {
 	
 	constructor(opts) {
+		super(opts);
+
 		this.direction = opts.direction;
 		this.movable = opts.movable || false;
-
-		if (opts.img) {
-			this.img = opts.img;
-		} else {
-			this.position = opts.position;
-			this.dimensions = opts.dimensions;
-		}
 	}
 
 	/** Returns the point from which the light of this laser extends. */
@@ -36,15 +32,5 @@ export class Laser {
 		default:
 			throw 'Direction "' + this.direction + '" is invalid';
 		}
-	}
-
-	/** Returns the position of this laser. */
-	getPosition() {
-		return this.img ? { x: this.img.x, y: this.img.y } : this.position;
-	}
-
-	/** Returns the dimensions of this laser. */
-	getDimensions() {
-		return this.img ? { width: this.img.displayWidth, height: this.img.displayHeight } : this.dimensions;
 	}
 }
