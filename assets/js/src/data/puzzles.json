@@ -25,6 +25,55 @@
 		"exits": [{
 			"direction": "NORTH",
 			"nextPuzzle": "puzzle1"
-		}]
+		}],
+		"playerPosition": { "x": 32, "y": 550 }
+	},
+	"puzzle1": {
+		"dimensions": { "width": 800, "height": 600 },
+		"surfaces": [
+			{
+				"type": "OPAQUE",
+				"isTarget": true,
+				"movable": false,
+				"position": { "x": 600, "y": 568 },
+				"dimensions": { "width": 64, "height": 64 }
+			}, 
+			{
+				"type": "REFLECTIVE",
+				"reflectiveDirection": "SOUTH",
+				"isTarget": false,
+				"movable": true,
+				"position": { "x": 200, "y": 480 },
+				"dimensions": { "width": 64, "height": 64 }
+			}
+		],
+		"panels": [
+			{
+				"position": { "x": 8, "y": 500 },
+				"dimensions": { "width": 16, "height": 32 }
+			},
+			{
+				"position": { "x": 792, "y": 500 },
+				"dimensions": { "width": 16, "height": 32 }
+			}
+		],
+		"laser": {
+			"direction":"EAST",
+			"movable": false,
+			"position": { "x": 32, "y": 32 },
+			"dimensions": { "width": 64, "height": 64}
+		},
+		"exits": [{
+			"direction": "EAST",
+			"nextPuzzle": "puzzle2"
+		}],
+		"playerPosition": { "x": 32, "y": 550 }
+	},
+	"puzzleTemplate": {
+		"dimensions": {},
+		"surfaces": [],
+		"panels": [],
+		"laser": {},
+		"exits": []
 	}
 }

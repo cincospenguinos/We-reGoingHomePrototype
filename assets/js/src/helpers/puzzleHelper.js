@@ -8,6 +8,7 @@ import { Surface } from '../model/surface.js';
 import { Laser } from '../model/laser.js';
 import { Exit } from '../model/exit.js';
 import { PuzzleItem } from '../model/puzzleItem.js';
+import { Player } from '../model/player.js';
 import { KEYS, DIRECTION } from '../../lib/CONST.js';
 
 export class PuzzleHelper {
@@ -25,9 +26,11 @@ export class PuzzleHelper {
 		});
 
 		puzzleData.surfaces.forEach((surfaceData) => {
+			console.log(surfaceData);
 			puzzle.addSurface(new Surface({
 				type: this.surfaceTypeFromString(surfaceData.type),
 				isTarget: surfaceData.isTarget,
+				reflectiveDirection: this.directionFromString(surfaceData.reflectiveDirection),
 				movable: surfaceData.movable,
 				position: surfaceData.position,
 				dimensions: surfaceData.dimensions
@@ -50,7 +53,12 @@ export class PuzzleHelper {
 				nextRoomKey: exitData.nextPuzzle,
 				direction: direction
 			}));
-		})
+		});
+
+		puzzle.player = new Player({
+			position: { x: puzzleData.playerPosition.x, y: puzzleData.playerPosition.y },
+			dimensions: { width: 16, height: 16 }
+		});
 
 		return puzzle;
 	}
@@ -67,7 +75,7 @@ export class PuzzleHelper {
 			return DIRECTION.NORTH;
 		}
 
-		throw 'Direction "' + str + '" is an invalid direction!'
+		return undefined;
 	}
 
 	/** Helper method. Returns the surface type given the string provided. */

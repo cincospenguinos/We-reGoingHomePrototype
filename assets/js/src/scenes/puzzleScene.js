@@ -15,7 +15,6 @@ export class PuzzleScene extends Phaser.Scene {
 
 	init (data) {
 		this.puzzle = data.puzzle;
-		this.player = data.player;
 	}
 
 	preload() {
@@ -63,7 +62,7 @@ export class PuzzleScene extends Phaser.Scene {
 		// Create the exit button in the top right-hand corner
 		let exitImage = this.add.image(this.sys.canvas.width - 16, 8, SPRITES.exit.key).setInteractive();
 		exitImage.on('pointerdown', (evt, objects) => {
-			this.scene.start(KEYS.scene.traverseScene, { puzzle: this.puzzle, player: this.player });
+			this.scene.start(KEYS.scene.traverseScene, { puzzle: this.puzzle, player: this.puzzle.player });
 		});
 
 		// Handle other input bits

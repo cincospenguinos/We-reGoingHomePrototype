@@ -27,12 +27,7 @@ export class MenuScene extends Phaser.Scene {
 
 		puzzle1.on('pointerdown', (ptr) => {
 			let puzzle = PuzzleHelper.getPuzzle(this, PUZZLES.puzzle0.key);
-			let player = new Player({
-				position: { x: 10, y: this.sys.canvas.height - 20 },
-				dimensions: { width: 16, height: 16 }
-			});
-
-			this.scene.start(KEYS.scene.traverseScene, { puzzle: puzzle, player: player });
+			this.scene.start(KEYS.scene.traverseScene, { puzzle: puzzle });
 		});
 	}
 }
