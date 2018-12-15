@@ -82,8 +82,13 @@ export class TraverseScene extends Phaser.Scene {
 			});
 
 			panelImage.on('pointerdown', (evt, objects) => {
-				// TODO: Calculate distance between panel and player and only start scene if the player is close enough
-				this.scene.start(KEYS.scene.puzzleScene, { puzzle: this.puzzle, player: this.player });
+				let playerPosition = this.player.getPosition();
+
+				
+				let dist = Math.sqrt(Math.pow(panelImage.y - playerPosition.y, 2) + Math.pow(panelImage.x - playerPosition.x, 2));
+				if (dist < 45) {
+					this.scene.start(KEYS.scene.puzzleScene, { puzzle: this.puzzle, player: this.player });
+				}
 			});
 
 			panel.img = panelImage;
