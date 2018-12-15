@@ -5,6 +5,7 @@
  */
 import { KEYS, SPRITES } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
+import { PuzzleHelper } from '../helpers/puzzleHelper.js';
 import { Surface } from '../model/surface.js';
 
 export class TraverseScene extends Phaser.Scene {
@@ -23,6 +24,8 @@ export class TraverseScene extends Phaser.Scene {
 		SceneHelper.loadImage(this, SPRITES.background);
 		SceneHelper.loadImage(this, SPRITES.laser);
 		SceneHelper.loadImage(this, SPRITES.mirror);
+		SceneHelper.loadImage(this, SPRITES.doorHorizontal);
+		SceneHelper.loadImage(this, SPRITES.doorVertical);
 		SceneHelper.loadSpritesheet(this, SPRITES.target)
 		SceneHelper.loadSpritesheet(this, SPRITES.panel);
 	}
@@ -30,7 +33,6 @@ export class TraverseScene extends Phaser.Scene {
 	create() {
 		// Setup input information
 		this.keyboard = this.input.keyboard.addKeys('W, A, S, D');
-
 
 		// Add the background
 		this.add.image(this.sys.canvas.width / 2, this.sys.canvas.height / 2, SPRITES.background.key);
@@ -80,10 +82,22 @@ export class TraverseScene extends Phaser.Scene {
 			});
 
 			panelImage.on('pointerdown', (evt, objects) => {
+				// TODO: Calculate distance between panel and player and only start scene if the player is close enough
 				this.scene.start(KEYS.scene.puzzleScene, { puzzle: this.puzzle, player: this.player });
 			});
 
 			panel.img = panelImage;
+		});
+
+		// And the exits
+		this.puzzle.exits.forEach((exit) => {
+			let pos = exit.position;
+			let doorImage = exit.useHorizontalDoor() ? this.physics.add.image(pos.x, pos.y, SPRITES.doorHorizontal.key) : this.physics.add.image(pos.x, pos.y, SPRITES.doorVertical.key);
+			this.physics.add.overlap(this.player.img, doorImage, () => {
+				if (this.puzzle.solved) {
+					this.exit(exit.nextRoomKey);
+				}
+			}, null, this);
 		});
 
 		this.physics.add.collider(this.player.img, puzzleObjects);
@@ -101,7 +115,7 @@ export class TraverseScene extends Phaser.Scene {
 	update() {
 		this.handleInputs();
 
-		// TODO: Check collision with the laser
+		// Check collision with the laser
 		let points = this.puzzle.getLaserPath();
 
 		// Draw the laser and shit
@@ -153,5 +167,10 @@ export class TraverseScene extends Phaser.Scene {
 				this.player.setVelocityY(0);
 			}
 		}
+	}
+
+	exit(nextRoomKey) {
+		let nextPuzzle = PuzzleHelper.getPuzzle(this, nextRoomKey);
+		this.scene.start(KEYS.scene.traverseScene, { puzzle: nextPuzzle, player: this.player });
 	}
 }

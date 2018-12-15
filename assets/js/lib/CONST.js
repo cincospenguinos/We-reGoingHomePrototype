@@ -27,7 +27,9 @@ export const SPRITES = {
 	mainCharacter: { key: 'theguy', location: spriteDir + 'guy.png' },
 	background: { key: 'shittyBackground', location: spriteDir + 'shittyBackground.png' },
 	panel: { key: 'panel', location: spriteDir + 'panel.png', frameWidth: 16, frameHeight: 32 },
-	exit: { key: 'exitButton', location: spriteDir + 'exit.png' }
+	exit: { key: 'exitButton', location: spriteDir + 'exit.png' },
+	doorHorizontal: { key: 'doorHorizontal', location: spriteDir + 'doorHorizontal.png' },
+	doorVertical: { key: 'doorVertical', location: spriteDir + 'doorVertical.png' }
 };
 
 export const PUZZLES = {

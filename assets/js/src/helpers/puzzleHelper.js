@@ -6,7 +6,8 @@
 import { Puzzle } from '../model/puzzle.js';
 import { Surface } from '../model/surface.js';
 import { Laser } from '../model/laser.js';
-import { Panel } from '../model/panel.js';
+import { Exit } from '../model/exit.js';
+import { PuzzleItem } from '../model/puzzleItem.js';
 import { KEYS, DIRECTION } from '../../lib/CONST.js';
 
 export class PuzzleHelper {
@@ -14,7 +15,6 @@ export class PuzzleHelper {
 	/** Returns a puzzle object with all of the data outlined in the data hash provided. */
 	static getPuzzle(scene, puzzleKey) {
 		let puzzleData = scene.cache.json.get(KEYS.puzzles.key)[puzzleKey];
-		console.log(puzzleData);
 
 		let puzzle = new Puzzle(puzzleData.dimensions.width, puzzleData.dimensions.height);
 		puzzle.laser = new Laser({
@@ -35,13 +35,22 @@ export class PuzzleHelper {
 		});
 
 		puzzleData.panels.forEach((panelData) => {
-			puzzle.addPanel(new Panel({
+			puzzle.addPanel(new PuzzleItem({
 				position: panelData.position,
 				dimensions: panelData.dimensions
 			}));
 		});
 
-		// TODO: Exits?
+		puzzleData.exits.forEach((exitData) => {
+			let direction = this.directionFromString(exitData.direction);
+			let position = this.getDoorPosition(scene, direction);
+
+			puzzle.addExit(new Exit({
+				position: position,
+				nextRoomKey: exitData.nextPuzzle,
+				direction: direction
+			}));
+		})
 
 		return puzzle;
 	}
@@ -70,5 +79,19 @@ export class PuzzleHelper {
 		}
 
 		throw 'Surface type "' + str + '" is invalid!';
+	}
+
+	/** Helper method. gets the door position given the scene and the direction. */
+	static getDoorPosition(scene, direction) {
+		switch(direction) {
+		case DIRECTION.EAST:
+			return { x: scene.sys.canvas.width - 8, y: scene.sys.canvas.height / 2 };
+		case DIRECTION.SOUTH:
+			return { x: scene.sys.canvas.width / 2, y: scene.sys.canvas.height - 8 };
+		case DIRECTION.WEST:
+			return { x: 8, y: scene.sys.canvas.height / 2 };
+		case DIRECTION.NORTH:
+			return { x: scene.sys.canvas.width / 2, y: 8 };
+		}
 	}
 }
