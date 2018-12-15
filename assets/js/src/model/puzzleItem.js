@@ -23,4 +23,23 @@ export class PuzzleItem {
 	getDimensions() {
 		return this.img ? { width: this.img.displayWidth, height: this.img.displayHeight } : this.dimensions;
 	}
+
+	/** Helper method. Returns the extrema to be used in calculating collision points.*/
+	getExtrema() {
+		let extrema = { x: {}, y: {} };
+
+		if (this.img) {
+			extrema.x.min = this.img.x - this.img.displayWidth / 2;
+			extrema.x.max = this.img.x + this.img.displayWidth / 2;
+			extrema.y.min = this.img.y - this.img.displayHeight / 2;
+			extrema.y.max = this.img.y + this.img.displayHeight / 2
+		} else {
+			extrema.x.min = this.position.x - this.dimensions.width / 2;
+			extrema.x.max = this.position.x + this.dimensions.width / 2;
+			extrema.y.min = this.position.y - this.dimensions.height / 2;
+			extrema.y.max = this.position.y + this.dimensions.height / 2
+		}
+
+		return extrema;
+	}
 }

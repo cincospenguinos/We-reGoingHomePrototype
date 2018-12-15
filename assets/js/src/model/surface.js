@@ -60,25 +60,6 @@ export class Surface extends PuzzleItem {
 		return null;
 	}
 
-	/** Helper method. Returns the extrema to be used in calculating the collision point.*/
-	getExtrema() {
-		let extrema = { x: {}, y: {} };
-
-		if (this.img) {
-			extrema.x.min = this.img.x - this.img.displayWidth / 2;
-			extrema.x.max = this.img.x + this.img.displayWidth / 2;
-			extrema.y.min = this.img.y - this.img.displayHeight / 2;
-			extrema.y.max = this.img.y + this.img.displayHeight / 2
-		} else {
-			extrema.x.min = this.position.x - this.dimensions.width / 2;
-			extrema.x.max = this.position.x + this.dimensions.width / 2;
-			extrema.y.min = this.position.y - this.dimensions.height / 2;
-			extrema.y.max = this.position.y + this.dimensions.height / 2
-		}
-
-		return extrema;
-	}
-
 	/** Static helper method. Returns closest surface to the point provided. */
 	static closestSurface(point, surface1, surface2) {
 		let s1Pnt = surface1.getPosition();

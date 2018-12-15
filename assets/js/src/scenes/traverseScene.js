@@ -84,7 +84,7 @@ export class TraverseScene extends Phaser.Scene {
 			});
 
 			panel.img = panelImage;
-		})
+		});
 
 		this.physics.add.collider(this.player.img, puzzleObjects);
 
@@ -102,12 +102,16 @@ export class TraverseScene extends Phaser.Scene {
 		this.handleInputs();
 
 		// TODO: Check collision with the laser
-
-		// Draw the laser and shit
 		let points = this.puzzle.getLaserPath();
 
+		// Draw the laser and shit
 		this.laserGraphics.clear();
 		for (let i = 0; i < points.length - 1; i++) {
+			if (this.player.laserIntersects(points[i], points[i + 1])) {
+				// TODO: Find a way to just restart the scene from the beginning instead of this
+				this.scene.start(KEYS.scene.menuScene);
+			}
+
 			this.laserGraphics.strokeLineShape({
 				x1: points[i].x,
 				y1: points[i].y,
