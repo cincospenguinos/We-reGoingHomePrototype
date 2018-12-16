@@ -14,29 +14,30 @@ export class PuzzleScene extends Phaser.Scene {
 	}
 
 	init (data) {
+		this.dungeon = data.dungeon;
 		this.puzzle = data.puzzle;
-		this.player = data.player;
 	}
 
 	preload() {
 		SceneHelper.loadImage(this, SPRITES.laser);
-		SceneHelper.loadImage(this, SPRITES.completeButton);
 		SceneHelper.loadImage(this, SPRITES.mirror);
 		SceneHelper.loadImage(this, SPRITES.exit);
 		SceneHelper.loadSpritesheet(this, SPRITES.target);
 	}
 
 	create() {
+		this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+		this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+
 		// Create the laser
 		let laserPosition = this.puzzle.laser.getPosition();
-		let laserImage = this.add.image(laserPosition.x, laserPosition.y, SPRITES.laser.key);
+		let laserImage = this.physics.add.image(laserPosition.x, laserPosition.y, SPRITES.laser.key);
 
-		if (this.puzzle.laser.movable) {
-			laserImage.setInteractive();
-			this.input.setDraggable(laserImage);
+		if (this.puzzle.laser.movable || this.puzzle.laser.rotatable) {
+			this.setupInteractivity(this.puzzle.laser, laserImage);
 		}
 
-		this.puzzle.laser.img = laserImage;
+		this.puzzle.laser.setImg(laserImage);
 
 		// Create all of the surfaces
 		this.puzzle.surfaces.forEach((surface) => {
@@ -44,17 +45,16 @@ export class PuzzleScene extends Phaser.Scene {
 			let surfaceImage;
 
 			if (surface.isTarget) {
-				surfaceImage = this.add.sprite(position.x, position.y, SPRITES.target.key);
+				surfaceImage = this.physics.add.sprite(position.x, position.y, SPRITES.target.key);
 				surfaceImage.setFrame(0);
 			} else if (surface.type === Surface.OPAQUE) {
-				surfaceImage = this.add.image(position.x, position.y, SPRITES.opaqueSurface.key);
+				surfaceImage = this.physics.add.image(position.x, position.y, SPRITES.opaqueSurface.key);
 			} else {
-				surfaceImage = this.add.image(position.x, position.y, SPRITES.mirror.key);
+				surfaceImage = this.physics.add.image(position.x, position.y, SPRITES.mirror.key);
 			}
 
-			if (surface.movable) {
-				surfaceImage.setInteractive();
-				this.input.setDraggable(surfaceImage);
+			if (surface.movable || surface.rotatable) {
+				this.setupInteractivity(surface, surfaceImage);
 			}
 
 			surface.img = surfaceImage;
@@ -63,7 +63,7 @@ export class PuzzleScene extends Phaser.Scene {
 		// Create the exit button in the top right-hand corner
 		let exitImage = this.add.image(this.sys.canvas.width - 16, 8, SPRITES.exit.key).setInteractive();
 		exitImage.on('pointerdown', (evt, objects) => {
-			this.scene.start(KEYS.scene.traverseScene, { puzzle: this.puzzle, player: this.player });
+			this.scene.start(KEYS.scene.traverseScene, { dungeon: this.dungeon, puzzle: this.puzzle });
 		});
 
 		// Handle other input bits
@@ -83,15 +83,14 @@ export class PuzzleScene extends Phaser.Scene {
 	}
 
 	update() {
+		this.handleRotation();
+
+		// TODO: put this in the model file for puzzle
 		let targetSurface = this.puzzle.getTargetSurface();
 
 		if (this.puzzle.solved) {
 			targetSurface.img.setFrame(1);
-
-			// TODO: Show the complete button
-
 		} else {
-			// TODO: replace the lit target for the unlit one
 			targetSurface.img.setFrame(0);
 		}
 
@@ -106,5 +105,36 @@ export class PuzzleScene extends Phaser.Scene {
 				y2: points[i + 1].y
 			});
 		}
+	}
+
+	/** Checks for rotation buttons and handles the rotation on the game object in question. */
+	handleRotation() {
+		if (this.pointerOverObj && this.pointerOverObj.rotatable) {
+			if (Phaser.Input.Keyboard.JustDown(this.keyA)) {
+				this.pointerOverObj.rotate(-90);
+			} else if (Phaser.Input.Keyboard.JustDown(this.keyD)) {
+				this.pointerOverObj.rotate(90);
+			}
+		}
+	}
+
+	/** Helper method. Handles interactivity for the model object and game object.*/
+	setupInteractivity(modelObj, gameObj) {
+		gameObj.setInteractive();
+		
+		if (modelObj.movable) {
+			this.input.setDraggable(gameObj);
+			gameObj.setCollideWorldBounds(true);
+		}
+
+		gameObj.on('pointerover', (evt, objects) => {
+			this.pointerOverObj = modelObj;
+			modelObj.pointerOver();
+		});
+
+		gameObj.on('pointerout', (evt, objects) => {
+			this.pointerOverObj = null;
+			modelObj.pointerOut();
+		});
 	}
 }

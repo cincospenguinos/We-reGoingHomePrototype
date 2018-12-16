@@ -6,7 +6,8 @@
  */
 import { Surface } from './surface.js';
 import { Laser } from './laser.js';
-import { Panel } from './panel.js';
+import { PuzzleItem } from './puzzleItem.js';
+import { Exit } from './exit.js';
 import { DIRECTION } from '../../lib/CONST.js';
 
 export class Puzzle {
@@ -16,6 +17,7 @@ export class Puzzle {
 
 		this.surfaces = [];
 		this.panels = [];
+		this.exits = [];
 		this.solved = false;
 	}
 
@@ -28,11 +30,21 @@ export class Puzzle {
 		}
 	}
 
+	/** Adds the panel provided to the puzzle. */
 	addPanel(panel) {
-		if (panel instanceof Panel) {
+		if (panel instanceof PuzzleItem) {
 			this.panels.push(panel);
 		} else {
-			throw 'Expected "' + panel + '" to be a panel object!'
+			throw 'Expected "' + panel + '" to be a panel object!';
+		}
+	}
+
+	/** Adds the exit provided to the puzzle. */
+	addExit(exit) {
+		if (exit instanceof Exit) {
+			this.exits.push(exit);
+		} else {
+			throw 'Expected "' + exit + '" to be an exit object!';
 		}
 	}
 

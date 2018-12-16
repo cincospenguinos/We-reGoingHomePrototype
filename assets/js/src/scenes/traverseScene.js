@@ -2,9 +2,13 @@
  * transverseScene.js
  *
  * Scene that handles movement after the puzzle has been solved.
+ *
+ * TODO: Create a "set puzzle" method that handles modifying everything so that we aren't recreating the traverse scene
+ * every time we move to a new puzzle
  */
 import { KEYS, SPRITES } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
+import { DungeonHelper } from '../helpers/dungeonHelper.js';
 import { Surface } from '../model/surface.js';
 
 export class TraverseScene extends Phaser.Scene {
@@ -14,8 +18,8 @@ export class TraverseScene extends Phaser.Scene {
 	}
 
 	init(data) {
+		this.dungeon = data.dungeon;
 		this.puzzle = data.puzzle;
-		this.player = data.player;
 	}
 
 	preload() {
@@ -23,6 +27,8 @@ export class TraverseScene extends Phaser.Scene {
 		SceneHelper.loadImage(this, SPRITES.background);
 		SceneHelper.loadImage(this, SPRITES.laser);
 		SceneHelper.loadImage(this, SPRITES.mirror);
+		SceneHelper.loadImage(this, SPRITES.doorHorizontal);
+		SceneHelper.loadImage(this, SPRITES.doorVertical);
 		SceneHelper.loadSpritesheet(this, SPRITES.target)
 		SceneHelper.loadSpritesheet(this, SPRITES.panel);
 	}
@@ -31,14 +37,13 @@ export class TraverseScene extends Phaser.Scene {
 		// Setup input information
 		this.keyboard = this.input.keyboard.addKeys('W, A, S, D');
 
-
 		// Add the background
 		this.add.image(this.sys.canvas.width / 2, this.sys.canvas.height / 2, SPRITES.background.key);
 
 		// Put together a new player
-		let playerPosition = this.player.getPosition();
-		this.player.img = this.physics.add.image(playerPosition.x, playerPosition.y, SPRITES.mainCharacter.key);
-		this.player.img.setCollideWorldBounds(true);
+		let playerPosition = this.puzzle.player.getPosition();
+		this.puzzle.player.img = this.physics.add.image(playerPosition.x, playerPosition.y, SPRITES.mainCharacter.key);
+		this.puzzle.player.img.setCollideWorldBounds(true);
 
 		let puzzleObjects = this.physics.add.staticGroup();
 
@@ -46,7 +51,7 @@ export class TraverseScene extends Phaser.Scene {
 		let laserPosition = this.puzzle.laser.getPosition();
 		let laserImage = puzzleObjects.create(laserPosition.x, laserPosition.y, SPRITES.laser.key);
 
-		this.puzzle.laser.img = laserImage;
+		this.puzzle.laser.setImg(laserImage);
 
 		// Create all of the surfaces
 		this.puzzle.surfaces.forEach((surface) => {
@@ -80,13 +85,31 @@ export class TraverseScene extends Phaser.Scene {
 			});
 
 			panelImage.on('pointerdown', (evt, objects) => {
-				this.scene.start(KEYS.scene.puzzleScene, { puzzle: this.puzzle, player: this.player });
+				let playerPosition = this.puzzle.player.getPosition();
+				
+				let dist = Math.sqrt(Math.pow(panelImage.y - playerPosition.y, 2) + Math.pow(panelImage.x - playerPosition.x, 2));
+				if (dist <= 75) {
+					this.scene.start(KEYS.scene.puzzleScene, { dungeon: this.dungeon, puzzle: this.puzzle, player: this.puzzle.player });
+				}
 			});
 
 			panel.img = panelImage;
-		})
+		});
 
-		this.physics.add.collider(this.player.img, puzzleObjects);
+		// And the exits
+		this.puzzle.exits.forEach((exit) => {
+			let pos = exit.position;
+			let doorImage = exit.useHorizontalDoor() ? this.physics.add.image(pos.x, pos.y, SPRITES.doorHorizontal.key) : this.physics.add.image(pos.x, pos.y, SPRITES.doorVertical.key);
+			this.physics.add.overlap(this.puzzle.player.img, doorImage, () => {
+				if (this.puzzle.solved) {
+					this.exit(exit.nextRoomKey);
+				}
+			}, null, this);
+		});
+
+		// TODO: Create a set of zone objects that represent the lasers and put them in puzzleObjects so the player can't cross the laser
+
+		this.physics.add.collider(this.puzzle.player.img, puzzleObjects);
 
 		this.laserGraphics = this.add.graphics({
 			add: true,
@@ -101,13 +124,17 @@ export class TraverseScene extends Phaser.Scene {
 	update() {
 		this.handleInputs();
 
-		// TODO: Check collision with the laser
-
-		// Draw the laser and shit
+		// Check collision with the laser
 		let points = this.puzzle.getLaserPath();
 
+		// Draw the laser and shit
 		this.laserGraphics.clear();
 		for (let i = 0; i < points.length - 1; i++) {
+			if (this.puzzle.player.laserIntersects(points[i], points[i + 1])) {
+				// TODO: Find a way to just restart the scene from the beginning instead of this
+				this.scene.start(KEYS.scene.menuScene);
+			}
+
 			this.laserGraphics.strokeLineShape({
 				x1: points[i].x,
 				y1: points[i].y,
@@ -119,35 +146,40 @@ export class TraverseScene extends Phaser.Scene {
 
 	/** Handles inputs on the player. */
 	handleInputs() {
-		if (this.player.img.active) {
+		if (this.puzzle.player.img.active) {
 			let north = this.keyboard.W.isDown;
 			let east = this.keyboard.D.isDown;
 			let south = this.keyboard.S.isDown;
 			let west = this.keyboard.A.isDown;
 
 			if (north) {
-				this.player.setVelocityY(-this.player.maxVelocity);
+				this.puzzle.player.setVelocityY(-this.puzzle.player.maxVelocity);
 			}
 
 			if (east) {
-				this.player.setVelocityX(this.player.maxVelocity);
+				this.puzzle.player.setVelocityX(this.puzzle.player.maxVelocity);
 			}
 
 			if (south) {
-				this.player.setVelocityY(this.player.maxVelocity);
+				this.puzzle.player.setVelocityY(this.puzzle.player.maxVelocity);
 			}
 
 			if (west) {
-				this.player.setVelocityX(-this.player.maxVelocity);
+				this.puzzle.player.setVelocityX(-this.puzzle.player.maxVelocity);
 			}
 
 			if (!east && !west) {
-				this.player.setVelocityX(0);
+				this.puzzle.player.setVelocityX(0);
 			}
 
 			if (!north && !south) {
-				this.player.setVelocityY(0);
+				this.puzzle.player.setVelocityY(0);
 			}
 		}
+	}
+
+	exit(nextRoomKey) {
+		let nextPuzzle = this.dungeon.getPuzzle(nextRoomKey);
+		this.scene.start(KEYS.scene.traverseScene, { dungeon: this.dungeon, puzzle: nextPuzzle, player: this.puzzle.player });
 	}
 }

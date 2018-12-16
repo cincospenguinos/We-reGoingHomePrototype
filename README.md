@@ -12,7 +12,7 @@ A long time ago, an alien race came from a distant planet to Earth. This alien r
 
 Over a long period of time, humans succumbed to their tribalistic tendencies, proclaimed the aliens as an outgroup, and attempted to destroy the tree. The aliens fought them off, many dying as they attempted to protect the tower and flee earth to go back home.
 
-In the midst of the battle, the King and his two sons ran away and hid. After centuries after the attack they decided to go back to the tower to try going home once more.
+In the midst of the battle, the King and his two sons ran away and hid. Centuries after the attack they decided to go back to the tower to try going home once more.
 
 ### The Game
 
@@ -29,21 +29,33 @@ The characteristics of each of the characters are pretty simple. I want to make 
 * The King
 * Boaz
 	* Boaz is the older one
+	* Boaz is capable of taking care of himself for the most part. He exhibits a great amount of independence.
+	* Boaz prefers physical play and interaction over nurture
 * Jachin
 	* Jachin is the younger one
 	* He owns a little music box that plays a small melody his mother would sing to him. When he's feeling upset or scared, he will find a quiet
 	place, pull out this box and wind it up and listen.
+	* Jachin prefers nurture and warm words over playfulness
 
 ## Ideas
 
 - [ ] Rotate pieces of the puzzle on mouse scroll over
+	* Some pieces can be rotated, some can be moved, and some select few can have both occur
 - [ ] Allow for eight directions instead of the cardinal four
 - [ ] Have lasers be determined by their colors, and do not allow lasers to cross each other
 - [ ] Allow surfaces to reflect from certain sides of themselves, or have it change depending on the direction the light comes from
 - [ ] Allow puzzles to have multiple targets
 - [ ] Mousing over something movable in the puzzle causes an outline to appear
 - [ ] Moving lasers--this gives us a way to make the transversive sections more engaging.
+- [ ] Lasers that are timed--on for three seconds, off for three seconds, on again, off again, etc.
 - [ ] There should be some sort of cue to the player when they solve the puzzle
+- [ ] You should be able to teleport via a map. Perhaps every room has a teleport spot, by one or each door.
+	* This could break the game though. This is something to explore in one of the prototypes
+- [ ] As you move through the different rooms, you pick up items
+	* Some items help you repair various pieces of other rooms, which accesses the final puzzle of an area that powers that area
+	* Some items are human things that you can give to your kids
+	* Some items are alien things that you can give to your kids
+	* Some items are keys to unlock secret areas
 
 ## Notes
 
@@ -51,5 +63,39 @@ The characteristics of each of the characters are pretty simple. I want to make 
 	* Seriously though: just [watch this](https://www.youtube.com/watch?v=55DzXMkCfVA)
 * Use [this](https://www.mapeditor.org/)
 * The canvas element is 800x600
-* USE JSON FILES TO KEEP PUZZLE DATA! Instead of a "PuzzleHelper", just put all that data into a JSON file and then
-make a static method on Puzzle take that data and convert it to a game object.
+* We need to think about what the purpose of each of the rooms is, how they should connect, and how they should interact with each other. The puzzles themselves provide a decent amount of things to play with, but we should also explore in our prototype how each of the rooms can be modified by interaction with other rooms
+* [This](https://medium.com/@jerra.haynes/a-real-persons-guide-to-phaser-3-or-how-i-learned-to-stop-worrying-and-love-the-gun-part-1-9cc6361f377c) article is very insightful and will help you understand the various pieces of Phaser 3.
+
+### Notes from Tasha's first playthrough
+
+* The current sprites that I made do not convey information well to the user
+* The green things are panels, and Tasha had no clue about that
+* You had to be too close to the panels to use them--so adjust that
+* The jump in difficulty between the first and second puzzle was too sudden
+* Do we have to change modes? It wasn't obvious
+* It has promise though--Tasha wishes there were more levels
+* Directions are unclear during puzzle2
+
+### Things to teach to the player
+
+- [x] You must have the laser hit the target to go through the door
+- [x] You cannot cross the laser
+- [x] You can move puzzle pieces
+- [x] You can rotate puzzle pieces
+- [ ] Mirrors redirect laser paths
+- [ ] All the panels in the room modify the same room layout
+- [ ] Lasers of similar colors may cross each other
+- [ ] Lasers of different colors may NOT cross each other
+
+### TODO from Tasha's playthrough
+
+- [x] Setup way to maintain room state
+- [x] Make the various pieces of the puzzle smaller
+- [x] Add more puzzles
+- [x] Ease the player into puzzle1--maybe have a couple rooms with two panels
+- [ ] Create new set of sprites that depict information in a more clear way
+- [ ] Add more elements to the rooms
+	- [ ] Walls that turn the room into mazes
+	- [ ] Lasers of multiple colors
+	- [ ] Doors that are tied to specific colors
+	- [ ] Multiple targets that must be hit by multiple lasers

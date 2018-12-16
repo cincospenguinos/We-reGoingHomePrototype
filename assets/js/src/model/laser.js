@@ -15,6 +15,14 @@ export class Laser extends PuzzleItem {
 		this.movable = opts.movable || false;
 	}
 
+	/** Sets the img to the img provided. */
+	setImg(img) {
+		super.setImg(img);
+
+		let angle = PuzzleItem.angleFor(this.direction);
+		this.img.setAngle(angle);
+	}
+
 	/** Returns the point from which the light of this laser extends. */
 	getLaserPoint() {
 		let position = this.getPosition();

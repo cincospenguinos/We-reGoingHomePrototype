@@ -13,7 +13,7 @@ export const KEYS = {
 		menuScene: 'MenuScene'
 	},
 
-	puzzles: { key: 'puzzles', location: puzzleDir + 'puzzles.json' }
+	dungeons: { key: 'dungeons', location: puzzleDir + 'puzzles.json' }
 };
 
 export const SPRITES = {
@@ -27,11 +27,9 @@ export const SPRITES = {
 	mainCharacter: { key: 'theguy', location: spriteDir + 'guy.png' },
 	background: { key: 'shittyBackground', location: spriteDir + 'shittyBackground.png' },
 	panel: { key: 'panel', location: spriteDir + 'panel.png', frameWidth: 16, frameHeight: 32 },
-	exit: { key: 'exitButton', location: spriteDir + 'exit.png' }
-};
-
-export const PUZZLES = {
-	puzzle0: { key: 'puzzle0' }
+	exit: { key: 'exitButton', location: spriteDir + 'exit.png' },
+	doorHorizontal: { key: 'doorHorizontal', location: spriteDir + 'doorHorizontal.png' },
+	doorVertical: { key: 'doorVertical', location: spriteDir + 'doorVertical.png' }
 };
 
 export const DIRECTION = {
@@ -39,4 +37,10 @@ export const DIRECTION = {
 	SOUTH: 1,
 	WEST: 2,
 	NORTH: 3
+};
+
+export const COLORS = {
+	tintMovable: 0xFF0000,
+	tintRotatable: 0x0000FF,
+	tintBoth: 0xAA00AA
 };
