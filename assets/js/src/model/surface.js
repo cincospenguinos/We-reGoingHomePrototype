@@ -61,6 +61,15 @@ export class Surface extends PuzzleItem {
 		return null;
 	}
 
+	/** Included for the case that we need to rotate and modify the reflective direction. */
+	rotate(degrees) {
+		super.rotate(degrees);
+
+		if (this.type === Surface.REFLECTIVE) {
+			this.reflectiveDirection = PuzzleItem.rotatedDirection(this.reflectiveDirection, degrees);
+		}
+	}
+
 	/** Static helper method. Returns closest surface to the point provided. */
 	static closestSurface(point, surface1, surface2) {
 		let s1Pnt = surface1.getPosition();

@@ -48,6 +48,7 @@ export class DungeonHelper {
 			direction: this.directionFromString(puzzleData.laser.direction),
 			dimensions: puzzleData.laser.dimensions,
 			movable: puzzleData.laser.movable,
+			rotatable: puzzleData.laser.rotatable,
 			position: puzzleData.laser.position
 		});
 
@@ -57,6 +58,7 @@ export class DungeonHelper {
 				isTarget: surfaceData.isTarget,
 				reflectiveDirection: this.directionFromString(surfaceData.reflectiveDirection),
 				movable: surfaceData.movable,
+				rotatable: surfaceData.rotatable,
 				position: surfaceData.position,
 				dimensions: surfaceData.dimensions
 			}));

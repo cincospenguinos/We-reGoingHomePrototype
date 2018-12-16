@@ -9,6 +9,19 @@ import { Laser } from '../src/model/laser.js';
 import { Puzzle } from '../src/model/puzzle.js';
 import { DIRECTION } from '../lib/CONST.js';
 
+/*--- PuzzleItem tests */
+QUnit.test('rotatedDirectionTest', (assert) => {
+	assert.equal(PuzzleItem.rotatedDirection(DIRECTION.EAST, 90), DIRECTION.SOUTH);
+	assert.equal(PuzzleItem.rotatedDirection(DIRECTION.SOUTH, 90), DIRECTION.WEST);
+	assert.equal(PuzzleItem.rotatedDirection(DIRECTION.WEST, 90), DIRECTION.NORTH);
+	assert.equal(PuzzleItem.rotatedDirection(DIRECTION.NORTH, 90), DIRECTION.EAST);
+
+	assert.equal(PuzzleItem.rotatedDirection(DIRECTION.EAST, -90), DIRECTION.NORTH);
+	assert.equal(PuzzleItem.rotatedDirection(DIRECTION.SOUTH, -90), DIRECTION.EAST);
+	assert.equal(PuzzleItem.rotatedDirection(DIRECTION.WEST, -90), DIRECTION.SOUTH);
+	assert.equal(PuzzleItem.rotatedDirection(DIRECTION.NORTH, -90), DIRECTION.WEST);
+});
+
 /*--- Surface tests */
 QUnit.test('closestSurfaceTest', (assert) => {
 	let surface1 = new Surface({ 

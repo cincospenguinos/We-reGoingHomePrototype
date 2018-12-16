@@ -6,7 +6,7 @@ import { PuzzleScene } from './scenes/puzzleScene.js';
 import { TraverseScene } from './scenes/traverseScene.js';
 
 var config = {
-	type: Phaser.AUTO,
+	type: Phaser.Auto,
 	width: 800,
 	height: 600,
 	scene: [ MenuScene, PuzzleScene, TraverseScene ],

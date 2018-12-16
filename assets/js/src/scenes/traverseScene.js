@@ -48,7 +48,7 @@ export class TraverseScene extends Phaser.Scene {
 		let laserPosition = this.puzzle.laser.getPosition();
 		let laserImage = puzzleObjects.create(laserPosition.x, laserPosition.y, SPRITES.laser.key);
 
-		this.puzzle.laser.img = laserImage;
+		this.puzzle.laser.setImg(laserImage);
 
 		// Create all of the surfaces
 		this.puzzle.surfaces.forEach((surface) => {

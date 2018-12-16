@@ -26,17 +26,18 @@ export class PuzzleScene extends Phaser.Scene {
 	}
 
 	create() {
+		this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+		this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+
 		// Create the laser
 		let laserPosition = this.puzzle.laser.getPosition();
 		let laserImage = this.physics.add.image(laserPosition.x, laserPosition.y, SPRITES.laser.key);
 
-		if (this.puzzle.laser.movable) {
-			laserImage.setInteractive();
-			this.input.setDraggable(laserImage);
-			laserImage.setCollideWorldBounds(true);
+		if (this.puzzle.laser.movable || this.puzzle.laser.rotatable) {
+			this.setupInteractivity(this.puzzle.laser, laserImage);
 		}
 
-		this.puzzle.laser.img = laserImage;
+		this.puzzle.laser.setImg(laserImage);
 
 		// Create all of the surfaces
 		this.puzzle.surfaces.forEach((surface) => {
@@ -52,10 +53,8 @@ export class PuzzleScene extends Phaser.Scene {
 				surfaceImage = this.physics.add.image(position.x, position.y, SPRITES.mirror.key);
 			}
 
-			if (surface.movable) {
-				surfaceImage.setInteractive();
-				this.input.setDraggable(surfaceImage);
-				surfaceImage.setCollideWorldBounds(true);
+			if (surface.movable || surface.rotatable) {
+				this.setupInteractivity(surface, surfaceImage);
 			}
 
 			surface.img = surfaceImage;
@@ -84,15 +83,14 @@ export class PuzzleScene extends Phaser.Scene {
 	}
 
 	update() {
+		this.handleRotation();
+
+		// TODO: put this in the model file for puzzle
 		let targetSurface = this.puzzle.getTargetSurface();
 
 		if (this.puzzle.solved) {
 			targetSurface.img.setFrame(1);
-
-			// TODO: Show the complete button
-
 		} else {
-			// TODO: replace the lit target for the unlit one
 			targetSurface.img.setFrame(0);
 		}
 
@@ -107,5 +105,33 @@ export class PuzzleScene extends Phaser.Scene {
 				y2: points[i + 1].y
 			});
 		}
+	}
+
+	/** Checks for rotation buttons and handles the rotation on the game object in question. */
+	handleRotation() {
+		if (this.pointerOverObj && this.pointerOverObj.rotatable) {
+			if (Phaser.Input.Keyboard.JustDown(this.keyA)) {
+				this.pointerOverObj.rotate(-90);
+			} else if (Phaser.Input.Keyboard.JustDown(this.keyD)) {
+				this.pointerOverObj.rotate(90);
+			}
+		}
+	}
+
+	/** Helper method. Handles interactivity for the model object and game object.*/
+	setupInteractivity(modelObj, gameObj) {
+		gameObj.setInteractive();
+		this.input.setDraggable(gameObj);
+		gameObj.setCollideWorldBounds(true);
+
+		gameObj.on('pointerover', (evt, objects) => {
+			this.pointerOverObj = modelObj;
+			modelObj.pointerOver();
+		});
+
+		gameObj.on('pointerout', (evt, objects) => {
+			this.pointerOverObj = null;
+			modelObj.pointerOut();
+		});
 	}
 }

@@ -37,34 +37,21 @@
 					"dimensions": { "width": 800, "height": 600 },
 					"surfaces": [
 						{
-							"type": "OPAQUE",
-							"isTarget": true,
-							"movable": false,
-							"position": { "x": 600, "y": 568 },
-							"dimensions": { "width": 64, "height": 64 }
-						}, 
-						{
-							"type": "REFLECTIVE",
-							"reflectiveDirection": "SOUTH",
-							"isTarget": false,
-							"movable": true,
-							"position": { "x": 632, "y": 32 },
+							"type":"OPAQUE",
+							"isTarget":true,
+							"position": { "x": 650, "y": 568 },
 							"dimensions": { "width": 64, "height": 64 }
 						}
 					],
 					"panels": [
 						{
-							"position": { "x": 8, "y": 500 },
-							"dimensions": { "width": 16, "height": 32 }
-						},
-						{
-							"position": { "x": 792, "y": 500 },
+							"position": { "x": 350, "y": 600 },
 							"dimensions": { "width": 16, "height": 32 }
 						}
 					],
 					"laser": {
-						"direction":"EAST",
-						"movable": false,
+						"direction":"SOUTH",
+						"movable": true,
 						"position": { "x": 32, "y": 32 },
 						"dimensions": { "width": 64, "height": 64}
 					},
@@ -72,71 +59,79 @@
 						"direction": "EAST",
 						"nextPuzzle": "puzzle2"
 					}],
-					"playerPosition": { "x": 32, "y": 550 }
+					"playerPosition": { "x": 400, "y": 592 }
 				},
 				{
 					"key": "puzzle2",
 					"dimensions": { "width": 800, "height": 600 },
 					"surfaces": [
 						{
-							"type": "OPAQUE",
-							"isTarget": true,
-							"movable": false,
-							"position": { "x": 768, "y": 96 },
-							"dimensions": { "width": 64, "height": 64 }
-						},
-						{
-							"type": "OPAQUE",
-							"isTarget": true,
-							"movable": false,
-							"position": { "x": 768, "y": 536 },
-							"dimensions": { "width": 64, "height": 64 }
-						},
-						{
-							"type": "REFLECTIVE",
-							"reflectiveDirection": "EAST",
-							"isTarget": false,
-							"movable": false,
-							"position": { "x": 100, "y": 568 },
-							"dimensions": { "width": 64, "height": 64 }
-						},
-						{
-							"type": "REFLECTIVE",
-							"reflectiveDirection": "SOUTH",
-							"isTarget": false,
-							"movable": true,
-							"position": { "x": 200, "y": 480 },
+							"type":"OPAQUE",
+							"isTarget":true,
+							"position": { "x": 64, "y": 64 },
 							"dimensions": { "width": 64, "height": 64 }
 						}
 					],
 					"panels": [
 						{
-							"position": { "x": 792, "y": 500 },
+							"position": { "x": 8, "y": 350 },
 							"dimensions": { "width": 16, "height": 32 }
 						}
 					],
 					"laser": {
-						"direction":"EAST",
-						"movable": false,
-						"position": { "x": 32, "y": 96 },
+						"direction":"NORTH",
+						"movable": true,
+						"position": { "x": 764, "y": 592 },
 						"dimensions": { "width": 64, "height": 64}
 					},
 					"exits": [{
-						"direction": "NORTH",
+						"direction": "EAST",
 						"nextPuzzle": "puzzle3"
-					}, {
-						"direction": "SOUTH",
-						"nextPuzzle": "puzzle4"
 					}],
-					"playerPosition": { "x": 32, "y": 550 }
+					"playerPosition": { "x": 8, "y": 300 }
+				},
+				{
+					"key": "puzzle3",
+					"dimensions": { "width": 800, "height": 600 },
+					"surfaces": [
+						{
+							"type":"OPAQUE",
+							"isTarget":true,
+							"position": { "x": 768, "y": 32 },
+							"dimensions": { "width": 64, "height": 64 }
+						}
+					],
+					"panels": [
+						{
+							"position": { "x": 350, "y": 600 },
+							"dimensions": { "width": 16, "height": 32 }
+						}
+					],
+					"laser": {
+						"direction":"SOUTH",
+						"rotatable": true,
+						"position": { "x": 32, "y": 32 },
+						"dimensions": { "width": 64, "height": 64}
+					},
+					"exits": [{
+						"direction": "EAST",
+						"nextPuzzle": "puzzle2"
+					}],
+					"playerPosition": { "x": 400, "y": 592 }
 				},
 				{
 					"key": "sandbox",
 					"dimensions": { "width": 800, "height": 600 },
-					"laser": {},
+					"laser": {
+						"direction":"EAST",
+						"movable": false,
+						"position": { "x": 32, "y": 32 },
+						"dimensions": { "width": 64, "height": 64}
+					},
 					"surfaces": [],
 					"exits": [],
 					"panels": [],
+					"playerPosition": { "x": 32, "y": 550 }
 				}
 			]
 		}

@@ -38,3 +38,9 @@ export const DIRECTION = {
 	WEST: 2,
 	NORTH: 3
 };
+
+export const COLORS = {
+	tintMovable: 0xFF0000,
+	tintRotatable: 0x0000FF,
+	tintBoth: 0xAA00AA
+};
