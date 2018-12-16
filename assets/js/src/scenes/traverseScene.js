@@ -2,6 +2,9 @@
  * transverseScene.js
  *
  * Scene that handles movement after the puzzle has been solved.
+ *
+ * TODO: Create a "set puzzle" method that handles modifying everything so that we aren't recreating the traverse scene
+ * every time we move to a new puzzle
  */
 import { KEYS, SPRITES } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';

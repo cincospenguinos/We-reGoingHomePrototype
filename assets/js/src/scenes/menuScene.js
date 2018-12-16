@@ -28,7 +28,7 @@ export class MenuScene extends Phaser.Scene {
 		for (let i = 0; i < puzzleList.length; i++) {
 			let puzzleName = puzzleList[i];
 
-			let puzzleText = this.add.text(32, i * 64 + 16, puzzleName, { fontSize: '32px', fill: '#FFFFFF'}).setInteractive();
+			let puzzleText = this.add.text(32, i * 32 + 16, puzzleName, { fontSize: '16px', fill: '#FFFFFF'}).setInteractive();
 			puzzleText.on('pointerdown', (evt, objects) => {
 				let puzzle = dungeon.getPuzzle(puzzleName);
 				this.scene.start(KEYS.scene.traverseScene, { dungeon: dungeon, puzzle: puzzle });

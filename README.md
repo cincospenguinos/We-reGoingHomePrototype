@@ -78,9 +78,10 @@ The characteristics of each of the characters are pretty simple. I want to make 
 
 ### Things to teach to the player
 
-- [ ] You must have the laser hit the target to go through the door
-- [ ] You cannot cross the laser
-- [ ] You can rotate any puzzle piece that you can move
+- [x] You must have the laser hit the target to go through the door
+- [x] You cannot cross the laser
+- [x] You can move puzzle pieces
+- [x] You can rotate puzzle pieces
 - [ ] Mirrors redirect laser paths
 - [ ] All the panels in the room modify the same room layout
 - [ ] Lasers of similar colors may cross each other
@@ -90,11 +91,11 @@ The characteristics of each of the characters are pretty simple. I want to make 
 
 - [x] Setup way to maintain room state
 - [x] Make the various pieces of the puzzle smaller
-- [ ] Add more puzzles
+- [x] Add more puzzles
+- [x] Ease the player into puzzle1--maybe have a couple rooms with two panels
+- [ ] Create new set of sprites that depict information in a more clear way
 - [ ] Add more elements to the rooms
 	- [ ] Walls that turn the room into mazes
 	- [ ] Lasers of multiple colors
 	- [ ] Doors that are tied to specific colors
 	- [ ] Multiple targets that must be hit by multiple lasers
-- [ ] Ease the player into puzzle1--maybe have a couple rooms with two panels
-- [ ] Create new set of sprites that depict information in a more clear way

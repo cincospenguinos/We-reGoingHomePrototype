@@ -121,8 +121,11 @@ export class PuzzleScene extends Phaser.Scene {
 	/** Helper method. Handles interactivity for the model object and game object.*/
 	setupInteractivity(modelObj, gameObj) {
 		gameObj.setInteractive();
-		this.input.setDraggable(gameObj);
-		gameObj.setCollideWorldBounds(true);
+		
+		if (modelObj.movable) {
+			this.input.setDraggable(gameObj);
+			gameObj.setCollideWorldBounds(true);
+		}
 
 		gameObj.on('pointerover', (evt, objects) => {
 			this.pointerOverObj = modelObj;

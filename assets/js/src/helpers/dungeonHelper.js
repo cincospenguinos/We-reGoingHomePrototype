@@ -60,7 +60,8 @@ export class DungeonHelper {
 				movable: surfaceData.movable,
 				rotatable: surfaceData.rotatable,
 				position: surfaceData.position,
-				dimensions: surfaceData.dimensions
+				dimensions: surfaceData.dimensions,
+				direction: this.directionFromString(surfaceData.reflectiveDirection)
 			}));
 		});
 

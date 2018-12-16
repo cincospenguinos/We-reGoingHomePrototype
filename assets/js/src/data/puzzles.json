@@ -115,9 +115,384 @@
 					},
 					"exits": [{
 						"direction": "EAST",
-						"nextPuzzle": "puzzle2"
+						"nextPuzzle": "puzzle4"
 					}],
 					"playerPosition": { "x": 400, "y": 592 }
+				},
+				{
+					"key": "puzzle4",
+					"dimensions": { "width": 800, "height": 600 },
+					"surfaces": [
+						{
+							"type":"OPAQUE",
+							"isTarget":true,
+							"position": { "x": 400, "y": 568 },
+							"dimensions": { "width": 64, "height": 64 }
+						}
+					],
+					"panels": [
+						{
+							"position": { "x": 8, "y": 260 },
+							"dimensions": { "width": 16, "height": 32 }
+						}
+					],
+					"laser": {
+						"direction":"NORTH",
+						"rotatable": true,
+						"position": { "x": 768, "y": 568 },
+						"dimensions": { "width": 64, "height": 64}
+					},
+					"exits": [{
+						"direction": "EAST",
+						"nextPuzzle": "puzzle12"
+					}],
+					"playerPosition": { "x": 8, "y": 300 }
+				},
+				{
+					"key": "puzzle12",
+					"dimensions": { "width": 800, "height": 600 },
+					"surfaces": [
+						{
+							"type":"OPAQUE",
+							"isTarget":true,
+							"position": { "x": 768, "y": 500 },
+							"dimensions": { "width": 64, "height": 64 }
+						}
+					],
+					"panels": [
+						{
+							"position": { "x": 8, "y": 260 },
+							"dimensions": { "width": 16, "height": 32 }
+						}
+					],
+					"laser": {
+						"direction":"NORTH",
+						"movable": true,
+						"rotatable": true,
+						"position": { "x": 150, "y": 568 },
+						"dimensions": { "width": 64, "height": 64}
+					},
+					"exits": [{
+						"direction": "NORTH",
+						"nextPuzzle": "puzzle5"
+					}],
+					"playerPosition": { "x": 8, "y": 300 }
+				},
+				{
+					"key": "puzzle5",
+					"dimensions": { "width": 800, "height": 600 },
+					"surfaces": [
+						{
+							"type":"OPAQUE",
+							"isTarget":true,
+							"position": { "x": 150, "y": 568 },
+							"dimensions": { "width": 64, "height": 64 }
+						},
+						{
+							"type": "REFLECTIVE",
+							"reflectiveDirection": "SOUTH",
+							"movable": true,
+							"position": { "x": 600, "y": 64 },
+							"dimensions": { "width": 32, "height": 32 }	
+						}
+					],
+					"panels": [
+						{
+							"position": { "x": 8, "y": 260 },
+							"dimensions": { "width": 16, "height": 32 }
+						}
+					],
+					"laser": {
+						"direction":"EAST",
+						"position": { "x": 32, "y": 400 },
+						"dimensions": { "width": 64, "height": 64}
+					},
+					"exits": [{
+						"direction": "SOUTH",
+						"nextPuzzle": "puzzle6"
+					}],
+					"playerPosition": { "x": 8, "y": 300 }
+				},
+				{
+					"key": "puzzle6",
+					"dimensions": { "width": 800, "height": 600 },
+					"surfaces": [
+						{
+							"type":"OPAQUE",
+							"isTarget":true,
+							"movable": true,
+							"position": { "x": 650, "y": 400 },
+							"dimensions": { "width": 64, "height": 64 }
+						},
+						{
+							"type": "REFLECTIVE",
+							"reflectiveDirection": "EAST",
+							"position": { "x": 24, "y": 568 },
+							"dimensions": { "width": 32, "height": 32 }	
+						}
+					],
+					"panels": [
+						{
+							"position": { "x": 450, "y": 8 },
+							"dimensions": { "width": 16, "height": 32 }
+						}
+					],
+					"laser": {
+						"direction":"SOUTH",
+						"position": { "x": 32, "y": 32 },
+						"dimensions": { "width": 64, "height": 64}
+					},
+					"exits": [{
+						"direction": "SOUTH",
+						"nextPuzzle": "puzzle7"
+					}],
+					"playerPosition": { "x": 400, "y": 8 }
+				},
+				{
+					"key": "puzzle7",
+					"dimensions": { "width": 800, "height": 600 },
+					"surfaces": [
+						{
+							"type":"OPAQUE",
+							"isTarget":true,
+							"position": { "x": 300, "y": 568 },
+							"dimensions": { "width": 64, "height": 64 }
+						},
+						{
+							"type": "REFLECTIVE",
+							"rotatable": true,
+							"reflectiveDirection": "NORTH",
+							"position": { "x": 300, "y": 300 },
+							"dimensions": { "width": 32, "height": 32 }	
+						}
+					],
+					"panels": [
+						{
+							"position": { "x": 450, "y": 8 },
+							"dimensions": { "width": 16, "height": 32 }
+						}
+					],
+					"laser": {
+						"direction":"EAST",
+						"position": { "x": 32, "y": 300 },
+						"dimensions": { "width": 64, "height": 64}
+					},
+					"exits": [{
+						"direction": "EAST",
+						"nextPuzzle": "puzzle8"
+					}],
+					"playerPosition": { "x": 400, "y": 8 }
+				},
+				{
+					"key": "puzzle8",
+					"dimensions": { "width": 800, "height": 600 },
+					"surfaces": [
+						{
+							"type":"OPAQUE",
+							"isTarget":true,
+							"position": { "x": 768, "y": 32 },
+							"dimensions": { "width": 64, "height": 64 }
+						},
+						{
+							"type": "REFLECTIVE",
+							"rotatable": true,
+							"reflectiveDirection": "SOUTH",
+							"position": { "x": 100, "y": 550 },
+							"dimensions": { "width": 32, "height": 32 }	
+						},
+						{
+							"type": "REFLECTIVE",
+							"rotatable": true,
+							"reflectiveDirection": "WEST",
+							"position": { "x": 770, "y": 540 },
+							"dimensions": { "width": 32, "height": 32 }	
+						}
+					],
+					"panels": [
+						{
+							"position": { "x": 8, "y": 275 },
+							"dimensions": { "width": 16, "height": 32 }
+						}
+					],
+					"laser": {
+						"direction":"SOUTH",
+						"position": { "x": 100, "y": 100 },
+						"dimensions": { "width": 64, "height": 64}
+					},
+					"exits": [{
+						"direction": "SOUTH",
+						"nextPuzzle": "puzzle9"
+					}],
+					"playerPosition": { "x": 8, "y": 300 }
+				},
+				{
+					"key": "puzzle9",
+					"dimensions": { "width": 800, "height": 600 },
+					"surfaces": [
+						{
+							"type":"OPAQUE",
+							"isTarget":true,
+							"position": { "x": 768, "y": 32 },
+							"dimensions": { "width": 64, "height": 64 }
+						},
+						{
+							"type": "REFLECTIVE",
+							"movable": true,
+							"reflectiveDirection": "NORTH",
+							"position": { "x": 770, "y": 540 },
+							"dimensions": { "width": 32, "height": 32 }	
+						}
+					],
+					"panels": [
+						{
+							"position": { "x": 425, "y": 8 },
+							"dimensions": { "width": 16, "height": 32 }
+						},
+						{
+							"position": { "x": 425, "y": 600 },
+							"dimensions": { "width": 16, "height": 32 }
+						}
+					],
+					"laser": {
+						"direction":"EAST",
+						"position": { "x": 32, "y": 532 },
+						"dimensions": { "width": 64, "height": 64}
+					},
+					"exits": [{
+						"direction": "SOUTH",
+						"nextPuzzle": "puzzle10"
+					}],
+					"playerPosition": { "x": 400, "y": 8 }
+				},
+				{
+					"key": "puzzle10",
+					"dimensions": { "width": 800, "height": 600 },
+					"surfaces": [
+						{
+							"type":"OPAQUE",
+							"isTarget":true,
+							"position": { "x": 32, "y": 350 },
+							"dimensions": { "width": 64, "height": 64 }
+						},
+						{
+							"type": "REFLECTIVE",
+							"movable": true,
+							"rotatable": true,
+							"reflectiveDirection": "NORTH",
+							"position": { "x": 770, "y": 250 },
+							"dimensions": { "width": 32, "height": 32 }	
+						},
+						{
+							"type": "REFLECTIVE",
+							"movable": true,
+							"rotatable": true,
+							"reflectiveDirection": "SOUTH",
+							"position": { "x": 770, "y": 350 },
+							"dimensions": { "width": 32, "height": 32 }	
+						}
+					],
+					"panels": [
+						{
+							"position": { "x": 425, "y": 8 },
+							"dimensions": { "width": 16, "height": 32 }
+						},
+						{
+							"position": { "x": 425, "y": 600 },
+							"dimensions": { "width": 16, "height": 32 }
+						}
+					],
+					"laser": {
+						"direction":"EAST",
+						"position": { "x": 32, "y": 200 },
+						"dimensions": { "width": 64, "height": 64}
+					},
+					"exits": [
+						{
+							"direction": "EAST",
+							"nextPuzzle": "puzzle11"
+						}
+					],
+					"playerPosition": { "x": 400, "y": 8 }
+				},
+				{
+					"key": "puzzle11",
+					"dimensions": { "width": 800, "height": 600 },
+					"laser": {
+						"direction":"EAST",
+						"movable": false,
+						"position": { "x": 32, "y": 32 },
+						"dimensions": { "width": 64, "height": 64}
+					},
+					"surfaces": [
+						{
+							"type":"OPAQUE",
+							"isTarget":true,
+							"position": { "x": 768, "y": 568 },
+							"dimensions": { "width": 64, "height": 64 }
+						},
+						{
+							"type": "REFLECTIVE",
+							"rotatable": true,
+							"reflectiveDirection": "SOUTH",
+							"position": { "x": 100, "y": 30 },
+							"dimensions": { "width": 32, "height": 32 }	
+						},
+						{
+							"type": "REFLECTIVE",
+							"rotatable": true,
+							"reflectiveDirection": "EAST",
+							"position": { "x": 85, "y": 350 },
+							"dimensions": { "width": 32, "height": 32 }	
+						},
+						{
+							"type": "REFLECTIVE",
+							"rotatable": true,
+							"reflectiveDirection": "SOUTH",
+							"position": { "x": 350, "y": 340 },
+							"dimensions": { "width": 32, "height": 32 }	
+						},
+						{
+							"type": "REFLECTIVE",
+							"reflectiveDirection": "EAST",
+							"position": { "x": 340, "y": 140 },
+							"dimensions": { "width": 32, "height": 32 }	
+						},
+						{
+							"type": "REFLECTIVE",
+							"rotatable": true,
+							"reflectiveDirection": "SOUTH",
+							"position": { "x": 490, "y": 160 },
+							"dimensions": { "width": 32, "height": 32 }	
+						},
+						{
+							"type": "REFLECTIVE",
+							"rotatable": false,
+							"reflectiveDirection": "SOUTH",
+							"position": { "x": 760, "y": 30 },
+							"dimensions": { "width": 32, "height": 32 }	
+						}
+					],
+					"exits": [
+						{
+							"direction": "EAST",
+							"nextPuzzle": "sandbox"
+						}
+					],
+					"panels": [
+						{
+							"position": { "x": 8, "y": 275 },
+							"dimensions": { "width": 16, "height": 32 }
+						},
+						{
+							"position": { "x": 400, "y": 600 },
+							"dimensions": { "width": 16, "height": 32 }
+						},
+						{
+							"position": { "x": 792, "y": 350},
+							"dimensions": { "width": 16, "height": 32 }
+						}
+					],
+					"playerPosition": { "x": 32, "y": 300 }
 				},
 				{
 					"key": "sandbox",
