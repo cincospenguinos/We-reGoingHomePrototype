@@ -5,7 +5,7 @@
  */
 import { KEYS, SPRITES } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
-import { PuzzleHelper } from '../helpers/puzzleHelper.js';
+import { DungeonHelper } from '../helpers/dungeonHelper.js';
 import { Surface } from '../model/surface.js';
 
 export class TraverseScene extends Phaser.Scene {
@@ -15,6 +15,7 @@ export class TraverseScene extends Phaser.Scene {
 	}
 
 	init(data) {
+		this.dungeon = data.dungeon;
 		this.puzzle = data.puzzle;
 	}
 
@@ -82,11 +83,10 @@ export class TraverseScene extends Phaser.Scene {
 
 			panelImage.on('pointerdown', (evt, objects) => {
 				let playerPosition = this.puzzle.player.getPosition();
-
 				
 				let dist = Math.sqrt(Math.pow(panelImage.y - playerPosition.y, 2) + Math.pow(panelImage.x - playerPosition.x, 2));
-				if (dist < 45) {
-					this.scene.start(KEYS.scene.puzzleScene, { puzzle: this.puzzle, player: this.puzzle.player });
+				if (dist <= 75) {
+					this.scene.start(KEYS.scene.puzzleScene, { dungeon: this.dungeon, puzzle: this.puzzle, player: this.puzzle.player });
 				}
 			});
 
@@ -176,7 +176,7 @@ export class TraverseScene extends Phaser.Scene {
 	}
 
 	exit(nextRoomKey) {
-		let nextPuzzle = PuzzleHelper.getPuzzle(this, nextRoomKey);
-		this.scene.start(KEYS.scene.traverseScene, { puzzle: nextPuzzle, player: this.puzzle.player });
+		let nextPuzzle = this.dungeon.getPuzzle(nextRoomKey);
+		this.scene.start(KEYS.scene.traverseScene, { dungeon: this.dungeon, puzzle: nextPuzzle, player: this.puzzle.player });
 	}
 }

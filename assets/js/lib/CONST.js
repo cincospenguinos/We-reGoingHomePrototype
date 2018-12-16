@@ -13,7 +13,7 @@ export const KEYS = {
 		menuScene: 'MenuScene'
 	},
 
-	puzzles: { key: 'puzzles', location: puzzleDir + 'puzzles.json' }
+	dungeons: { key: 'dungeons', location: puzzleDir + 'puzzles.json' }
 };
 
 export const SPRITES = {
@@ -30,10 +30,6 @@ export const SPRITES = {
 	exit: { key: 'exitButton', location: spriteDir + 'exit.png' },
 	doorHorizontal: { key: 'doorHorizontal', location: spriteDir + 'doorHorizontal.png' },
 	doorVertical: { key: 'doorVertical', location: spriteDir + 'doorVertical.png' }
-};
-
-export const PUZZLES = {
-	puzzle0: { key: 'puzzle0' }
 };
 
 export const DIRECTION = {

@@ -27,6 +27,7 @@ export class Surface extends PuzzleItem {
 	/** Returns a collision point, or null if none exists. */
 	getCollisionPoint(point, approachingDirection) {
 		let extrema = this.getExtrema();
+		let centerPoint = this.getPosition();
 
 		switch(approachingDirection) {
 		case DIRECTION.EAST:

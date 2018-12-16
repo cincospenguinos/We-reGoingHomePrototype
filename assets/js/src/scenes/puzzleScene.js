@@ -14,12 +14,12 @@ export class PuzzleScene extends Phaser.Scene {
 	}
 
 	init (data) {
+		this.dungeon = data.dungeon;
 		this.puzzle = data.puzzle;
 	}
 
 	preload() {
 		SceneHelper.loadImage(this, SPRITES.laser);
-		SceneHelper.loadImage(this, SPRITES.completeButton);
 		SceneHelper.loadImage(this, SPRITES.mirror);
 		SceneHelper.loadImage(this, SPRITES.exit);
 		SceneHelper.loadSpritesheet(this, SPRITES.target);
@@ -28,11 +28,12 @@ export class PuzzleScene extends Phaser.Scene {
 	create() {
 		// Create the laser
 		let laserPosition = this.puzzle.laser.getPosition();
-		let laserImage = this.add.image(laserPosition.x, laserPosition.y, SPRITES.laser.key);
+		let laserImage = this.physics.add.image(laserPosition.x, laserPosition.y, SPRITES.laser.key);
 
 		if (this.puzzle.laser.movable) {
 			laserImage.setInteractive();
 			this.input.setDraggable(laserImage);
+			laserImage.setCollideWorldBounds(true);
 		}
 
 		this.puzzle.laser.img = laserImage;
@@ -43,17 +44,18 @@ export class PuzzleScene extends Phaser.Scene {
 			let surfaceImage;
 
 			if (surface.isTarget) {
-				surfaceImage = this.add.sprite(position.x, position.y, SPRITES.target.key);
+				surfaceImage = this.physics.add.sprite(position.x, position.y, SPRITES.target.key);
 				surfaceImage.setFrame(0);
 			} else if (surface.type === Surface.OPAQUE) {
-				surfaceImage = this.add.image(position.x, position.y, SPRITES.opaqueSurface.key);
+				surfaceImage = this.physics.add.image(position.x, position.y, SPRITES.opaqueSurface.key);
 			} else {
-				surfaceImage = this.add.image(position.x, position.y, SPRITES.mirror.key);
+				surfaceImage = this.physics.add.image(position.x, position.y, SPRITES.mirror.key);
 			}
 
 			if (surface.movable) {
 				surfaceImage.setInteractive();
 				this.input.setDraggable(surfaceImage);
+				surfaceImage.setCollideWorldBounds(true);
 			}
 
 			surface.img = surfaceImage;
@@ -62,7 +64,7 @@ export class PuzzleScene extends Phaser.Scene {
 		// Create the exit button in the top right-hand corner
 		let exitImage = this.add.image(this.sys.canvas.width - 16, 8, SPRITES.exit.key).setInteractive();
 		exitImage.on('pointerdown', (evt, objects) => {
-			this.scene.start(KEYS.scene.traverseScene, { puzzle: this.puzzle, player: this.puzzle.player });
+			this.scene.start(KEYS.scene.traverseScene, { dungeon: this.dungeon, puzzle: this.puzzle });
 		});
 
 		// Handle other input bits

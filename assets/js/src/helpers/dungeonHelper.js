@@ -1,5 +1,5 @@
 /**
- * puzzleHelper.js
+ * DungeonHelper.js
  *
  * Helper class. Holds static functions that generate the various puzzles.
  */
@@ -8,15 +8,41 @@ import { Surface } from '../model/surface.js';
 import { Laser } from '../model/laser.js';
 import { Exit } from '../model/exit.js';
 import { PuzzleItem } from '../model/puzzleItem.js';
+import { Dungeon } from '../model/dungeon.js';
 import { Player } from '../model/player.js';
 import { KEYS, DIRECTION } from '../../lib/CONST.js';
 
-export class PuzzleHelper {
+export class DungeonHelper {
 
-	/** Returns a puzzle object with all of the data outlined in the data hash provided. */
-	static getPuzzle(scene, puzzleKey) {
-		let puzzleData = scene.cache.json.get(KEYS.puzzles.key)[puzzleKey];
+	/** Returns list of all the puzzles. */
+	static getPuzzleList(scene) {
+		let dungeonData = scene.cache.json.get(KEYS.dungeons.key);
+		let list = [];
 
+		Object.keys(dungeonData.dungeons).forEach((dungeonKey) => {
+			dungeonData.dungeons[dungeonKey].puzzles.forEach((puzzleData) => {
+				list.push(puzzleData.key);
+			})
+		});
+
+		return list;
+	}
+
+	/** Generates the dungeon requested. */
+	static generateDungeon(scene, dungeonKey) {
+		let dungeonData = scene.cache.json.get(KEYS.dungeons.key).dungeons[dungeonKey];
+
+		let dungeon = new Dungeon();
+		dungeonData.puzzles.forEach((puzzleData) => {
+			let puzzle = this.generatePuzzle(scene, puzzleData);
+			dungeon.addPuzzle(puzzleData.key, puzzle);
+		});
+
+		return dungeon;
+	}
+
+	/** Helper method. Returns a puzzle object with all of the data outlined in the data hash provided. */
+	static generatePuzzle(scene, puzzleData) {
 		let puzzle = new Puzzle(puzzleData.dimensions.width, puzzleData.dimensions.height);
 		puzzle.laser = new Laser({
 			direction: this.directionFromString(puzzleData.laser.direction),
@@ -26,7 +52,6 @@ export class PuzzleHelper {
 		});
 
 		puzzleData.surfaces.forEach((surfaceData) => {
-			console.log(surfaceData);
 			puzzle.addSurface(new Surface({
 				type: this.surfaceTypeFromString(surfaceData.type),
 				isTarget: surfaceData.isTarget,
