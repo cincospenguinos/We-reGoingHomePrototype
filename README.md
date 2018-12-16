@@ -66,6 +66,26 @@ The characteristics of each of the characters are pretty simple. I want to make 
 * We need to think about what the purpose of each of the rooms is, how they should connect, and how they should interact with each other. The puzzles themselves provide a decent amount of things to play with, but we should also explore in our prototype how each of the rooms can be modified by interaction with other rooms
 * [This](https://medium.com/@jerra.haynes/a-real-persons-guide-to-phaser-3-or-how-i-learned-to-stop-worrying-and-love-the-gun-part-1-9cc6361f377c) article is very insightful and will help you understand the various pieces of Phaser 3.
 
+### Design Notes
+
+* There's two main components: moving through the various dungeons and solving the puzzles, and taking care of your sons
+	* Taking care of your sons determines the ending
+		* Boaz can grow up to help you with some of the puzzles
+		* How you raise them changes the ending
+		* There is no way to intentionally hurt your children. No physical punishments, no combat (if any is in the game) is allowed in the same room as them, etc. The only thing you can do is to neglect their needs, which will certainly result in them leaving without you
+	* You can repair various rooms of the tree that help you with parenting bits
+		* There's a day/night cycle that you need to keep up with
+		* You need to feed your kids every day
+		* Spending time with them helps them grow too
+		* You need to build them structures and things to make them happy
+		* Sometimes their toys break and you can spend your parts to fix them
+* There should be a map to see the room layout without having to access the panel
+	* This could be a setting--the size of a mini-map, or something
+	* Accessing a panel is the only way to modify the room
+* Maslow's Hierarchy of Needs
+	* You need to get food and shelter for your kids, but also yourself
+	* There are 
+
 ### Notes from Tasha's first playthrough
 
 * The current sprites that I made do not convey information well to the user
