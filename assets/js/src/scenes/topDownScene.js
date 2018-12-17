@@ -19,12 +19,14 @@ export class TopDownScene extends Phaser.Scene {
 	}
 
 	preload() {
+		// TODO: Include these with the SPRITES
 		this.load.image('tiles', 'assets/sprites/tilesheet.png');
 		this.load.image('door', 'assets/sprites/door.png');
 		SceneHelper.loadImage(this, SPRITES.mainCharacter);
 		SceneHelper.loadSpritesheet(this, SPRITES.panel);
 		SceneHelper.loadImage(this, SPRITES.laser);
 		SceneHelper.loadImage(this, SPRITES.mirror);
+		SceneHelper.loadSpritesheet(this, SPRITES.target);
 		this.load.tilemapTiledJSON('sandboxMap', 'assets/data/maps/sandbox.json');
 	}
 
@@ -47,6 +49,7 @@ export class TopDownScene extends Phaser.Scene {
 			paddingTop: 128,
 			paddingBottom: 64
 		};
+		
 		this.layout = DungeonHelper.generateTopDownLayout(this.puzzle, roomDimensions);
 		console.log(this.layout);
 
@@ -54,6 +57,20 @@ export class TopDownScene extends Phaser.Scene {
 
 		let laserImg = puzzleItemGroup.create(this.layout.laser.position.x, this.layout.laser.position.y, SPRITES.laser.key);
 		laserImg.setScale(this.layout.laser.scale).refreshBody();
+
+		this.layout.surfaces.forEach((surface) => {
+			let surfaceImg;
+
+			if (surface.isTarget) {
+				surfaceImg = puzzleItemGroup.create(surface.position.x, surface.position.y, SPRITES.target.key);
+				this.puzzle.complete ? surfaceImg.setFrame(1) : surfaceImg.setFrame(0);
+				surfaceImg.setScale(surface.scale).refreshBody();
+			} else if (surface.type === Surface.REFLECTIVE) {
+				surfaceImg = puzzleItemGroup.create(surface.position.x, surface.position.y, SPRITES.mirror.key);
+			} else {
+				throw 'I do not know what to put here.';
+			}
+		});
 
 		this.layout.panels.forEach((panel) => {
 			let panelSprite = this.add.sprite(panel.position.x, panel.position.y, SPRITES.panel.key).setInteractive();
@@ -117,6 +134,7 @@ export class TopDownScene extends Phaser.Scene {
 
 	/** Helper method. Setup the interactive things for the panel. */
 	setupPanelInteractive(panel, panelSprite) {
+		// TODO: Add the check to see if the player is close enough to the panel
 		switch(panel.direction) {
 		case DIRECTION.EAST:
 			panelSprite.setFrame(2);
@@ -165,6 +183,11 @@ export class TopDownScene extends Phaser.Scene {
 				panelSprite.setFrame(4);
 				break;
 			}
+		});
+
+		this.input.on('pointerdown', (a, b) => {
+			// TODO: Open up the puzzle scene
+			console.log('Open the puzzle scene!');
 		});
 	}
 }

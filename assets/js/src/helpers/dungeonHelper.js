@@ -112,8 +112,16 @@ export class DungeonHelper {
 			}
 		};
 
-		// TODO: Surfaces
-		
+		layout.surfaces = [];
+		puzzle.surfaces.forEach((surface) => {
+			layout.surfaces.push({
+				type: surface.type,
+				isTarget: surface.isTarget,
+				position: { x: surface.getPosition().x * k.x + padX, y: surface.getPosition().y * k.y + padY },
+				scale: k.x * k.y
+			});
+		});
+
 		layout.panels = [];
 		puzzle.panels.forEach((panel) => {
 			let panelPos = panel.getPosition();
