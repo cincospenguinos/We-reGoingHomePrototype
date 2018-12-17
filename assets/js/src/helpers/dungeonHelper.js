@@ -186,11 +186,12 @@ export class DungeonHelper {
 			});
 		});
 
-		// TODO: Player
 		layout.player = {
 			position: { x: puzzle.player.getPosition().x * k.x, y: puzzle.player.getPosition().y * k.y },
 			dimensions: { width: 64, height: 64 }
 		};
+
+		
 
 		return layout;
 	}

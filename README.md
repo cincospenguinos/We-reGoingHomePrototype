@@ -2,6 +2,21 @@
 
 Prototype of a game Stefano and I are making.
 
+## Important Notes
+
+These are important notes about the project that **MUST NEVER BE DELETED:**
+
+* Puzzles always, **always** have a 4:3 aspect ratio. Going from puzzle to room must respect that
+* Rooms in `TopDownScene` must always have a single tile of padding on the left, one on the right, one on the bottom, and two on the top
+
+## TODO
+
+- [ ] Add laser path and include collision using `Phaser.GameObjects.Zone`
+- [ ] Add navigation from one room to another in TopDownScene
+- [ ] Go from TopDownScene to PuzzleScene
+- [ ] Add collision between wall layer and player
+- [ ] Add old puzzles back in again, and experiment with proper room size
+
 ## The Story
 
 This is a bit of a sci-fi game, with some sci-fi elements. That said, the sci-fi parts of the story are kept to a minimum for the most part.
@@ -89,24 +104,14 @@ The characteristics of each of the characters are pretty simple. I want to make 
 	* Accessing a panel is the only way to modify the room
 * Maslow's Hierarchy of Needs
 	* You need to get food and shelter for your kids, but also yourself
-	* There are items that you can use to fix various areas in the main bridge where your kids are staying, creating an automated food service, 
-
-### Notes from Tasha's first playthrough
-
-* The current sprites that I made do not convey information well to the user
-* The green things are panels, and Tasha had no clue about that
-* You had to be too close to the panels to use them--so adjust that
-* The jump in difficulty between the first and second puzzle was too sudden
-* Do we have to change modes? It wasn't obvious
-* It has promise though--Tasha wishes there were more levels
-* Directions are unclear during puzzle2
+	* There are items that you can use to fix various areas in the main bridge where your kids are staying, creating an automated food service,
 
 ### Things to teach to the player
 
-- [x] You must have the laser hit the target to go through the door
-- [x] You cannot cross the laser
-- [x] You can move puzzle pieces
-- [x] You can rotate puzzle pieces
+- [ ] You must have the laser hit the target to go through the door
+- [ ] You cannot cross the laser
+- [ ] You can move puzzle pieces
+- [ ] You can rotate puzzle pieces
 - [ ] Mirrors redirect laser paths
 - [ ] All the panels in the room modify the same room layout
 - [ ] Lasers of similar colors may cross each other
@@ -114,11 +119,6 @@ The characteristics of each of the characters are pretty simple. I want to make 
 
 ### TODO from Tasha's playthrough
 
-- [x] Setup way to maintain room state
-- [x] Make the various pieces of the puzzle smaller
-- [x] Add more puzzles
-- [x] Ease the player into puzzle1--maybe have a couple rooms with two panels
-- [ ] Create new set of sprites that depict information in a more clear way
 - [ ] Add more elements to the rooms
 	- [ ] Walls that turn the room into mazes
 	- [ ] Lasers of multiple colors
