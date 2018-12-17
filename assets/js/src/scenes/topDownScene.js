@@ -22,7 +22,9 @@ export class TopDownScene extends Phaser.Scene {
 		this.load.image('tiles', 'assets/sprites/tilesheet.png');
 		this.load.image('door', 'assets/sprites/door.png');
 		SceneHelper.loadImage(this, SPRITES.mainCharacter);
-		SceneHelper.loadImage(this, SPRITES.panel);
+		SceneHelper.loadSpritesheet(this, SPRITES.panel);
+		SceneHelper.loadImage(this, SPRITES.laser);
+		SceneHelper.loadImage(this, SPRITES.mirror);
 		this.load.tilemapTiledJSON('sandboxMap', 'assets/data/maps/sandbox.json');
 	}
 
@@ -30,25 +32,42 @@ export class TopDownScene extends Phaser.Scene {
 		// First generate the map
 		let sandboxMap = this.make.tilemap({ key: 'sandboxMap', tileWidth: 64, tileHeight: 64 });
 
-		const tileset = sandboxMap.addTilesetImage('roomTilesheet', 'tiles');
+		const tileset = sandboxMap.addTilesetImage('tilesheet', 'tiles');
 
 		const floorLayer = sandboxMap.createStaticLayer('FloorLayer', tileset, 0, 0);
 		const wallLayer = sandboxMap.createStaticLayer('WallLayer', tileset, 0, 0);
 
-		// Get the layout
-		this.layout = DungeonHelper.generateTopDownLayout(this.puzzle, sandboxMap.widthInPixels, sandboxMap.heightInPixels);
+		// Draw the layout
+		let roomDimensions = {
+			width: sandboxMap.widthInPixels, 
+			height: sandboxMap.heightInPixels,
+			paddingLeft: 64,
+			paddingRight: 64,
+			paddingTop: 128,
+			paddingBottom: 64
+		};
+		this.layout = DungeonHelper.generateTopDownLayout(this.puzzle, roomDimensions);
 
-		// Now draw everything
+		console.log(this.layout);
+
+		let puzzleItemGroup = this.physics.add.staticGroup();
+
+		let laserImg = puzzleItemGroup.create(this.layout.laser.position.x, this.layout.laser.position.y, SPRITES.laser.key);
+		laserImg.setScale(this.layout.laser.scale).refreshBody();
 
 		// Put together a new player
-		this.puzzle.player.img = this.physics.add.image(this.layout.player.position.x, this.layout.player.position.y, SPRITES.mainCharacter.key);
+		this.playerImg = this.physics.add.image(this.layout.player.position.x, this.layout.player.position.y, SPRITES.mainCharacter.key);
 
 		// TODO: Look into adding the world boundaries
-		// this.puzzle.player.img.setCollideWorldBounds(true);
+
+		// console.log(this.puzzle.player.img);
+		// console.log(laserImg);
+
+		this.physics.add.collider(this.playerImg, puzzleItemGroup);
 
 		// And now the camera
 		this.cameras.main.setBounds(0, 0, sandboxMap.widthInPixels, sandboxMap.heightInPixels);
-		this.cameras.main.startFollow(this.puzzle.player.img);
+		this.cameras.main.startFollow(this.playerImg);
 
 	 	this.keyboard = this.input.keyboard.addKeys('W, A, S, D');
 	}
@@ -59,34 +78,34 @@ export class TopDownScene extends Phaser.Scene {
 
 	/** Handles inputs on the player. */
 	handleInputs() {
-		if (this.puzzle.player.img.active) {
+		if (this.playerImg.active) {
 			let north = this.keyboard.W.isDown;
 			let east = this.keyboard.D.isDown;
 			let south = this.keyboard.S.isDown;
 			let west = this.keyboard.A.isDown;
 
 			if (north) {
-				this.puzzle.player.setVelocityY(-this.puzzle.player.maxVelocity);
+				this.playerImg.setVelocityY(-512);
 			}
 
 			if (east) {
-				this.puzzle.player.setVelocityX(this.puzzle.player.maxVelocity);
+				this.playerImg.setVelocityX(512);
 			}
 
 			if (south) {
-				this.puzzle.player.setVelocityY(this.puzzle.player.maxVelocity);
+				this.playerImg.setVelocityY(512);
 			}
 
 			if (west) {
-				this.puzzle.player.setVelocityX(-this.puzzle.player.maxVelocity);
+				this.playerImg.setVelocityX(-512);
 			}
 
 			if (!east && !west) {
-				this.puzzle.player.setVelocityX(0);
+				this.playerImg.setVelocityX(0);
 			}
 
 			if (!north && !south) {
-				this.puzzle.player.setVelocityY(0);
+				this.playerImg.setVelocityY(0);
 			}
 		}
 	}

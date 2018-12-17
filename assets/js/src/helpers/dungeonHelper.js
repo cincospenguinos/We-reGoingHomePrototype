@@ -91,14 +91,22 @@ export class DungeonHelper {
 		return puzzle;
 	}
 
-	/** Helper method. Generates a top down layout with the map dimensions provided. */
-	static generateTopDownLayout(puzzle, roomWidth, roomHeight) {
-		let k = { w: roomWidth / puzzle.dimensions.width, h: roomHeight / puzzle.dimensions.height };
-		console.log(k);
+	/** Helper method. Generates a top down layout with the map dimensions provided. The proper room width and height must be a 4:3 aspect ratio. */
+	static generateTopDownLayout(puzzle, roomDimensions) {
+		let roomWidth = roomDimensions.width - (roomDimensions.paddingLeft + roomDimensions.paddingRight);
+		let roomHeight = roomDimensions.height - (roomDimensions.paddingTop + roomDimensions.paddingBottom);
+		let padY = roomDimensions.paddingTop - roomDimensions.paddingBottom;
+
+		let k = { x: roomWidth / puzzle.dimensions.width, y: roomHeight / puzzle.dimensions.height };
 
 		let layout = {};
 
-		// TODO: Laser
+		layout.laser = {
+			direction: puzzle.laser.direction,
+			scale: k.x * k.y,
+			position: { x: puzzle.laser.getPosition().x * k.x + (roomDimensions.paddingLeft + roomDimensions.paddingRight), 
+				y: puzzle.laser.getPosition().y * k.y + (roomDimensions.paddingTop + roomDimensions.paddingBottom) }
+		};
 
 		// TODO: Surfaces
 
@@ -108,8 +116,8 @@ export class DungeonHelper {
 
 		// TODO: Player
 		layout.player = {
-			position: { x: puzzle.player.getPosition().x * k.w, y: puzzle.player.getPosition().y * k.h },
-			dimensions: { width: 64, height: 64 };
+			position: { x: puzzle.player.getPosition().x * k.x, y: puzzle.player.getPosition().y * k.y },
+			dimensions: { width: 64, height: 64 }
 		};
 
 		return layout;
