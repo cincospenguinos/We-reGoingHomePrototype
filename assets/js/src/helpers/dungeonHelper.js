@@ -191,7 +191,20 @@ export class DungeonHelper {
 			dimensions: { width: 64, height: 64 }
 		};
 
-		
+		let laserPath = puzzle.getLaserPath();
+		layout.lines = [];
+
+		for (let i = 0; i < laserPath.length - 1; i++) {
+			let pt1 = laserPath[i];
+			let pt2 = laserPath[i + 1];
+
+			layout.lines.push({
+				x1: pt1.x,
+				y1: pt1.y,
+				x2: pt2.x,
+				y2: pt2.y
+			});
+		}
 
 		return layout;
 	}
