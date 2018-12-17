@@ -85,7 +85,7 @@ export class DungeonHelper {
 
 		puzzle.player = new Player({
 			position: { x: puzzleData.playerPosition.x, y: puzzleData.playerPosition.y },
-			dimensions: { width: 16, height: 16 }
+			dimensions: { width: 64, height: 64 }
 		});
 
 		return puzzle;

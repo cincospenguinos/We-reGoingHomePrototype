@@ -10,7 +10,7 @@ export class Player extends PuzzleItem {
 	constructor(opts) {
 		super(opts);
 		
-		this.maxVelocity = opts.maxVelocity || 192;
+		this.maxVelocity = opts.maxVelocity || 384;
 	}
 
 	/** Returns true if the laser passing from pt1 to pt2 intersects the player. */
