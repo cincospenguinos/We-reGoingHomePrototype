@@ -199,10 +199,11 @@ export class DungeonHelper {
 			let pt2 = laserPath[i + 1];
 
 			layout.lines.push({
-				x1: pt1.x,
-				y1: pt1.y,
-				x2: pt2.x,
-				y2: pt2.y
+				x1: pt1.x * k.x + padX,
+				y1: pt1.y * k.y + padY,
+				x2: pt2.x * k.x + padX,
+				y2: pt2.y * k.y + padY,
+				horizontal: pt1.y === pt2.y
 			});
 		}
 

@@ -23,7 +23,7 @@
 							"type": "REFLECTIVE",
 							"reflectiveDirection": "SOUTH",
 							"movable": true,
-							"position": { "x": 600, "y": 64 },
+							"position": { "x": 600, "y": 40 },
 							"dimensions": { "width": 32, "height": 32 }
 						}
 					],

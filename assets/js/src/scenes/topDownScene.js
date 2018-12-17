@@ -104,6 +104,37 @@ export class TopDownScene extends Phaser.Scene {
 		// Put together a new player
 		this.playerImg = this.physics.add.image(this.layout.player.position.x, this.layout.player.position.y, SPRITES.mainCharacter.key);
 
+		// Draw the lines using graphics
+		let laserGraphics = this.add.graphics({
+			add: true,
+			lineStyle: {
+				width: 10,
+				color: 0xFF0707,
+				alpha: 1
+			}
+		});
+
+		
+		this.layout.lines.forEach((line) => {
+			let midpoint = this.midpointOfLine(line);
+			let zone;
+
+			if (line.horizontal) {
+				zone = this.add.zone(midpoint.x, midpoint.y, Math.abs(line.x2 - line.x1), 10);
+			} else {
+				zone = this.add.zone(midpoint.x, midpoint.y, 10, Math.abs(line.y2 - line.y1));
+			}
+
+			puzzleItemGroup.add(zone);
+
+			laserGraphics.strokeLineShape({
+				x1: line.x1,
+				y1: line.y1,
+				x2: line.x2,
+				y2: line.y2
+			});
+		});
+
 		// TODO: Look into adding the world boundaries
 
 		// console.log(this.puzzle.player.img);
@@ -211,7 +242,12 @@ export class TopDownScene extends Phaser.Scene {
 
 		panelSprite.on('pointerdown', (a, b) => {
 			// TODO: Open up the puzzle scene
-			console.log('Open the puzzle scene!');
+			this.scene.start(KEYS.scene.puzzleScene, { dungeon: this.dungeon, puzzle: this.puzzle, player: this.puzzle.player });
 		});
+	}
+
+	/** Helper method. Returns the midpoint of the line provided. */
+	midpointOfLine(line) {
+		return { x: (line.x2 + line.x1) / 2, y: (line.y2 + line.y1) / 2 }
 	}
 }
