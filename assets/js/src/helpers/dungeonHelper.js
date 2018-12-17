@@ -91,6 +91,30 @@ export class DungeonHelper {
 		return puzzle;
 	}
 
+	/** Helper method. Generates a top down layout with the map dimensions provided. */
+	static generateTopDownLayout(puzzle, roomWidth, roomHeight) {
+		let k = { w: roomWidth / puzzle.dimensions.width, h: roomHeight / puzzle.dimensions.height };
+		console.log(k);
+
+		let layout = {};
+
+		// TODO: Laser
+
+		// TODO: Surfaces
+
+		// TODO: Panels
+
+		// TODO: Exits
+
+		// TODO: Player
+		layout.player = {
+			position: { x: puzzle.player.getPosition().x * k.w, y: puzzle.player.getPosition().y * k.h },
+			dimensions: { width: 64, height: 64 };
+		};
+
+		return layout;
+	}
+
 	/** Helper method. Returns the direction given a direction string. */
 	static directionFromString(str) {
 		if (str === 'EAST') {
