@@ -5,12 +5,13 @@
  */
 let spriteDir = 'assets/sprites/';
 
-let puzzleDir = 'assets/js/src/data/'
+let puzzleDir = 'assets/data/dungeons/';
 export const KEYS = {
 	scene: {
 		puzzleScene: 'PuzzleScene',
 		traverseScene: 'TraverseScene',
-		menuScene: 'MenuScene'
+		menuScene: 'MenuScene',
+		topDownScene: 'TopDownScene'
 	},
 
 	dungeons: { key: 'dungeons', location: puzzleDir + 'puzzles.json' }

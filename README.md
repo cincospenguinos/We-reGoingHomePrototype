@@ -56,6 +56,7 @@ The characteristics of each of the characters are pretty simple. I want to make 
 	* Some items are human things that you can give to your kids
 	* Some items are alien things that you can give to your kids
 	* Some items are keys to unlock secret areas
+- [ ] Maybe one or both of your kids can learn how to cook for themselves instead of relying on you--perhaps that is something that can be taught
 
 ## Notes
 
@@ -65,6 +66,8 @@ The characteristics of each of the characters are pretty simple. I want to make 
 * The canvas element is 800x600
 * We need to think about what the purpose of each of the rooms is, how they should connect, and how they should interact with each other. The puzzles themselves provide a decent amount of things to play with, but we should also explore in our prototype how each of the rooms can be modified by interaction with other rooms
 * [This](https://medium.com/@jerra.haynes/a-real-persons-guide-to-phaser-3-or-how-i-learned-to-stop-worrying-and-love-the-gun-part-1-9cc6361f377c) article is very insightful and will help you understand the various pieces of Phaser 3.
+	* Turns out there's a game state store manager in Phaser 3. This article mentions it. Later down the road you should look into using it.
+* [This](https://medium.com/@michaelwesthadley/modular-game-worlds-in-phaser-3-tilemaps-1-958fc7e6bbd6) article goes over how to do tilemaps. Holy shit it's so helpful.
 
 ### Design Notes
 
@@ -84,7 +87,7 @@ The characteristics of each of the characters are pretty simple. I want to make 
 	* Accessing a panel is the only way to modify the room
 * Maslow's Hierarchy of Needs
 	* You need to get food and shelter for your kids, but also yourself
-	* There are 
+	* There are items that you can use to fix various areas in the main bridge where your kids are staying, creating an automated food service, 
 
 ### Notes from Tasha's first playthrough
 
