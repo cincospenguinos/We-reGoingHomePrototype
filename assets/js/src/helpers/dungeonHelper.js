@@ -68,7 +68,8 @@ export class DungeonHelper {
 		puzzleData.panels.forEach((panelData) => {
 			puzzle.addPanel(new PuzzleItem({
 				position: panelData.position,
-				dimensions: panelData.dimensions
+				dimensions: panelData.dimensions,
+				direction: this.directionFromString(panelData.direction)
 			}));
 		});
 
@@ -93,9 +94,10 @@ export class DungeonHelper {
 
 	/** Helper method. Generates a top down layout with the map dimensions provided. The proper room width and height must be a 4:3 aspect ratio. */
 	static generateTopDownLayout(puzzle, roomDimensions) {
-		let roomWidth = roomDimensions.width - (roomDimensions.paddingLeft + roomDimensions.paddingRight);
-		let roomHeight = roomDimensions.height - (roomDimensions.paddingTop + roomDimensions.paddingBottom);
-		let padY = roomDimensions.paddingTop - roomDimensions.paddingBottom;
+		let padX = roomDimensions.paddingLeft + roomDimensions.paddingRight;
+		let padY = roomDimensions.paddingTop + roomDimensions.paddingBottom;
+		let roomWidth = roomDimensions.width - padX;
+		let roomHeight = roomDimensions.height - padY;
 
 		let k = { x: roomWidth / puzzle.dimensions.width, y: roomHeight / puzzle.dimensions.height };
 
@@ -104,13 +106,51 @@ export class DungeonHelper {
 		layout.laser = {
 			direction: puzzle.laser.direction,
 			scale: k.x * k.y,
-			position: { x: puzzle.laser.getPosition().x * k.x + (roomDimensions.paddingLeft + roomDimensions.paddingRight), 
-				y: puzzle.laser.getPosition().y * k.y + (roomDimensions.paddingTop + roomDimensions.paddingBottom) }
+			position: { 
+				x: puzzle.laser.getPosition().x * k.x + padX,
+				y: puzzle.laser.getPosition().y * k.y + padY
+			}
 		};
 
 		// TODO: Surfaces
+		
+		layout.panels = [];
+		puzzle.panels.forEach((panel) => {
+			let panelPos = panel.getPosition();
+			let position = {};
 
-		// TODO: Panels
+			switch (panel.direction) {
+			case DIRECTION.EAST:
+				position = { 
+					x: panelPos.x * k.x + roomDimensions.paddingRight,
+					y: panelPos.y * k.y + padY 
+				};
+				break;
+			case DIRECTION.SOUTH:
+				position = { 
+					x: panelPos.x * k.x + padX,
+					y: panelPos.y * k.y + roomDimensions.paddingBottom 
+				};
+				break;
+			case DIRECTION.WEST:
+				position = { 
+					x: panelPos.x * k.x - roomDimensions.paddingRight,
+					y: panelPos.y * k.y + padY 
+				};
+				break;
+			case DIRECTION.NORTH:
+				position = { 
+					x: panelPos.x * k.x + padX, 
+					y: panelPos.y * k.y + padY
+				};
+				break;
+			}
+
+			layout.panels.push({
+				position: position,
+				direction: panel.direction
+			});
+		});
 
 		// TODO: Exits
 

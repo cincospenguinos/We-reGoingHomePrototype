@@ -3,7 +3,7 @@
  *
  * Scene to manage a top-down scrolling view. Mostly for experimentation.
  */
-import { KEYS, SPRITES } from '../../lib/CONST.js';
+import { KEYS, SPRITES, DIRECTION } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
 import { DungeonHelper } from '../helpers/dungeonHelper.js';
 
@@ -34,6 +34,7 @@ export class TopDownScene extends Phaser.Scene {
 
 		const tileset = sandboxMap.addTilesetImage('tilesheet', 'tiles');
 
+		// TODO: Collisions with floorLayer
 		const floorLayer = sandboxMap.createStaticLayer('FloorLayer', tileset, 0, 0);
 		const wallLayer = sandboxMap.createStaticLayer('WallLayer', tileset, 0, 0);
 
@@ -47,13 +48,17 @@ export class TopDownScene extends Phaser.Scene {
 			paddingBottom: 64
 		};
 		this.layout = DungeonHelper.generateTopDownLayout(this.puzzle, roomDimensions);
-
 		console.log(this.layout);
 
 		let puzzleItemGroup = this.physics.add.staticGroup();
 
 		let laserImg = puzzleItemGroup.create(this.layout.laser.position.x, this.layout.laser.position.y, SPRITES.laser.key);
 		laserImg.setScale(this.layout.laser.scale).refreshBody();
+
+		this.layout.panels.forEach((panel) => {
+			let panelSprite = this.add.sprite(panel.position.x, panel.position.y, SPRITES.panel.key).setInteractive();
+			this.setupPanelInteractive(panel, panelSprite);
+		});
 
 		// Put together a new player
 		this.playerImg = this.physics.add.image(this.layout.player.position.x, this.layout.player.position.y, SPRITES.mainCharacter.key);
@@ -108,5 +113,58 @@ export class TopDownScene extends Phaser.Scene {
 				this.playerImg.setVelocityY(0);
 			}
 		}
+	}
+
+	/** Helper method. Setup the interactive things for the panel. */
+	setupPanelInteractive(panel, panelSprite) {
+		switch(panel.direction) {
+		case DIRECTION.EAST:
+			panelSprite.setFrame(2);
+			break;
+		case DIRECTION.SOUTH:
+			panelSprite.setFrame(0);
+			break;
+		case DIRECTION.WEST:
+			panelSprite.setFrame(2);
+			break;
+		case DIRECTION.NORTH:
+			panelSprite.setFrame(4);
+			break;
+		}
+
+
+		this.input.on('pointerover', (a, b) => {
+			switch(panel.direction) {
+			case DIRECTION.EAST:
+				panelSprite.setFrame(3);
+				break;
+			case DIRECTION.SOUTH:
+				panelSprite.setFrame(1);
+				break;
+			case DIRECTION.WEST:
+				panelSprite.setFrame(3);
+				break;
+			case DIRECTION.NORTH:
+				panelSprite.setFrame(5);
+				break;
+			}
+		});
+
+		this.input.on('pointerout', (a, b) => {
+			switch(panel.direction) {
+			case DIRECTION.EAST:
+				panelSprite.setFrame(2);
+				break;
+			case DIRECTION.SOUTH:
+				panelSprite.setFrame(0);
+				break;
+			case DIRECTION.WEST:
+				panelSprite.setFrame(2);
+				break;
+			case DIRECTION.NORTH:
+				panelSprite.setFrame(4);
+				break;
+			}
+		});
 	}
 }

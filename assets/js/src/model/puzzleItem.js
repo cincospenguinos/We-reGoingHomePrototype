@@ -12,6 +12,7 @@ export class PuzzleItem {
 			throw 'PuzzleItem must have starting position and dimensions!';
 		}
 
+		this.direction = opts.direction;
 		this.position = opts.position;
 		this.dimensions = opts.dimensions;
 		this.movable = opts.movable || false;
