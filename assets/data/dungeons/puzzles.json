@@ -1,0 +1,47 @@
+{
+	"dungeons": {
+		"dungeon0": {
+			"puzzles": [
+				{
+					"key": "sandbox",
+					"dimensions": { "width": 800, "height": 600 },
+					"laser": {
+						"direction":"EAST",
+						"movable": false,
+						"position": { "x": 32, "y": 32 },
+						"dimensions": { "width": 64, "height": 64 }
+					},
+					"surfaces": [
+						{
+							"type":"OPAQUE",
+							"isTarget":true,
+							"movable": true,
+							"position": { "x": 600, "y": 480 },
+							"dimensions": { "width": 64, "height": 64 }
+						},
+						{
+							"type": "REFLECTIVE",
+							"reflectiveDirection": "SOUTH",
+							"movable": true,
+							"position": { "x": 600, "y": 64 },
+							"dimensions": { "width": 32, "height": 32 }
+						}
+					],
+					"exits": [{
+						"direction": "NORTH",
+						"position": { "x": 250, "y": 600 },
+						"dimensions": { "width": 128, "height": 128 }
+					}],
+					"panels": [
+						{
+							"direction": "NORTH",
+							"position": { "x": 400, "y": 594 },
+							"dimensions": { "width": 8, "height": 8 }
+						}
+					],
+					"playerPosition": { "x": 32, "y": 550 }
+				}
+			]
+		}
+	}
+}

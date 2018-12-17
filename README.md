@@ -2,6 +2,24 @@
 
 Prototype of a game Stefano and I are making.
 
+## Important Notes
+
+These are important notes about the project that **MUST NEVER BE DELETED:**
+
+* Puzzles always, **always** have a 4:3 aspect ratio. Going from puzzle to room must respect that
+	* This does mean that changing room size will change very little when it comes to gameplay while traversing a room. We may want to experiment with other room sizes and static sprites for traversal sections
+* Rooms in `TopDownScene` must always have a single tile of padding on the left, one on the right, one on the bottom, and two on the top
+
+## TODO
+
+- [ ] Add laser path and include collision using `Phaser.GameObjects.Zone`
+- [ ] Add proper laser on mirror collisions
+- [ ] Go from TopDownScene to PuzzleScene
+- [ ] Add navigation from one room to another in TopDownScene
+- [ ] Add collision between wall layer and player
+- [ ] Add old puzzles back in again, and experiment with proper room size
+- [ ] Create method to check if a puzzle's layout is valid
+
 ## The Story
 
 This is a bit of a sci-fi game, with some sci-fi elements. That said, the sci-fi parts of the story are kept to a minimum for the most part.
@@ -10,9 +28,11 @@ This is a bit of a sci-fi game, with some sci-fi elements. That said, the sci-fi
 
 A long time ago, an alien race came from a distant planet to Earth. This alien race was benevolent. The learned the languages of the people on the planet, and traded technology and knowledge with them. As a symbol of the warm feelings between the two races, they created a massive tower that acted as a bridge between their two worlds. This tower was carved out of a giant tree, intermingled with pieces of digital technology developed by both races.
 
+The King (that's you) was the Grand Architect over the tree. He designed the various systems and rooms to power the whole thing, and led the work in every which way (I'm imagining him in a masonic apron, worn in the third degree fashion.) The Queen reigned upon the throne, imagining designs and things which informed the King and led the pattern of the work, but also acted as the sustainer, ensuring that the tree ran smoothly (the King is a generative force, making and designing, while the Queen is a maintaining force, sustaining and preserving.)
+
 Over a long period of time, humans succumbed to their tribalistic tendencies, proclaimed the aliens as an outgroup, and attempted to destroy the tree. The aliens fought them off, many dying as they attempted to protect the tower and flee earth to go back home.
 
-In the midst of the battle, the King and his two sons ran away and hid. Centuries after the attack they decided to go back to the tower to try going home once more.
+The Queen ended up leaving as well. She and the King decided the best way to solve the current problem was to shutdown the bridge between the two worlds. The Queen left, leaving her two young sons and her husband back on earth, and the King promised that some day he would come back with their two sons.
 
 ### The Game
 
@@ -33,9 +53,37 @@ The characteristics of each of the characters are pretty simple. I want to make 
 	* Boaz prefers physical play and interaction over nurture
 * Jachin
 	* Jachin is the younger one
-	* He owns a little music box that plays a small melody his mother would sing to him. When he's feeling upset or scared, he will find a quiet
-	place, pull out this box and wind it up and listen.
+	* He owns a little music box that plays a small melody his mother would sing to him. When he's feeling upset or scared, he will find a quiet place, pull out this box and wind it up and listen.
 	* Jachin prefers nurture and warm words over playfulness
+
+## Aesthetics
+
+* The story should be told through the world alone. We should strive to design the different pieces of the world to depict and explain what happened before the beginning of the game
+* Other elements that can't be explained through the world can be explained through brief flashbacks that play out as you move through rooms. Perhaps the first time you enter specific rooms show ghostly versions of yourself and the Queen and your two young sons living life in the tree. I would prefer not to take away control from the player though unless strictly necessary. I think it should be possible to play the game largely ignoring the story if you really wanted to. This is something that should be explored in a prototype though
+* We will need to find a nice balance between conveying information textually and visually
+	* Character and story information should be explained largely through visuals. I think understanding the backstory should be optional to playing the game, and the family moments you have with your kids should be 
+
+## Mechanics
+
+We can think of the mechanics of the game as a variety of separate pieces that interact with each other and build a larger, more interesting game. So let's break things down into separate pieces:
+
+### Laser Puzzles
+
+This is the core of the game, and was tested in our first prototype. You have laser puzzles that directly alter the game's layout.
+
+### Caring for your kids
+
+Your kids need food, water, shelter, discipline, and love from their dad. Going about and doing housework in the main hub of the game will mainly contribute to what ending you get and how your kids will grow up. Thus a variety of opportunities for dad moments will be available to you. They will happen more often during the evening when you get home from working on the tree. This will be something we will need to prototype.
+
+### Scavenging, Growing, and Fixing
+
+There are basic needs that you and your kids will need to fill, and the main ways of doing that are by scavenging (picking things up in the dungeons,) growing (maintaining a garden that gives you what you need,) and fixing things (this could be fixing various pieces of the hub of the game to make the housework segments easier or even largely unimportant.)
+
+### Combat Encounters
+
+Since we are drawing a lot off of Zelda and D&D, we may want to explore combat encounters in the game. It would add a decent amount of complexity, and may totally remove us from the experience we're trying to build, which is **FATHERHOOD**.
+
+* I'm imagining a day/season/year cycle with the tree. Perhaps the rooms should change accordingly. That's something to play around with
 
 ## Ideas
 
@@ -56,6 +104,10 @@ The characteristics of each of the characters are pretty simple. I want to make 
 	* Some items are human things that you can give to your kids
 	* Some items are alien things that you can give to your kids
 	* Some items are keys to unlock secret areas
+- [ ] Maybe one or both of your kids can learn how to cook for themselves instead of relying on you--perhaps that is something that can be taught
+- [ ] Certain puzzle pieces are locked onto a track and can only be moved within a certain zone
+- [ ] Consider putting in a run button
+- [ ] Add a mini-map. Large rooms will be much more challenging to navigate without one.
 
 ## Notes
 
@@ -65,6 +117,8 @@ The characteristics of each of the characters are pretty simple. I want to make 
 * The canvas element is 800x600
 * We need to think about what the purpose of each of the rooms is, how they should connect, and how they should interact with each other. The puzzles themselves provide a decent amount of things to play with, but we should also explore in our prototype how each of the rooms can be modified by interaction with other rooms
 * [This](https://medium.com/@jerra.haynes/a-real-persons-guide-to-phaser-3-or-how-i-learned-to-stop-worrying-and-love-the-gun-part-1-9cc6361f377c) article is very insightful and will help you understand the various pieces of Phaser 3.
+	* Turns out there's a game state store manager in Phaser 3. This article mentions it. Later down the road you should look into using it.
+* [This](https://medium.com/@michaelwesthadley/modular-game-worlds-in-phaser-3-tilemaps-1-958fc7e6bbd6) article goes over how to do tilemaps. Holy shit it's so helpful.
 
 ### Design Notes
 
@@ -84,24 +138,14 @@ The characteristics of each of the characters are pretty simple. I want to make 
 	* Accessing a panel is the only way to modify the room
 * Maslow's Hierarchy of Needs
 	* You need to get food and shelter for your kids, but also yourself
-	* There are 
-
-### Notes from Tasha's first playthrough
-
-* The current sprites that I made do not convey information well to the user
-* The green things are panels, and Tasha had no clue about that
-* You had to be too close to the panels to use them--so adjust that
-* The jump in difficulty between the first and second puzzle was too sudden
-* Do we have to change modes? It wasn't obvious
-* It has promise though--Tasha wishes there were more levels
-* Directions are unclear during puzzle2
+	* There are items that you can use to fix various areas in the main bridge where your kids are staying, creating an automated food service,
 
 ### Things to teach to the player
 
-- [x] You must have the laser hit the target to go through the door
-- [x] You cannot cross the laser
-- [x] You can move puzzle pieces
-- [x] You can rotate puzzle pieces
+- [ ] You must have the laser hit the target to go through the door
+- [ ] You cannot cross the laser
+- [ ] You can move puzzle pieces
+- [ ] You can rotate puzzle pieces
 - [ ] Mirrors redirect laser paths
 - [ ] All the panels in the room modify the same room layout
 - [ ] Lasers of similar colors may cross each other
@@ -109,11 +153,6 @@ The characteristics of each of the characters are pretty simple. I want to make 
 
 ### TODO from Tasha's playthrough
 
-- [x] Setup way to maintain room state
-- [x] Make the various pieces of the puzzle smaller
-- [x] Add more puzzles
-- [x] Ease the player into puzzle1--maybe have a couple rooms with two panels
-- [ ] Create new set of sprites that depict information in a more clear way
 - [ ] Add more elements to the rooms
 	- [ ] Walls that turn the room into mazes
 	- [ ] Lasers of multiple colors

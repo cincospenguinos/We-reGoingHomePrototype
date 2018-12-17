@@ -5,12 +5,13 @@
  */
 let spriteDir = 'assets/sprites/';
 
-let puzzleDir = 'assets/js/src/data/'
+let puzzleDir = 'assets/data/dungeons/';
 export const KEYS = {
 	scene: {
 		puzzleScene: 'PuzzleScene',
 		traverseScene: 'TraverseScene',
-		menuScene: 'MenuScene'
+		menuScene: 'MenuScene',
+		topDownScene: 'TopDownScene'
 	},
 
 	dungeons: { key: 'dungeons', location: puzzleDir + 'puzzles.json' }
@@ -24,12 +25,11 @@ export const SPRITES = {
 	target: { key: 'target', location: spriteDir + 'target.png', frameWidth: 64, frameHeight: 64 },
 	completeButton: { key: 'completeButton', location: spriteDir + 'complete.png' },
 	// mainCharacter: { key: 'somethingelse', location: spriteDir + 'nameoffile.png' }
-	mainCharacter: { key: 'theguy', location: spriteDir + 'guy.png' },
+	mainCharacter: { key: 'mainCharacter', location: spriteDir + 'mainCharacter.png' },
 	background: { key: 'shittyBackground', location: spriteDir + 'shittyBackground.png' },
-	panel: { key: 'panel', location: spriteDir + 'panel.png', frameWidth: 16, frameHeight: 32 },
+	panel: { key: 'panel', location: spriteDir + 'panel.png', frameWidth: 32, frameHeight: 32 },
 	exit: { key: 'exitButton', location: spriteDir + 'exit.png' },
-	doorHorizontal: { key: 'doorHorizontal', location: spriteDir + 'doorHorizontal.png' },
-	doorVertical: { key: 'doorVertical', location: spriteDir + 'doorVertical.png' }
+	topDownDoor: { key: 'topDownDoor', location: spriteDir + 'door.png', frameWidth: 128, frameHeight: 128 }
 };
 
 export const DIRECTION = {
