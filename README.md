@@ -60,6 +60,8 @@ The characteristics of each of the characters are pretty simple. I want to make 
 
 * The story should be told through the world alone. We should strive to design the different pieces of the world to depict and explain what happened before the beginning of the game
 * Other elements that can't be explained through the world can be explained through brief flashbacks that play out as you move through rooms. Perhaps the first time you enter specific rooms show ghostly versions of yourself and the Queen and your two young sons living life in the tree. I would prefer not to take away control from the player though unless strictly necessary. I think it should be possible to play the game largely ignoring the story if you really wanted to. This is something that should be explored in a prototype though
+* We will need to find a nice balance between conveying information textually and visually
+	* Character and story information should be explained largely through visuals. I think understanding the backstory should be optional to playing the game, and the family moments you have with your kids should be 
 
 ## Mechanics
 
