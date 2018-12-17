@@ -58,6 +58,7 @@ The characteristics of each of the characters are pretty simple. I want to make 
 	* Some items are keys to unlock secret areas
 - [ ] Maybe one or both of your kids can learn how to cook for themselves instead of relying on you--perhaps that is something that can be taught
 - [ ] Certain puzzle pieces are locked onto a track and can only be moved within a certain zone
+- [ ] Consider putting in a run button
 
 ## Notes
 

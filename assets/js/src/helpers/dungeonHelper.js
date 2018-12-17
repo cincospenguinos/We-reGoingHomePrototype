@@ -75,10 +75,9 @@ export class DungeonHelper {
 
 		puzzleData.exits.forEach((exitData) => {
 			let direction = this.directionFromString(exitData.direction);
-			let position = this.getDoorPosition(scene, direction);
 
 			puzzle.addExit(new Exit({
-				position: position,
+				position: exitData.position,
 				nextRoomKey: exitData.nextPuzzle,
 				direction: direction
 			}));
@@ -100,12 +99,13 @@ export class DungeonHelper {
 		let roomHeight = roomDimensions.height - padY;
 
 		let k = { x: roomWidth / puzzle.dimensions.width, y: roomHeight / puzzle.dimensions.height };
+		let scale = k.x * k.y;
 
 		let layout = {};
 
 		layout.laser = {
 			direction: puzzle.laser.direction,
-			scale: k.x * k.y,
+			scale: scale,
 			position: { 
 				x: puzzle.laser.getPosition().x * k.x + padX,
 				y: puzzle.laser.getPosition().y * k.y + padY
@@ -116,9 +116,10 @@ export class DungeonHelper {
 		puzzle.surfaces.forEach((surface) => {
 			layout.surfaces.push({
 				type: surface.type,
+				direction: surface.direction,
 				isTarget: surface.isTarget,
 				position: { x: surface.getPosition().x * k.x + padX, y: surface.getPosition().y * k.y + padY },
-				scale: k.x * k.y
+				scale: scale
 			});
 		});
 
@@ -160,7 +161,30 @@ export class DungeonHelper {
 			});
 		});
 
-		// TODO: Exits
+		layout.exits = [];
+		puzzle.exits.forEach((exit) => {
+			let position;
+
+			switch (exit.direction) {
+			case DIRECTION.EAST:
+				position = { x: exit.position.x * k.x + 128, y: exit.position.y * k.y + 64 };
+				break;
+			case DIRECTION.SOUTH:
+				position = { x: exit.position.x * k.x + padX, y: exit.position.y * k.y + 64 };
+				break;
+			case DIRECTION.WEST:
+				position = { x: exit.position.x * k.x, y: exit.position.y * k.y + 64 };
+				break;
+			case DIRECTION.NORTH:
+				position = { x: exit.position.x * k.x + padX, y: exit.position.y * k.y + padY - 64 };
+				break;
+			}
+
+			layout.exits.push({
+				direction: exit.direction,
+				position: position
+			});
+		});
 
 		// TODO: Player
 		layout.player = {
@@ -198,16 +222,16 @@ export class DungeonHelper {
 	}
 
 	/** Helper method. gets the door position given the scene and the direction. */
-	static getDoorPosition(scene, direction) {
-		switch(direction) {
-		case DIRECTION.EAST:
-			return { x: scene.sys.canvas.width - 8, y: scene.sys.canvas.height / 2 };
-		case DIRECTION.SOUTH:
-			return { x: scene.sys.canvas.width / 2, y: scene.sys.canvas.height - 8 };
-		case DIRECTION.WEST:
-			return { x: 8, y: scene.sys.canvas.height / 2 };
-		case DIRECTION.NORTH:
-			return { x: scene.sys.canvas.width / 2, y: 8 };
-		}
-	}
+	// static getDoorPosition(scene, direction) {
+	// 	switch(direction) {
+	// 	case DIRECTION.EAST:
+	// 		return { x: scene.sys.canvas.width - 8, y: scene.sys.canvas.height / 2 };
+	// 	case DIRECTION.SOUTH:
+	// 		return { x: scene.sys.canvas.width / 2, y: scene.sys.canvas.height - 8 };
+	// 	case DIRECTION.WEST:
+	// 		return { x: 8, y: scene.sys.canvas.height / 2 };
+	// 	case DIRECTION.NORTH:
+	// 		return { x: scene.sys.canvas.width / 2, y: 8 };
+	// 	}
+	// }
 }

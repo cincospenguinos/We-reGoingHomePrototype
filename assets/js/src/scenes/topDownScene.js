@@ -6,6 +6,7 @@
 import { KEYS, SPRITES, DIRECTION } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
 import { DungeonHelper } from '../helpers/dungeonHelper.js';
+import { Surface } from '../model/surface.js';
 
 export class TopDownScene extends Phaser.Scene {
 
@@ -27,6 +28,7 @@ export class TopDownScene extends Phaser.Scene {
 		SceneHelper.loadImage(this, SPRITES.laser);
 		SceneHelper.loadImage(this, SPRITES.mirror);
 		SceneHelper.loadSpritesheet(this, SPRITES.target);
+		SceneHelper.loadSpritesheet(this, SPRITES.topDownDoor);
 		this.load.tilemapTiledJSON('sandboxMap', 'assets/data/maps/sandbox.json');
 	}
 
@@ -49,7 +51,7 @@ export class TopDownScene extends Phaser.Scene {
 			paddingTop: 128,
 			paddingBottom: 64
 		};
-		
+
 		this.layout = DungeonHelper.generateTopDownLayout(this.puzzle, roomDimensions);
 		console.log(this.layout);
 
@@ -64,13 +66,35 @@ export class TopDownScene extends Phaser.Scene {
 			if (surface.isTarget) {
 				surfaceImg = puzzleItemGroup.create(surface.position.x, surface.position.y, SPRITES.target.key);
 				this.puzzle.complete ? surfaceImg.setFrame(1) : surfaceImg.setFrame(0);
-				surfaceImg.setScale(surface.scale).refreshBody();
 			} else if (surface.type === Surface.REFLECTIVE) {
 				surfaceImg = puzzleItemGroup.create(surface.position.x, surface.position.y, SPRITES.mirror.key);
 			} else {
-				throw 'I do not know what to put here.';
+				throw 'I do not have a sprite for this surface!';
 			}
+
+			surfaceImg.setScale(surface.scale).refreshBody();
 		});
+
+		// TODO: Setup exiting to the next puzzle
+		this.layout.exits.forEach((exit) => {
+			let exitImg = this.add.sprite(exit.position.x, exit.position.y, SPRITES.topDownDoor.key);
+
+			switch(exit.direction) {
+			case DIRECTION.EAST:
+				this.puzzle.complete ? exitImg.setFrame(7) : exitImg.setFrame(6);
+				break;
+			case DIRECTION.SOUTH:
+				this.puzzle.complete ? exitImg.setFrame(1) : exitImg.setFrame(0);
+				console.log(exit);
+				break;
+			case DIRECTION.WEST:
+				this.puzzle.complete ? exitImg.setFrame(3) : exitImg.setFrame(2);
+				break;
+			case DIRECTION.NORTH:
+				this.puzzle.complete ? exitImg.setFrame(5) : exitImg.setFrame(4);
+				break;
+			}
+		})
 
 		this.layout.panels.forEach((panel) => {
 			let panelSprite = this.add.sprite(panel.position.x, panel.position.y, SPRITES.panel.key).setInteractive();
@@ -151,7 +175,7 @@ export class TopDownScene extends Phaser.Scene {
 		}
 
 
-		this.input.on('pointerover', (a, b) => {
+		panelSprite.on('pointerover', (a, b) => {
 			switch(panel.direction) {
 			case DIRECTION.EAST:
 				panelSprite.setFrame(3);
@@ -168,7 +192,7 @@ export class TopDownScene extends Phaser.Scene {
 			}
 		});
 
-		this.input.on('pointerout', (a, b) => {
+		panelSprite.on('pointerout', (a, b) => {
 			switch(panel.direction) {
 			case DIRECTION.EAST:
 				panelSprite.setFrame(2);
@@ -185,7 +209,7 @@ export class TopDownScene extends Phaser.Scene {
 			}
 		});
 
-		this.input.on('pointerdown', (a, b) => {
+		panelSprite.on('pointerdown', (a, b) => {
 			// TODO: Open up the puzzle scene
 			console.log('Open the puzzle scene!');
 		});

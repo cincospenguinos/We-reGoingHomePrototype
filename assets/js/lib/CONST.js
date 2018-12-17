@@ -29,8 +29,7 @@ export const SPRITES = {
 	background: { key: 'shittyBackground', location: spriteDir + 'shittyBackground.png' },
 	panel: { key: 'panel', location: spriteDir + 'panel.png', frameWidth: 32, frameHeight: 32 },
 	exit: { key: 'exitButton', location: spriteDir + 'exit.png' },
-	doorHorizontal: { key: 'doorHorizontal', location: spriteDir + 'doorHorizontal.png' },
-	doorVertical: { key: 'doorVertical', location: spriteDir + 'doorVertical.png' }
+	topDownDoor: { key: 'topDownDoor', location: spriteDir + 'door.png', frameWidth: 128, frameHeight: 128 }
 };
 
 export const DIRECTION = {
