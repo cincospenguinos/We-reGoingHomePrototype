@@ -94,10 +94,24 @@ export class Puzzle {
 			}
 
 			if (!terminated) {
-				throw 'Add point into nothingness!';
+				let newPoint = { x: currentPoint.x, y: currentPoint.y };
+				switch(currentDirection) {
+				case Direction.EAST:
+					newPoint.x = this.dimensions.width;
+					break;
+				case Direction.SOUTH:
+					newPoint.y = this.dimensions.height;
+					break;
+				case Direction.WEST:
+					newPoint.x = 0;
+					break;
+				case Direction.NORTH:
+					newPoint.y = 0;
+					break;
+				}
+				path.push(newPoint);
 			}
 
-			console.log(path);
 			laser.path = path;
 		});
 	}
