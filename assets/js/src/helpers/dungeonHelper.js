@@ -78,7 +78,7 @@ export class DungeonHelper {
 
 			puzzle.addExit(new Exit({
 				position: exitData.position,
-				nextRoomKey: exitData.nextPuzzle,
+				nextPuzzleKey: exitData.nextPuzzleKey,
 				direction: direction
 			}));
 		});
@@ -180,9 +180,12 @@ export class DungeonHelper {
 				break;
 			}
 
+			console.log(exit)
+
 			layout.exits.push({
 				direction: exit.direction,
-				position: position
+				position: position,
+				nextPuzzleKey: exit.nextPuzzleKey
 			});
 		});
 
@@ -199,10 +202,11 @@ export class DungeonHelper {
 			let pt2 = laserPath[i + 1];
 
 			layout.lines.push({
-				x1: pt1.x,
-				y1: pt1.y,
-				x2: pt2.x,
-				y2: pt2.y
+				x1: pt1.x * k.x + padX,
+				y1: pt1.y * k.y + padY,
+				x2: pt2.x * k.x + padX,
+				y2: pt2.y * k.y + padY,
+				horizontal: pt1.y === pt2.y
 			});
 		}
 
@@ -234,18 +238,4 @@ export class DungeonHelper {
 
 		throw 'Surface type "' + str + '" is invalid!';
 	}
-
-	/** Helper method. gets the door position given the scene and the direction. */
-	// static getDoorPosition(scene, direction) {
-	// 	switch(direction) {
-	// 	case DIRECTION.EAST:
-	// 		return { x: scene.sys.canvas.width - 8, y: scene.sys.canvas.height / 2 };
-	// 	case DIRECTION.SOUTH:
-	// 		return { x: scene.sys.canvas.width / 2, y: scene.sys.canvas.height - 8 };
-	// 	case DIRECTION.WEST:
-	// 		return { x: 8, y: scene.sys.canvas.height / 2 };
-	// 	case DIRECTION.NORTH:
-	// 		return { x: scene.sys.canvas.width / 2, y: 8 };
-	// 	}
-	// }
 }

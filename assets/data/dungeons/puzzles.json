@@ -3,7 +3,7 @@
 		"dungeon0": {
 			"puzzles": [
 				{
-					"key": "sandbox",
+					"key": "puzzle0",
 					"dimensions": { "width": 800, "height": 600 },
 					"laser": {
 						"direction":"EAST",
@@ -23,20 +23,49 @@
 							"type": "REFLECTIVE",
 							"reflectiveDirection": "SOUTH",
 							"movable": true,
-							"position": { "x": 600, "y": 64 },
+							"position": { "x": 600, "y": 40 },
 							"dimensions": { "width": 32, "height": 32 }
 						}
 					],
 					"exits": [{
 						"direction": "NORTH",
 						"position": { "x": 250, "y": 600 },
-						"dimensions": { "width": 128, "height": 128 }
+						"dimensions": { "width": 128, "height": 128 },
+						"nextPuzzleKey": "puzzle1"
 					}],
 					"panels": [
 						{
 							"direction": "NORTH",
 							"position": { "x": 400, "y": 594 },
 							"dimensions": { "width": 8, "height": 8 }
+						}
+					],
+					"playerPosition": { "x": 200, "y": 550 }
+				},
+				{
+					"key": "puzzle1",
+					"dimensions": { "width": 800, "height": 600 },
+					"laser": {
+						"direction":"SOUTH",
+						"movable": false,
+						"position": { "x": 32, "y": 32 },
+						"dimensions": { "width": 64, "height": 64 }
+					},
+					"surfaces": [
+						{
+							"type":"OPAQUE",
+							"isTarget":true,
+							"movable": true,
+							"position": { "x": 600, "y": 480 },
+							"dimensions": { "width": 64, "height": 64 }
+						}
+					],
+					"exits": [],
+					"panels": [
+						{
+							"direction": "SOUTH",
+							"position": { "x": 400, "y": 4 },
+							"dimensions": { "width": 32, "height": 32 }
 						}
 					],
 					"playerPosition": { "x": 32, "y": 550 }
