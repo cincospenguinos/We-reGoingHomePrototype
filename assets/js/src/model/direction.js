@@ -12,6 +12,10 @@ export class Direction {
 		return newDir < 0 ? newDir + 4 : newDir % 4;
 	}
 
+	static validDirection(direction) {
+		return direction >= 0 && direction <= 3;
+	}
+
 	/** Helper method. Returns the direction given a direction string. */
 	static directionFromString(str) {
 		if (str === 'EAST') {
@@ -38,6 +42,22 @@ export class Direction {
 			return 'WEST';
 		case Direction.NORTH:
 			return 'NORTH';
+		default:
+			throw 'direction is not a valid direction! ' + direction;
+		}
+	}
+
+	/** Helper method. Returns the angle in degrees given the direction provided. East is always 0 degrees, and goes clockwise.*/
+	static angleFromDirection(direction) {
+		switch(direction) {
+		case Direction.EAST:
+			return 0;
+		case Direction.SOUTH:
+			return 90;
+		case Direction.WEST:
+			return 180;
+		case Direction.NORTH:
+			return 270;
 		default:
 			throw 'direction is not a valid direction! ' + direction;
 		}

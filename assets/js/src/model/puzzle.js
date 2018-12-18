@@ -8,7 +8,8 @@ import { Surface } from './surface.js';
 import { Laser } from './laser.js';
 import { PuzzleItem } from './puzzleItem.js';
 import { Exit } from './exit.js';
-import { DIRECTION } from '../../lib/CONST.js';
+import { Direction } from './direction.js';
+import { Target } from './target.js';
 
 export class Puzzle {
 
@@ -17,9 +18,10 @@ export class Puzzle {
 		this.key = opts.key;
 		this.roomKey = opts.key;
 
-		this.surfaces = [];
+		this.targets = {};
+		this.surfaces = {};
 		this.panels = [];
-		this.exits = [];
+		this.exits = {};
 		this.lasers = {};
 		this.solved = false;
 
@@ -30,17 +32,12 @@ export class Puzzle {
 
 	/** Add surface to the puzzle. */
 	addSurface(surface) {
-		surface instanceof Surface ? this.surfaces.push(surface) : (() => { throw 'surface must be an instance of Surface!'});
-	}
-
-	/** Adds the panel provided to the puzzle. */
-	addPanel(panel) {
-		panel instanceof PuzzleItem ? this.panels.push(panel) : (() => { throw 'panel must be an instance of Panel!'});
+		surface instanceof Surface ? this.surfaces[surface.key] = surface : (() => { throw 'surface must be an instance of Surface!'});
 	}
 
 	/** Adds the exit provided to the puzzle. */
 	addExit(exit) {
-		exit instanceof Exit ? this.exits.push(exit) : (() => { throw 'exit must ben an instance of Exit!'});
+		exit instanceof Exit ? this.exits[exit.key] = exit : (() => { throw 'exit must ben an instance of Exit!'});
 	}
 
 	/** Adds the laser provided. */
@@ -48,66 +45,75 @@ export class Puzzle {
 		laser instanceof Laser ? this.lasers[laser.key] = laser : (() => { throw 'laser must be an instance of Laser!' });
 	}
 
-	/** Returns the various points the laser passes through. To be used by graphics to draw laser. */
-	getLaserPath() {
-		if (!this.laser) {
-			throw 'Laser must be defined in puzzle before attempting to calculate a path';
-		}
+	/** Adds the target provided. */
+	addTarget(target) {
+		target instanceof Target ? this.targets[target.key] = target : (() => { throw 'target must be an instance of Target!' });
+	}
 
-		let currentPoint = this.laser.getLaserPoint();
-		let currentDirection = this.laser.direction;
-		let points = [currentPoint];
+	/** Adds the panel provided to the puzzle. */
+	addPanel(panel) {
+		panel instanceof PuzzleItem ? this.panels.push(panel) : (() => { throw 'panel must be an instance of Panel!'});
+	}
 
-		let closestSurface;
-		let terminated = false;
-		let solved = false;
+	/** Solves the puzzle. Sets up the solution variables of the various pieces according to its current state. */
+	solve() {
+		this.resetSolution();
 
-		do {
-			closestSurface = null;
-			this.getSurfacesInRange(currentPoint, currentDirection).forEach((s) => {
-				!closestSurface ? closestSurface = s : closestSurface = Surface.closestSurface(currentPoint, closestSurface, s);
-			});
+		let interactable = this.getLaserInteractable();
 
-			if (closestSurface) {
-				let newPoint = closestSurface.getCollisionPoint(currentPoint, currentDirection);
-				points.push(newPoint);
-				currentPoint = newPoint;
+		// Since there is a path for each laser, we must generate a path and assign it to each laser
+		this.getLasers().forEach((laser) => {
+			let currentPoint = laser.getLaserPoint(); // Current point we're looking at
+			let currentDirection = laser.direction; // Current direction the laser is facing
+			let path = [currentPoint]; // The path we will assign to our laser
+			let terminated = false; // Whether or not the laser's path terminated by hitting a surface
 
-				if (closestSurface.isTarget) {
-					solved = true;
-				}
+			// Get the closest item
+			while(!terminated) {
+				let closestItem = this.findClosestItem(interactable, currentPoint, currentDirection);
 
-				if (closestSurface.type === Surface.OPAQUE) {
-					terminated = true;
-					break;
+				if (closestItem) {
+					let collisionPoint = closestItem.getLaserCollisionPoint(currentPoint, currentDirection);
+					path.push(collisionPoint);
+
+					// Now that we know that the laser hits this item, we can handle it as we need to
+					if (closestItem instanceof Target) {
+						closestItem.addStrikingLaser(laser.key);
+						this.exits[closestItem.exitKey].isOpen = true;
+					}
+
+					if (closestItem.terminatesLaser) {
+						terminated = true;
+					} else {
+						currentPoint = collisionPoint;
+						currentDirection = closestItem.direction;
+					}
 				} else {
-					currentDirection = closestSurface.reflectiveDirection;
+					break;
 				}
-			} else {
-				break;
 			}
-		} while (closestSurface)
 
-		if (points.length === 1 || !terminated) {
-			switch(currentDirection) {
-			case DIRECTION.EAST:
-				points.push({ x: currentPoint.x + this.dimensions.width, y: currentPoint.y });
-				break;
-			case DIRECTION.SOUTH:
-				points.push({ x: currentPoint.x, y: currentPoint.y + this.dimensions.height });
-				break;
-			case DIRECTION.WEST:
-				points.push({ x: currentPoint.x - this.dimensions.width, y: currentPoint.y });
-				break;
-			case DIRECTION.NORTH:
-				points.push({ x: currentPoint.x, y: currentPoint.y - this.dimensions.height });
-				break;
+			if (!terminated) {
+				throw 'Add point into nothingness!';
 			}
+
+			console.log(path);
+			laser.path = path;
+		});
+	}
+
+	/** Helper method. Resets the various state variables so that they can be properly set by solve() */
+	resetSolution() {
+		Object.keys(this.exits).map((key) => { return this.exits[key] }).forEach((exit) => { exit.isOpen = false; });
+		Object.keys(this.targets).map((key) => { return this.targets[key] }).forEach((target) => { target.resetStrikingLasers(); });
+	}
+
+	getLaserPath(laserKey) {
+		let laser = this.lasers[laserKey];
+
+		if (!laser) {
+			throw 'No laser matching "' + laserKey + '" found!';
 		}
-
-		this.solved = solved;
-
-		return points;
 	}
 
 	/** Returns the target surface in the set of surfaces. */
@@ -115,8 +121,34 @@ export class Puzzle {
 		return this.surfaces.filter((s) => s.isTarget)[0];
 	}
 
-	/** Helper method. Returns all of the surfaces in range. */
-	getSurfacesInRange(currentPoint, currentDirection) {
-		return this.surfaces.filter((s) => s.getCollisionPoint(currentPoint, currentDirection) !== null);
+	/** Helper method. Returns the closest item in the list that the laser is intersecting, or null if none exists. */
+	findClosestItem(items, origin, direction) {
+		let relevantItems = items.filter((s) => s.getLaserCollisionPoint(origin, direction) !== null);
+
+		if (relevantItems.length === 1) {
+			return relevantItems[0];
+		} else if (relevantItems.length > 1) {
+			let closestItem = relevantItems[0];
+			for (let i = 1; i < closestItem.length; i++) {
+				closestItem = PuzzleItem.closestItem(closestItem, relevantItems[i]);
+			}
+			return closestItem;
+		} else {
+			return null;
+		}
+	}
+
+	/** Helper method. Returns all PuzzleItems that are interactable with a laser. */
+	getLaserInteractable() {
+		let surfaces = Object.keys(this.surfaces).map((sKey) => { return this.surfaces[sKey] });
+		let lasers = Object.keys(this.lasers).map((lKey) => { return this.lasers[lKey] });
+		let targets = Object.keys(this.targets).map((tKey) => { return this.targets[tKey] });
+
+		return surfaces.concat(lasers, targets).filter((i) => i.laserInteractable);
+	}
+
+	/** Helper method. Returns the lasers as an array. */
+	getLasers() {
+		return Object.keys(this.lasers).map((lKey) => { return this.lasers[lKey] });
 	}
 }

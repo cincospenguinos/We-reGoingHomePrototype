@@ -9,8 +9,10 @@
  * dimensions from the user to establish where it may be in space. Then we will use methods to
  * grab that data as needed in the various methods that manage it. This way we can test if our
  * algorithms work without having to write tons of code to do it.
+ *
+ * TODO: Override getCollisionPoint case
  */
-import { DIRECTION } from '../../lib/CONST.js';
+import { Direction } from './direction.js';
 import { PuzzleItem } from './puzzleItem.js';
 
 export class Surface extends PuzzleItem {
@@ -19,44 +21,51 @@ export class Surface extends PuzzleItem {
 		super(opts);
 
 		this.type = opts.type;
+		if (this.type === Surface.REFLECTIVE && !Direction.validDirection(this.direction)) {
+			throw 'Reflective surface requires a direction to direct lasers to!';
+		}
+
+		this.laserInteractable = true;
+		this.type === Surface.REFLECTIVE ? this.terminatesLaser = false : this.terminatesLaser = true;
 	}
 
 	/** Returns a collision point, or null if none exists. */
-	getCollisionPoint(point, approachingDirection) {
-		let extrema = this.getExtrema();
-		let centerPoint = this.getPosition();
+	// getLaserCollisionPoint(point, direction) {
+	// 	return super.getLaserCollisionPoint(point, direction);
 
-		switch(approachingDirection) {
-		case DIRECTION.EAST:
-			if (point.x < extrema.x.min && point.y > extrema.y.min && point.y < extrema.y.max) {
-				return { x: extrema.x.min, y: point.y };
-			}
+	// 	// TODO: Override this for the mirror case
+	// 	// let extrema = this.getExtrema();
+	// 	// let centerPoint = this.getPosition();
 
-			break;
-		case DIRECTION.SOUTH:
-			if (point.y < extrema.y.min && point.x > extrema.x.min && point.x < extrema.x.max) {
-				return { x: point.x, y: extrema.y.min };
-			}
+	// 	// switch(direction) {
+	// 	// case Direction.EAST:
+	// 	// 	if (point.x < extrema.x.min && point.y > extrema.y.min && point.y < extrema.y.max) {
+	// 	// 		return { x: extrema.x.min, y: point.y };
+	// 	// 	}
 
-			break;
-		case DIRECTION.WEST:
-			if (point.x > extrema.x.max && point.y > extrema.y.min && point.y < extrema.y.max) {
-				return { x: extrema.x.max, y: point.y};
-			}
+	// 	// 	break;
+	// 	// case Direction.SOUTH:
+	// 	// 	if (point.y < extrema.y.min && point.x > extrema.x.min && point.x < extrema.x.max) {
+	// 	// 		return { x: point.x, y: extrema.y.min };
+	// 	// 	}
 
-			break;
-		case DIRECTION.NORTH:
-			if (point.y > extrema.y.max && point.x > extrema.x.min && point.x < extrema.x.max) {
-				return { x: point.x, y: extrema.y.max };
-			}
+	// 	// 	break;
+	// 	// case Direction.WEST:
+	// 	// 	if (point.x > extrema.x.max && point.y > extrema.y.min && point.y < extrema.y.max) {
+	// 	// 		return { x: extrema.x.max, y: point.y};
+	// 	// 	}
 
-			break;
-		default:
-			throw 'Direction "' + approachingDirection + '" not valid!'
-		}
+	// 	// 	break;
+	// 	// case Direction.NORTH:
+	// 	// 	if (point.y > extrema.y.max && point.x > extrema.x.min && point.x < extrema.x.max) {
+	// 	// 		return { x: point.x, y: extrema.y.max };
+	// 	// 	}
 
-		return null;
-	}
+	// 	// 	break;
+	// 	// }
+
+	// 	// return null;
+	// }
 
 	/** Included for the case that we need to rotate and modify the reflective direction. */
 	rotate(degrees) {
@@ -64,21 +73,6 @@ export class Surface extends PuzzleItem {
 
 		if (this.type === Surface.REFLECTIVE) {
 			this.direction = PuzzleItem.rotatedDirection(this.direction, degrees);
-		}
-	}
-
-	/** Static helper method. Returns closest surface to the point provided. */
-	static closestSurface(point, surface1, surface2) {
-		let s1Pnt = surface1.getPosition();
-		let s2Pnt = surface2.getPosition();
-
-		let dist1 = { x: Math.abs(point.x - s1Pnt.x), y: Math.abs(point.y - s1Pnt.y) }
-		let dist2 = { x: Math.abs(point.x - s2Pnt.x), y: Math.abs(point.y - s2Pnt.y) }
-
-		if (Math.sqrt(dist1.x * dist1.x + dist1.y * dist1.y) < Math.sqrt(dist2.x * dist2.x + dist2.y * dist2.y)) {
-			return surface1;
-		} else {
-			return surface2;
 		}
 	}
 }
