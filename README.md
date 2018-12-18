@@ -15,7 +15,8 @@ These are important notes about the project that **MUST NEVER BE DELETED:**
 - [x] Add laser path and include collision using `Phaser.GameObjects.Zone`
 - [x] Add proper laser on mirror collisions
 - [x] Go from TopDownScene to PuzzleScene
-- [ ] Add navigation from one room to another in TopDownScene
+- [x] Add navigation from one room to another in TopDownScene
+- [ ] Ensure that the player position is preserved between puzzle changes and top-down traversal changes
 - [ ] Add collision between wall layer and player
 - [ ] Add old puzzles back in again, and experiment with proper room size
 - [ ] Create method to check if a puzzle's layout is valid

@@ -9,7 +9,7 @@ export class Exit {
 	
 	constructor(opts) {
 		this.position = opts.position;
-		this.nextRoomKey = opts.nextRoomKey;
+		this.nextPuzzleKey = opts.nextPuzzleKey;
 		this.direction = opts.direction
 	}
 

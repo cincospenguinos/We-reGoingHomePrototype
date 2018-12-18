@@ -17,6 +17,7 @@ export class TopDownScene extends Phaser.Scene {
 	init(data) {
 		this.puzzle = data.puzzle;
 		this.dungeon = data.dungeon;
+		this.player = data.player;
 	}
 
 	preload() {
@@ -75,9 +76,17 @@ export class TopDownScene extends Phaser.Scene {
 			surfaceImg.setScale(surface.scale).refreshBody();
 		});
 
+		this.layout.panels.forEach((panel) => {
+			let panelSprite = this.add.sprite(panel.position.x, panel.position.y, SPRITES.panel.key).setInteractive();
+			this.setupPanelInteractive(panel, panelSprite);
+		});
+
+		// Put together a new player
+		this.playerImg = this.physics.add.image(this.layout.player.position.x, this.layout.player.position.y, SPRITES.mainCharacter.key);
+
 		// TODO: Setup exiting to the next puzzle
 		this.layout.exits.forEach((exit) => {
-			let exitImg = this.add.sprite(exit.position.x, exit.position.y, SPRITES.topDownDoor.key);
+			let exitImg = this.physics.add.sprite(exit.position.x, exit.position.y, SPRITES.topDownDoor.key);
 
 			switch(exit.direction) {
 			case DIRECTION.EAST:
@@ -94,17 +103,14 @@ export class TopDownScene extends Phaser.Scene {
 				this.puzzle.complete ? exitImg.setFrame(5) : exitImg.setFrame(4);
 				break;
 			}
-		})
 
-		this.layout.panels.forEach((panel) => {
-			let panelSprite = this.add.sprite(panel.position.x, panel.position.y, SPRITES.panel.key).setInteractive();
-			this.setupPanelInteractive(panel, panelSprite);
+			this.physics.add.overlap(exitImg, this.playerImg, (evt) => {
+				let nextPuzzle = this.dungeon.getPuzzle(exit.nextPuzzleKey);
+				this.scene.start(KEYS.scene.topDownScene, { dungeon: this.dungeon, puzzle: nextPuzzle });
+			}, null, this);
 		});
 
-		// Put together a new player
-		this.playerImg = this.physics.add.image(this.layout.player.position.x, this.layout.player.position.y, SPRITES.mainCharacter.key);
-
-		// Draw the lines using graphics
+		// Draw the laser using graphics
 		let laserGraphics = this.add.graphics({
 			add: true,
 			lineStyle: {

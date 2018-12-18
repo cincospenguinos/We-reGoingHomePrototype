@@ -78,7 +78,7 @@ export class DungeonHelper {
 
 			puzzle.addExit(new Exit({
 				position: exitData.position,
-				nextRoomKey: exitData.nextPuzzle,
+				nextPuzzleKey: exitData.nextPuzzleKey,
 				direction: direction
 			}));
 		});
@@ -180,9 +180,12 @@ export class DungeonHelper {
 				break;
 			}
 
+			console.log(exit)
+
 			layout.exits.push({
 				direction: exit.direction,
-				position: position
+				position: position,
+				nextPuzzleKey: exit.nextPuzzleKey
 			});
 		});
 
@@ -235,18 +238,4 @@ export class DungeonHelper {
 
 		throw 'Surface type "' + str + '" is invalid!';
 	}
-
-	/** Helper method. gets the door position given the scene and the direction. */
-	// static getDoorPosition(scene, direction) {
-	// 	switch(direction) {
-	// 	case DIRECTION.EAST:
-	// 		return { x: scene.sys.canvas.width - 8, y: scene.sys.canvas.height / 2 };
-	// 	case DIRECTION.SOUTH:
-	// 		return { x: scene.sys.canvas.width / 2, y: scene.sys.canvas.height - 8 };
-	// 	case DIRECTION.WEST:
-	// 		return { x: 8, y: scene.sys.canvas.height / 2 };
-	// 	case DIRECTION.NORTH:
-	// 		return { x: scene.sys.canvas.width / 2, y: 8 };
-	// 	}
-	// }
 }
