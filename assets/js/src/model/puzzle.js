@@ -12,40 +12,40 @@ import { DIRECTION } from '../../lib/CONST.js';
 
 export class Puzzle {
 
-	constructor(width, height) {
-		this.dimensions = { width: width, height: height };
+	constructor(opts) {
+		this.dimensions = opts.key;
+		this.key = opts.key;
+		this.roomKey = opts.key;
 
 		this.surfaces = [];
 		this.panels = [];
 		this.exits = [];
+		this.lasers = {};
 		this.solved = false;
+
+		if (!this.key || !this.roomKey) {
+			throw 'Every Puzzle requires a key and must belong to a room!'
+		}
 	}
 
 	/** Add surface to the puzzle. */
 	addSurface(surface) {
-		if (surface instanceof Surface) {
-			this.surfaces.push(surface);
-		} else {
-			throw 'Expected "' + surface + '" to be a surface object';
-		}
+		surface instanceof Surface ? this.surfaces.push(surface) : (() => { throw 'surface must be an instance of Surface!'});
 	}
 
 	/** Adds the panel provided to the puzzle. */
 	addPanel(panel) {
-		if (panel instanceof PuzzleItem) {
-			this.panels.push(panel);
-		} else {
-			throw 'Expected "' + panel + '" to be a panel object!';
-		}
+		panel instanceof PuzzleItem ? this.panels.push(panel) : (() => { throw 'panel must be an instance of Panel!'});
 	}
 
 	/** Adds the exit provided to the puzzle. */
 	addExit(exit) {
-		if (exit instanceof Exit) {
-			this.exits.push(exit);
-		} else {
-			throw 'Expected "' + exit + '" to be an exit object!';
-		}
+		exit instanceof Exit ? this.exits.push(exit) : (() => { throw 'exit must ben an instance of Exit!'});
+	}
+
+	/** Adds the laser provided. */
+	addLaser(laser) {
+		laser instanceof Laser ? this.lasers[laser.key] = laser : (() => { throw 'laser must be an instance of Laser!' });
 	}
 
 	/** Returns the various points the laser passes through. To be used by graphics to draw laser. */

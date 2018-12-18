@@ -104,6 +104,7 @@ Since we are drawing a lot off of Zelda and D&D, we may want to explore combat e
 - [ ] Certain puzzle pieces are locked onto a track and can only be moved within a certain zone
 - [ ] Consider putting in a run button
 - [ ] Add a mini-map. Large rooms will be much more challenging to navigate without one.
+- [ ] We could have secret rooms or doors that open with specific targets to allow you to move from one dungeon to another
 
 ## Notes
 

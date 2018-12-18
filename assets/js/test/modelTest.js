@@ -7,19 +7,19 @@ import { PuzzleItem } from '../src/model/puzzleItem.js';
 import { Surface } from '../src/model/surface.js';
 import { Laser } from '../src/model/laser.js';
 import { Puzzle } from '../src/model/puzzle.js';
-import { DIRECTION } from '../lib/CONST.js';
+import { Direction } from '../src/model/direction.js';
 
 /*--- PuzzleItem tests */
 QUnit.test('rotatedDirectionTest', (assert) => {
-	assert.equal(PuzzleItem.rotatedDirection(DIRECTION.EAST, 90), DIRECTION.SOUTH);
-	assert.equal(PuzzleItem.rotatedDirection(DIRECTION.SOUTH, 90), DIRECTION.WEST);
-	assert.equal(PuzzleItem.rotatedDirection(DIRECTION.WEST, 90), DIRECTION.NORTH);
-	assert.equal(PuzzleItem.rotatedDirection(DIRECTION.NORTH, 90), DIRECTION.EAST);
+	assert.equal(Direction.directionFromRotation(Direction.EAST, 90), Direction.SOUTH);
+	assert.equal(Direction.directionFromRotation(Direction.SOUTH, 90), Direction.WEST);
+	assert.equal(Direction.directionFromRotation(Direction.WEST, 90), Direction.NORTH);
+	assert.equal(Direction.directionFromRotation(Direction.NORTH, 90), Direction.EAST);
 
-	assert.equal(PuzzleItem.rotatedDirection(DIRECTION.EAST, -90), DIRECTION.NORTH);
-	assert.equal(PuzzleItem.rotatedDirection(DIRECTION.SOUTH, -90), DIRECTION.EAST);
-	assert.equal(PuzzleItem.rotatedDirection(DIRECTION.WEST, -90), DIRECTION.SOUTH);
-	assert.equal(PuzzleItem.rotatedDirection(DIRECTION.NORTH, -90), DIRECTION.WEST);
+	assert.equal(Direction.directionFromRotation(Direction.EAST, -90), Direction.NORTH);
+	assert.equal(Direction.directionFromRotation(Direction.SOUTH, -90), Direction.EAST);
+	assert.equal(Direction.directionFromRotation(Direction.WEST, -90), Direction.SOUTH);
+	assert.equal(Direction.directionFromRotation(Direction.NORTH, -90), Direction.WEST);
 });
 
 /*--- Surface tests */

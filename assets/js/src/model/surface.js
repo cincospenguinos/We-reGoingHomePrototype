@@ -19,9 +19,6 @@ export class Surface extends PuzzleItem {
 		super(opts);
 
 		this.type = opts.type;
-		this.reflectiveDirection = opts.reflectiveDirection;
-		this.isTarget = opts.isTarget || false;
-		this.movable = opts.movable || false;
 	}
 
 	/** Returns a collision point, or null if none exists. */
@@ -66,7 +63,7 @@ export class Surface extends PuzzleItem {
 		super.rotate(degrees);
 
 		if (this.type === Surface.REFLECTIVE) {
-			this.reflectiveDirection = PuzzleItem.rotatedDirection(this.reflectiveDirection, degrees);
+			this.direction = PuzzleItem.rotatedDirection(this.direction, degrees);
 		}
 	}
 
