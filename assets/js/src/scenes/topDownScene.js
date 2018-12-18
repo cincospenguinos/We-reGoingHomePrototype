@@ -22,7 +22,7 @@ export class TopDownScene extends Phaser.Scene {
 
 	preload() {
 		// TODO: Include these with the SPRITES
-		this.load.image('tiles', 'assets/sprites/tilesheet.png');
+		this.load.image('tiles', 'assets/sprites/shittyTilesheet.png');
 		this.load.image('door', 'assets/sprites/door.png');
 		SceneHelper.loadImage(this, SPRITES.mainCharacter);
 		SceneHelper.loadSpritesheet(this, SPRITES.panel);
@@ -30,18 +30,21 @@ export class TopDownScene extends Phaser.Scene {
 		SceneHelper.loadImage(this, SPRITES.mirror);
 		SceneHelper.loadSpritesheet(this, SPRITES.target);
 		SceneHelper.loadSpritesheet(this, SPRITES.topDownDoor);
-		this.load.tilemapTiledJSON('sandboxMap', 'assets/data/maps/sandbox.json');
+		// this.load.tilemapTiledJSON('sandboxMap', 'assets/data/maps/sandbox.json');
+		this.load.tilemapTiledJSON('untitledMap', 'assets/data/maps/untitled.json');
 	}
 
 	create() {
 		// First generate the map
-		let sandboxMap = this.make.tilemap({ key: 'sandboxMap', tileWidth: 64, tileHeight: 64 });
+		let sandboxMap = this.make.tilemap({ key: 'untitledMap', tileWidth: 64, tileHeight: 64 });
 
 		const tileset = sandboxMap.addTilesetImage('tilesheet', 'tiles');
 
 		// TODO: Collisions with floorLayer
 		const floorLayer = sandboxMap.createStaticLayer('FloorLayer', tileset, 0, 0);
-		const wallLayer = sandboxMap.createStaticLayer('WallLayer', tileset, 0, 0);
+		const wallLayer = sandboxMap.createDynamicLayer('WallLayer', tileset, 0, 0);
+
+		wallLayer.setCollisionByProperty({ collides: true });
 
 		// Draw the layout
 		let roomDimensions = {
@@ -54,7 +57,6 @@ export class TopDownScene extends Phaser.Scene {
 		};
 
 		this.layout = DungeonHelper.generateTopDownLayout(this.puzzle, roomDimensions);
-		console.log(this.layout);
 
 		let puzzleItemGroup = this.physics.add.staticGroup();
 
@@ -84,7 +86,6 @@ export class TopDownScene extends Phaser.Scene {
 		// Put together a new player
 		this.playerImg = this.physics.add.image(this.layout.player.position.x, this.layout.player.position.y, SPRITES.mainCharacter.key);
 
-		// TODO: Setup exiting to the next puzzle
 		this.layout.exits.forEach((exit) => {
 			let exitImg = this.physics.add.sprite(exit.position.x, exit.position.y, SPRITES.topDownDoor.key);
 
@@ -94,7 +95,6 @@ export class TopDownScene extends Phaser.Scene {
 				break;
 			case DIRECTION.SOUTH:
 				this.puzzle.complete ? exitImg.setFrame(1) : exitImg.setFrame(0);
-				console.log(exit);
 				break;
 			case DIRECTION.WEST:
 				this.puzzle.complete ? exitImg.setFrame(3) : exitImg.setFrame(2);
@@ -119,7 +119,6 @@ export class TopDownScene extends Phaser.Scene {
 				alpha: 1
 			}
 		});
-
 		
 		this.layout.lines.forEach((line) => {
 			let midpoint = this.midpointOfLine(line);
@@ -142,11 +141,10 @@ export class TopDownScene extends Phaser.Scene {
 		});
 
 		// TODO: Look into adding the world boundaries
-
-		// console.log(this.puzzle.player.img);
-		// console.log(laserImg);
-
+		this.physics.world.setBounds(0, 0, sandboxMap.widthInPixels, sandboxMap.heightInPixels, true, true, true, true);
+		this.playerImg.setCollideWorldBounds(true);
 		this.physics.add.collider(this.playerImg, puzzleItemGroup);
+		this.physics.add.collider(this.playerImg, wallLayer);
 
 		// And now the camera
 		this.cameras.main.setBounds(0, 0, sandboxMap.widthInPixels, sandboxMap.heightInPixels);

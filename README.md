@@ -16,9 +16,8 @@ These are important notes about the project that **MUST NEVER BE DELETED:**
 - [x] Add proper laser on mirror collisions
 - [x] Go from TopDownScene to PuzzleScene
 - [x] Add navigation from one room to another in TopDownScene
+- [x] Add collision between wall layer and player
 - [ ] Ensure that the player position is preserved between puzzle changes and top-down traversal changes
-- [ ] Add collision between wall layer and player
-- [ ] Add old puzzles back in again, and experiment with proper room size
 - [ ] Create method to check if a puzzle's layout is valid
 - [ ] Make the line terminate at the wall in the model
 
@@ -91,6 +90,7 @@ Since we are drawing a lot off of Zelda and D&D, we may want to explore combat e
 
 - [ ] Rotate pieces of the puzzle on mouse scroll over
 	* Some pieces can be rotated, some can be moved, and some select few can have both occur
+	* I like this idea, but it will have to be hacked into Phaser 3. Perhaps I can code it up and submit a pull request.
 - [ ] Allow for eight directions instead of the cardinal four
 - [ ] Have lasers be determined by their colors, and do not allow lasers to cross each other
 - [ ] Allow surfaces to reflect from certain sides of themselves, or have it change depending on the direction the light comes from
