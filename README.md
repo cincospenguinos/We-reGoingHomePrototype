@@ -17,9 +17,7 @@ These are important notes about the project that **MUST NEVER BE DELETED:**
 - [x] Go from TopDownScene to PuzzleScene
 - [x] Add navigation from one room to another in TopDownScene
 - [x] Add collision between wall layer and player
-- [ ] Ensure that the player position is preserved between puzzle changes and top-down traversal changes
-- [ ] Create method to check if a puzzle's layout is valid
-- [ ] Make the line terminate at the wall in the model
+- [x] Ensure that the player position is preserved between puzzle changes and top-down traversal changes
 
 ## The Story
 

@@ -17,7 +17,7 @@ export class TopDownScene extends Phaser.Scene {
 	init(data) {
 		this.puzzle = data.puzzle;
 		this.dungeon = data.dungeon;
-		this.player = data.player;
+		this.playerPosition = data.playerPosition;
 	}
 
 	preload() {
@@ -84,7 +84,13 @@ export class TopDownScene extends Phaser.Scene {
 		});
 
 		// Put together a new player
-		this.playerImg = this.physics.add.image(this.layout.player.position.x, this.layout.player.position.y, SPRITES.mainCharacter.key);
+		if (this.playerPosition) {
+			this.playerImg = this.physics.add.image(this.playerPosition.x, this.playerPosition.y, SPRITES.mainCharacter.key);
+		} else {
+			this.playerImg = this.physics.add.image(this.layout.player.position.x, this.layout.player.position.y, SPRITES.mainCharacter.key);
+		}
+
+		console.log(this.playerImg);
 
 		this.layout.exits.forEach((exit) => {
 			let exitImg = this.physics.add.sprite(exit.position.x, exit.position.y, SPRITES.topDownDoor.key);
@@ -106,7 +112,10 @@ export class TopDownScene extends Phaser.Scene {
 
 			this.physics.add.overlap(exitImg, this.playerImg, (evt) => {
 				let nextPuzzle = this.dungeon.getPuzzle(exit.nextPuzzleKey);
-				this.scene.start(KEYS.scene.topDownScene, { dungeon: this.dungeon, puzzle: nextPuzzle });
+				this.scene.start(KEYS.scene.topDownScene, { 
+					dungeon: this.dungeon, 
+					puzzle: nextPuzzle, 
+				});
 			}, null, this);
 		});
 
@@ -245,8 +254,8 @@ export class TopDownScene extends Phaser.Scene {
 		});
 
 		panelSprite.on('pointerdown', (a, b) => {
-			// TODO: Open up the puzzle scene
-			this.scene.start(KEYS.scene.puzzleScene, { dungeon: this.dungeon, puzzle: this.puzzle, player: this.puzzle.player });
+			// TODO: Add the player here
+			this.scene.start(KEYS.scene.puzzleScene, { dungeon: this.dungeon, puzzle: this.puzzle, playerPosition: { x: this.playerImg.x, y: this.playerImg.y }  });
 		});
 	}
 
