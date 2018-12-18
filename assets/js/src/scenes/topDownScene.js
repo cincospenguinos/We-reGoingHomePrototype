@@ -90,8 +90,6 @@ export class TopDownScene extends Phaser.Scene {
 			this.playerImg = this.physics.add.image(this.layout.player.position.x, this.layout.player.position.y, SPRITES.mainCharacter.key);
 		}
 
-		console.log(this.playerImg);
-
 		this.layout.exits.forEach((exit) => {
 			let exitImg = this.physics.add.sprite(exit.position.x, exit.position.y, SPRITES.topDownDoor.key);
 
