@@ -119,6 +119,9 @@ Since we are drawing a lot off of Zelda and D&D, we may want to explore combat e
 * [This](https://medium.com/@michaelwesthadley/modular-game-worlds-in-phaser-3-tilemaps-1-958fc7e6bbd6) article goes over how to do tilemaps. Holy shit it's so helpful.
 * The puzzle items will all be 32x32 when in puzzle mode, but will be 256x256 in large mode
 	* **That is a scale of 8**. This is also subject to change.
+* [This video](https://www.youtube.com/watch?v=zsjC6fa_YBg) on puzzle design is excellent
+* Also [this video](https://www.youtube.com/watch?v=2zK8ItePe3Y) on how Jonathan Blow designs puzzles
+* [Here](https://www.youtube.com/watch?v=fJosaT1sCfs) is an interesting animation video
 
 ### Design Notes
 
