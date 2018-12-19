@@ -28,9 +28,18 @@ export class PuzzleScene extends Phaser.Scene {
 		SceneHelper.loadImage(this, SPRITES.puzzlePanel);
 		SceneHelper.loadImage(this, SPRITES.puzzleExit);
 		SceneHelper.loadImage(this, SPRITES.puzzlePlayer);
+		SceneHelper.loadImage(this, SPRITES.closePanelButton);
 	}
 
 	create() {
+		this.add.graphics({
+				add: true,
+				fillStyle: {
+					color: 0X989898,
+					alpha: 1
+				}
+			}).fillRect(0, 0, this.puzzle.dimensions.width, this.puzzle.dimensions.height);
+
 		// Since the size of the puzzles change, we need to change the size of the world to accomodate. We need to figure out
 		// the width and height of the puzzle, find the difference between the size of the canvas and and the puzzle, and
 		// then use that to determine the padding in various ways
@@ -84,7 +93,15 @@ export class PuzzleScene extends Phaser.Scene {
 		this.puzzle.getExits().forEach((exit) => {
 			let exitPosition = exit.getPosition();
 			let exitImage = this.add.image(exitPosition.x, exitPosition.y, SPRITES.puzzleExit.key);
-		})
+		});
+
+		let exitButton = this.add.image(this.puzzle.dimensions.width - 8, 8, SPRITES.closePanelButton.key);
+		exitButton.setInteractive();
+		exitButton.on('pointerdown', (a, b) => {
+			if (this.puzzle.valid) {
+				this.scene.start(KEYS.scene.topDownScene, { puzzle: this.puzzle, dungeon: this.dungeon, roomKey: this.puzzle.roomKey })
+			}
+		});
 
 		// Since we want the laser on top of everything else, we should draw the laser on top of everything:
 		this.puzzle.getLasers().forEach((laser) => {

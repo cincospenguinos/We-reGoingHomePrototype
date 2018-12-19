@@ -12,7 +12,7 @@
 		"puzzle0": {
 			"key": "puzzle0",
 			"roomKey": "room0",
-			"dimensions": { "width": 250, "height": 250 },
+			"dimensions": { "width": 248, "height": 248 },
 			"lasers": [
 				{
 					"key": "laser0",

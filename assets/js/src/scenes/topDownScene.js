@@ -17,28 +17,29 @@ export class TopDownScene extends Phaser.Scene {
 	init(data) {
 		this.puzzle = data.puzzle;
 		this.dungeon = data.dungeon;
+		this.roomKey = data.roomKey;
 		this.playerPosition = data.playerPosition;
 	}
 
 	preload() {
-		// TODO: Include these with the SPRITES
-		this.load.image('tiles', 'assets/sprites/shittyTilesheet.png');
-		this.load.image('door', 'assets/sprites/door.png');
+		SceneHelper.loadImage(this, SPRITES.shittyTilesheet);
+		this.load.tilemapTiledJSON(this.roomKey, 'assets/data/maps/' + this.roomKey + '.json');
+		
 		SceneHelper.loadImage(this, SPRITES.mainCharacter);
-		SceneHelper.loadSpritesheet(this, SPRITES.panel);
-		SceneHelper.loadImage(this, SPRITES.laser);
-		SceneHelper.loadImage(this, SPRITES.mirror);
-		SceneHelper.loadSpritesheet(this, SPRITES.target);
-		SceneHelper.loadSpritesheet(this, SPRITES.topDownDoor);
-		// this.load.tilemapTiledJSON('sandboxMap', 'assets/data/maps/sandbox.json');
-		this.load.tilemapTiledJSON('untitledMap', 'assets/data/maps/untitled.json');
+		SceneHelper.loadSpritesheet(this, SPRITES.roompanel);
+		SceneHelper.loadSpritesheet(this, SPRITES.roomLaser);
+		SceneHelper.loadSpritesheet(this, SPRITES.roomMirror);
+		SceneHelper.loadSpritesheet(this, SPRITES.roomTarget);
+		SceneHelper.loadImage(this, SPRITES.roomExit);
 	}
 
 	create() {
-		// First generate the map
-		let sandboxMap = this.make.tilemap({ key: 'untitledMap', tileWidth: 64, tileHeight: 64 });
+		throw 'Fix me!';
 
-		const tileset = sandboxMap.addTilesetImage('tilesheet', 'tiles');
+		// First generate the map
+		let sandboxMap = this.make.tilemap({ key: this.roomKey, tileWidth: 64, tileHeight: 64 });
+
+		const tileset = sandboxMap.addTilesetImage(SPRITES.shittyTilesheet.key, SPRITES.shittyTilesheet.key);
 
 		// TODO: Collisions with floorLayer
 		const floorLayer = sandboxMap.createStaticLayer('FloorLayer', tileset, 0, 0);

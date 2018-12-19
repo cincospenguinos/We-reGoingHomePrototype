@@ -25,6 +25,7 @@ export const SPRITES = {
 	puzzlePanel: { key: 'puzzlePanel', location: spriteDir + 'puzzle/panel.png' },
 	puzzleExit: { key: 'puzzleExit', location: spriteDir + 'puzzle/exit.png' },
 	puzzlePlayer: { key: 'puzzlePlayer', location: spriteDir + 'puzzle/player.png' },
+	closePanelButton: { key: 'closePanelButton', location: spriteDir + 'puzzle/closePanelButton.png' },
 
 	// Room-sized sprites
 	roomLaser: { key: 'roomLaser', location: spriteDir + 'room/laser.png', frameWidth: 256, frameHeight: 256 },
@@ -34,13 +35,16 @@ export const SPRITES = {
 	roomExit: { key: 'roomExit', location: spriteDir + 'room/exit.png', frameWidth: 64, frameHeight: 64 },
 	roomPlayer: { key: 'roomPlayer', location: spriteDir + 'room/player.png' },
 
-	// mainCharacter: { key: 'somethingelse', location: spriteDir + 'nameoffile.png' }
 	mainCharacter: { key: 'mainCharacter', location: spriteDir + 'mainCharacter.png' },
-	background: { key: 'shittyBackground', location: spriteDir + 'shittyBackground.png' },
-	panel: { key: 'panel', location: spriteDir + 'panel.png', frameWidth: 32, frameHeight: 32 },
-	exit: { key: 'exitButton', location: spriteDir + 'exit.png' },
-	topDownDoor: { key: 'topDownDoor', location: spriteDir + 'door.png', frameWidth: 128, frameHeight: 128 }
+	topDownDoor: { key: 'topDownDoor', location: spriteDir + 'door.png', frameWidth: 128, frameHeight: 128 },
+
+	// Tilesheet shit
+	shittyTilesheet: { key: 'shittyTilesheet', location: spriteDir + 'shittyTilesheet.png' },
 };
+
+export const ROOMS = {
+	room0: 'room0'
+}
 
 export const DIRECTION = {
 	EAST: 0,
