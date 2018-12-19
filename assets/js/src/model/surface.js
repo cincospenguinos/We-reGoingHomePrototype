@@ -21,6 +21,7 @@ export class Surface extends PuzzleItem {
 		super(opts);
 
 		this.type = opts.type;
+		
 		if (this.type === Surface.REFLECTIVE && !Direction.validDirection(this.direction)) {
 			throw 'Reflective surface requires a direction to direct lasers to!';
 		}
@@ -71,9 +72,20 @@ export class Surface extends PuzzleItem {
 	rotate(degrees) {
 		super.rotate(degrees);
 
-		if (this.type === Surface.REFLECTIVE) {
-			this.direction = PuzzleItem.rotatedDirection(this.direction, degrees);
+		// if (this.type === Surface.REFLECTIVE) {
+		// 	this.direction = PuzzleItem.rotatedDirection(this.direction, degrees);
+		// }
+	}
+
+	/** Helper method. Returns the surface type enum from the string provided. */
+	static typeFromString(str) {
+		if (str === 'OPAQUE') {
+			return Surface.OPAQUE;
+		} else if (str === 'REFLECTIVE') {
+			return Surface.REFLECTIVE;
 		}
+
+		throw 'Surface type "' + str + '" is invalid!';
 	}
 }
 

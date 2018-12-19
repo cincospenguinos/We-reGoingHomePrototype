@@ -62,21 +62,11 @@ export class DungeonHelper {
 			puzzle.addTarget(new Target(targetData));
 		});
 
-		// console.log(puzzle);
-		// throw 'Fix me!';
-
-		// puzzleData.surfaces.forEach((surfaceData) => {
-		// 	puzzle.addSurface(new Surface({
-		// 		type: this.surfaceTypeFromString(surfaceData.type),
-		// 		isTarget: surfaceData.isTarget,
-		// 		reflectiveDirection: this.directionFromString(surfaceData.reflectiveDirection),
-		// 		movable: surfaceData.movable,
-		// 		rotatable: surfaceData.rotatable,
-		// 		position: surfaceData.position,
-		// 		dimensions: surfaceData.dimensions,
-		// 		direction: this.directionFromString(surfaceData.reflectiveDirection)
-		// 	}));
-		// });
+		puzzleData.surfaces.forEach((surfaceData) => {
+			surfaceData.type = Surface.typeFromString(surfaceData.type);
+			surfaceData.direction = Direction.directionFromString(surfaceData.direction);
+			puzzle.addSurface(new Surface(surfaceData));
+		});
 
 		// puzzleData.panels.forEach((panelData) => {
 		// 	puzzle.addPanel(new PuzzleItem({
@@ -224,31 +214,5 @@ export class DungeonHelper {
 		}
 
 		return layout;
-	}
-
-	/** Helper method. Returns the direction given a direction string. */
-	static directionFromString(str) {
-		if (str === 'EAST') {
-			return DIRECTION.EAST;
-		} else if (str === 'SOUTH') {
-			return DIRECTION.SOUTH;
-		} else if (str === 'WEST') {
-			return DIRECTION.WEST;
-		} else if (str === 'NORTH') {
-			return DIRECTION.NORTH;
-		}
-
-		return undefined;
-	}
-
-	/** Helper method. Returns the surface type given the string provided. */
-	static surfaceTypeFromString(str) {
-		if (str === 'OPAQUE') {
-			return Surface.OPAQUE;
-		} else if (str === 'REFLECTIVE') {
-			return Surface.REFLECTIVE;
-		}
-
-		throw 'Surface type "' + str + '" is invalid!';
 	}
 }

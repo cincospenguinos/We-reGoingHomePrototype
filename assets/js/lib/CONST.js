@@ -21,16 +21,13 @@ export const SPRITES = {
 	// Puzzle-sized sprites
 	puzzleLaser: { key: 'puzzleLaser', location: spriteDir + 'puzzle/laser.png', frameWidth: 32, frameHeight: 32 },
 	puzzleTarget: { key: 'puzzleTarget', location: spriteDir + 'puzzle/target.png', frameWidth: 32, frameHeight: 32 },
+	puzzleMirror: { key: 'puzzleMirror', location: spriteDir + 'puzzle/mirror.png', frameWidth: 16, frameHeight: 16 },
 
 	// Room-sized sprites
 	roomLaser: { key: 'roomLaser', location: spriteDir + 'room/laser.png', frameWidth: 256, frameHeight: 256 },
 	roomTarget: { key: 'roomTarget', location: spriteDir + 'room/target.png', frameWidth: 256, frameHeight: 256 },
+	roomMirror: { key: 'roomMirror', location: spriteDir + 'room/mirror.png', frameWidth: 128, frameHeight: 128 },
 
-	mirror: { key: 'mirror', location: spriteDir + 'mirror.png' },
-	opaqueSurface: { key: 'opaqueSurface', location: spriteDir + 'opaqueSurface.png' },
-	menuOne: { key: 'menuOne', location: spriteDir + 'one.png' },
-	target: { key: 'target', location: spriteDir + 'target.png', frameWidth: 64, frameHeight: 64 },
-	completeButton: { key: 'completeButton', location: spriteDir + 'complete.png' },
 	// mainCharacter: { key: 'somethingelse', location: spriteDir + 'nameoffile.png' }
 	mainCharacter: { key: 'mainCharacter', location: spriteDir + 'mainCharacter.png' },
 	background: { key: 'shittyBackground', location: spriteDir + 'shittyBackground.png' },

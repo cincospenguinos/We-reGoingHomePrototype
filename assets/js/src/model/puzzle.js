@@ -67,14 +67,16 @@ export class Puzzle {
 			let currentDirection = laser.direction; // Current direction the laser is facing
 			let path = [currentPoint]; // The path we will assign to our laser
 			let terminated = false; // Whether or not the laser's path terminated by hitting a surface
+			let lastItem = null;
 
 			// Get the closest item
 			while(!terminated) {
 				let closestItem = this.findClosestItem(interactable, currentPoint, currentDirection);
 
-				if (closestItem) {
+				if (closestItem && closestItem !== lastItem) {
 					let collisionPoint = closestItem.getLaserCollisionPoint(currentPoint, currentDirection);
 					path.push(collisionPoint);
+					lastItem = closestItem;
 
 					// Now that we know that the laser hits this item, we can handle it as we need to
 					if (closestItem instanceof Target) {

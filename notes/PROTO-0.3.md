@@ -27,6 +27,9 @@
 * Creating a "Model-View" architecture out of the puzzle pieces leads to cleaner code, but creates some unique issues:
 	* There are magic numbers now for what frames do what when hovering over items. This should be cleaned up.
 	* I believe there is a way to import a spritesheet and name each of the frames. Do research on this. That would make this code base a WHOLE lot cleaner to work with
+* Holy shit test-driven development is the only way to make anything
+	* Over and over again issues that I saw on the front end were discovered and fixed by referring back to the tests that I wrote and checking to make sure they were working properly
+	* Always, always, **ALWAYS WRITE YOUR TESTS FIRST**, *then* go ahead with the implementation and images. This forces you to consider how you want your model to be designed and to check if that design is working properly
 
 ## To Improve
 

@@ -24,6 +24,7 @@ export class PuzzleScene extends Phaser.Scene {
 	preload() {
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleLaser);
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleTarget);
+		SceneHelper.loadSpritesheet(this, SPRITES.puzzleMirror);
 		// SceneHelper.loadImage(this, SPRITES.mirror);
 		// SceneHelper.loadImage(this, SPRITES.exit);
 	}
@@ -66,34 +67,22 @@ export class PuzzleScene extends Phaser.Scene {
 			target.setImg(targetImage);
 		});
 
-		// Create the targets
+		this.puzzle.getSurfaces().forEach((surface) => {
+			let surfacePosition = surface.getPosition();
+			let surfaceImage = null;
 
-		// Create all of the surfaces
-		// this.puzzle.surfaces.forEach((surface) => {
-		// 	let position = surface.getPosition();
-		// 	let surfaceImage;
+			if (surface.type === Surface.REFLECTIVE) {
+				surfaceImage = this.physics.add.sprite(surfacePosition.x, surfacePosition.y, SPRITES.puzzleMirror.key);
+			} else {
+				throw 'Need an opaque surface!';
+			}
 
-		// 	if (surface.isTarget) {
-		// 		surfaceImage = this.physics.add.sprite(position.x, position.y, SPRITES.target.key);
-		// 		surfaceImage.setFrame(0);
-		// 	} else if (surface.type === Surface.OPAQUE) {
-		// 		surfaceImage = this.physics.add.image(position.x, position.y, SPRITES.opaqueSurface.key);
-		// 	} else {
-		// 		surfaceImage = this.physics.add.image(position.x, position.y, SPRITES.mirror.key);
-		// 	}
+			if (surface.movable || surface.rotatable) {
+				this.setupInteractivity(surface, surfaceImage);
+			}
 
-		// 	if (surface.movable || surface.rotatable) {
-		// 		this.setupInteractivity(surface, surfaceImage);
-		// 	}
-
-		// 	surface.img = surfaceImage;
-		// });
-
-		// // Create the exit button in the top right-hand corner
-		// let exitImage = this.add.image(this.sys.canvas.width - 16, 8, SPRITES.exit.key).setInteractive();
-		// exitImage.on('pointerdown', (evt, objects) => {
-		// 	this.scene.start(KEYS.scene.topDownScene, { dungeon: this.dungeon, puzzle: this.puzzle, playerPosition: this.playerPosition });
-		// });
+			surface.setImg(surfaceImage);
+		});
 
 		// Handle other input bits
 		this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
