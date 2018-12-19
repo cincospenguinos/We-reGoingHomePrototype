@@ -3,15 +3,18 @@
  *
  * An exit from a puzzle room to another.
  */
+import { PuzzleItem } from './puzzleItem.js';
 import { Direction } from './direction.js';
 
-export class Exit {
+export class Exit extends PuzzleItem {
 	
 	constructor(opts) {
+		super(opts);
+
 		this.key = opts.key;
 		this.laserKeys = opts.laserKeys;
 		this.position = opts.position;
-		this.nextPuzzleKey = opts.nextPuzzleKey;
+		this.nextRoomKey = opts.nextRoomKey;
 		this.direction = opts.direction;
 
 		this.isOpen = false;

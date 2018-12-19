@@ -24,53 +24,6 @@ export class Surface extends PuzzleItem {
 		this.terminatesLaser = this.type === Surface.REFLECTIVE ? false : true;
 	}
 
-	/** Returns a collision point, or null if none exists. */
-	// getLaserCollisionPoint(point, direction) {
-	// 	return super.getLaserCollisionPoint(point, direction);
-
-	// 	// TODO: Override this for the mirror case
-	// 	// let extrema = this.getExtrema();
-	// 	// let centerPoint = this.getPosition();
-
-	// 	// switch(direction) {
-	// 	// case Direction.EAST:
-	// 	// 	if (point.x < extrema.x.min && point.y > extrema.y.min && point.y < extrema.y.max) {
-	// 	// 		return { x: extrema.x.min, y: point.y };
-	// 	// 	}
-
-	// 	// 	break;
-	// 	// case Direction.SOUTH:
-	// 	// 	if (point.y < extrema.y.min && point.x > extrema.x.min && point.x < extrema.x.max) {
-	// 	// 		return { x: point.x, y: extrema.y.min };
-	// 	// 	}
-
-	// 	// 	break;
-	// 	// case Direction.WEST:
-	// 	// 	if (point.x > extrema.x.max && point.y > extrema.y.min && point.y < extrema.y.max) {
-	// 	// 		return { x: extrema.x.max, y: point.y};
-	// 	// 	}
-
-	// 	// 	break;
-	// 	// case Direction.NORTH:
-	// 	// 	if (point.y > extrema.y.max && point.x > extrema.x.min && point.x < extrema.x.max) {
-	// 	// 		return { x: point.x, y: extrema.y.max };
-	// 	// 	}
-
-	// 	// 	break;
-	// 	// }
-
-	// 	// return null;
-	// }
-
-	/** Included for the case that we need to rotate and modify the reflective direction. */
-	rotate(degrees) {
-		super.rotate(degrees);
-
-		if (this.type === Surface.REFLECTIVE) {
-			this.reflectiveDirection = PuzzleItem.rotatedDirection(this.direction, degrees);
-		}
-	}
-
 	/** Returns the reflective direction of this surface given the direction the laser is approaching, or null if it does not reflect.*/
 	reflectiveDirection(approachingDirection) {// NOTE: approachingDirection means "the laser is going in that direction"
 		if (this.type === Surface.REFLECTIVE) {

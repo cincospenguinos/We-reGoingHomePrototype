@@ -68,23 +68,15 @@ export class DungeonHelper {
 			puzzle.addSurface(new Surface(surfaceData));
 		});
 
-		// puzzleData.panels.forEach((panelData) => {
-		// 	puzzle.addPanel(new PuzzleItem({
-		// 		position: panelData.position,
-		// 		dimensions: panelData.dimensions,
-		// 		direction: this.directionFromString(panelData.direction)
-		// 	}));
-		// });
+		puzzleData.panels.forEach((panelData) => { // NOTE: The panel's direction is used to determine where in the room it is
+			panelData.direction = Direction.directionFromString(panelData.direction);
+			puzzle.addPanel(new PuzzleItem(panelData));
+		});
 
-		// puzzleData.exits.forEach((exitData) => {
-		// 	let direction = this.directionFromString(exitData.direction);
-
-		// 	puzzle.addExit(new Exit({
-		// 		position: exitData.position,
-		// 		nextPuzzleKey: exitData.nextPuzzleKey,
-		// 		direction: direction
-		// 	}));
-		// });
+		puzzleData.exits.forEach((exitData) => {
+			exitData.direction = Direction.directionFromString(exitData.direction);
+			puzzle.addExit(new Exit(exitData));
+		});
 
 		// puzzle.player = new Player({
 		// 	position: { x: puzzleData.playerPosition.x, y: puzzleData.playerPosition.y },

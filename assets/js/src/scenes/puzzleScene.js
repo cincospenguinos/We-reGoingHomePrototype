@@ -25,6 +25,8 @@ export class PuzzleScene extends Phaser.Scene {
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleLaser);
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleTarget);
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleMirror);
+		SceneHelper.loadImage(this, SPRITES.puzzlePanel);
+		SceneHelper.loadImage(this, SPRITES.puzzleExit);
 	}
 
 	create() {
@@ -43,15 +45,6 @@ export class PuzzleScene extends Phaser.Scene {
 			}
 
 			laser.setImg(laserImage);
-
-			this.laserGraphics[laser.key] = this.add.graphics({
-				add: true,
-				lineStyle: {
-					width: 1,
-					color: laser.color,
-					alpha: 1
-				}
-			});
 		});
 
 		this.puzzle.getTargets().forEach((target) => {
@@ -80,6 +73,28 @@ export class PuzzleScene extends Phaser.Scene {
 			}
 
 			surface.setImg(surfaceImage);
+		});
+
+		this.puzzle.panels.forEach((panel) => {
+			let panelPosition = panel.getPosition();
+			let panelImage = this.add.image(panelPosition.x, panelPosition.y, SPRITES.puzzlePanel.key);
+		});
+
+		this.puzzle.getExits().forEach((exit) => {
+			let exitPosition = exit.getPosition();
+			let exitImage = this.add.image(exitPosition.x, exitPosition.y, SPRITES.puzzleExit.key);
+		})
+
+		// Since we want the laser on top of everything else, we should draw the laser on top of everything:
+		this.puzzle.getLasers().forEach((laser) => {
+			this.laserGraphics[laser.key] = this.add.graphics({
+				add: true,
+				lineStyle: {
+					width: 1,
+					color: laser.color,
+					alpha: 1
+				}
+			});
 		});
 
 		// Handle other input bits

@@ -33,8 +33,23 @@
 					"dimensions": { "width": 16, "height": 16 }
 				}
 			],
-			"exits": [],
-			"panels": [],
+			"exits": [
+				{
+					"key": "exit0",
+					"laserKeys": ["laser0"],
+					"direction": "NORTH",
+					"nextRoomKey": "room1",
+					"position": { "x": 108, "y": 8 },
+					"dimensions": { "width": 16, "height": 16 }
+				}
+			],
+			"panels": [ 
+				{
+					"position": { "x": 125, "y": 4 },
+					"dimensions": { "width": 8, "height": 8 },
+					"direction": "SOUTH"
+				}
+			],
 			"targets": [ 
 				{
 					"key": "target0",
