@@ -128,6 +128,31 @@ export class Puzzle {
 				path.push(newPoint);
 			}
 
+			// Now let's check if any of the points in the path hit the player
+			if (this.player) {
+				let validity = true;
+				for (let i = 0; i < path.length - 1; i++) {
+					let line = { x1: path[i].x, y1: path[i].y, x2: path[i + 1].x, y2: path[i + 1].y };
+					let playerBounds = this.player.getExtrema();
+
+					if (line.y1 === line.y2) { // line is horizontal
+						if (line.y1 > playerBounds.y.min && line.y2 < playerBounds.y.max 
+							&& this.player.getPosition().x < Math.max(line.x1, line.x2)
+							&& this.player.getPosition().x > Math.min(line.x1, line.x2)) {
+							validity = false;
+						}
+					} else { // line is vertical
+						if (line.x1 > playerBounds.x.min && line.x2 < playerBounds.x.max 
+							&& this.player.getPosition().y < Math.max(line.y1, line.y2)
+							&& this.player.getPosition().y > Math.min(line.y1, line.y2)) {
+							validity = false;
+						}
+					}
+				}
+
+				this.valid = validity;
+			}
+
 			laser.path = path;
 		});
 	}

@@ -10,6 +10,7 @@ import { Puzzle } from '../src/model/puzzle.js';
 import { Direction } from '../src/model/direction.js';
 import { Target } from '../src/model/target.js';
 import { Exit } from '../src/model/exit.js';
+import { Player } from '../src/model/player.js';
 
 /*--- Direction tests */
 QUnit.test('rotatedDirectionTest', (assert) => {
@@ -314,4 +315,35 @@ QUnit.test('weirdLaserBug', (assert) => {
 	puzzle.solve();
 
 	assert.notOk(puzzle.targets['targetKey'].isLit(), 'Target should not be lit');
+});
+
+QUnit.test('laserCannotHitPlayer', (assert) => {
+	let puzzle = new Puzzle({
+		dimensions: { width: 200, height: 200 },
+		key: 'somepuzzle',
+		roomKey: 'someroom'
+	});
+
+	puzzle.addLaser(new Laser({
+		key: 'laserKey',
+		exitKeys: ['exitKey'],
+		direction: Direction.SOUTH,
+		position: { x: 10, y: 10 },
+		dimensions: { width: 0, height: 0 },
+		laserInteractable: true
+	}));
+
+	puzzle.player = new Player({
+		position: { x: 6, y: 20 },
+		dimensions: { width: 10, height: 10 },
+	});
+
+	puzzle.solve();
+
+	assert.notOk(puzzle.valid);
+
+	puzzle.player.position.x += 25;
+	puzzle.solve();
+
+	assert.ok(puzzle.valid);
 });
