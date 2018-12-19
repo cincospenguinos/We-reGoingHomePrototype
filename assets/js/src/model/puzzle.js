@@ -19,7 +19,7 @@ export class Puzzle {
 		this.roomKey = opts.roomKey;
 
 		this.targets = {};
-		this.surfaces = {};
+		this.surfaces = [];
 		this.panels = [];
 		this.exits = {};
 		this.lasers = {};
@@ -32,7 +32,7 @@ export class Puzzle {
 
 	/** Add surface to the puzzle. */
 	addSurface(surface) {
-		surface instanceof Surface ? this.surfaces[surface.key] = surface : (() => { throw 'surface must be an instance of Surface!'});
+		surface instanceof Surface ? this.surfaces.push(surface) : (() => { throw 'surface must be an instance of Surface!'});
 	}
 
 	/** Adds the exit provided to the puzzle. */
@@ -85,10 +85,21 @@ export class Puzzle {
 						// Since an exit is tied to a laser rather than a target, we find the exit
 						// that is tied to this laser and set it to be open.
 						this.exitsConnectedTo(laser).forEach((exit) => { exit.isOpen = true });
-					}
+					} 
 
+					// Now we check our cases. If what we have terminates the laser, then terminate it. If it
+					// doesn't, then check if it's reflective and whether or not it reflects. If it isn't
+					// reflective, then we keep on truckin'
 					if (closestItem.terminatesLaser) {
 						terminated = true;
+					} else if (closestItem.type === Surface.REFLECTIVE) {
+						currentDirection = closestItem.reflectiveDirection(currentDirection);
+
+						if (!currentDirection) {
+							terminated = true;
+						} else {
+							currentPoint = collisionPoint;
+						}
 					} else {
 						currentPoint = collisionPoint;
 						currentDirection = closestItem.direction;
@@ -146,7 +157,7 @@ export class Puzzle {
 
 	/** Helper method. Returns all PuzzleItems that are interactable with a laser. */
 	getLaserInteractable() {
-		return this.getLasers().concat(this.getSurfaces(), this.getTargets()).filter((i) => i.laserInteractable);
+		return this.getLasers().concat(this.surfaces, this.getTargets()).filter((i) => i.laserInteractable);
 	}
 
 	/** Helper method. Returns the lasers as an array. */
@@ -157,11 +168,6 @@ export class Puzzle {
 	/** Helper method. Returns array of targets. */
 	getTargets() {
 		return Object.keys(this.targets).map((tKey) => { return this.targets[tKey] });
-	}
-
-	/** Helper method. Returns array of surfaces. */
-	getSurfaces() {
-		return Object.keys(this.surfaces).map((sKey) => { return this.surfaces[sKey] });
 	}
 
 	/** Helper method. Returns array of exits. */

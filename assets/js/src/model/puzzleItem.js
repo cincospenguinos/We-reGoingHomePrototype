@@ -19,6 +19,7 @@ export class PuzzleItem {
 		this.movable = opts.movable || false;
 		this.rotatable = opts.rotatable || false;
 		this.laserInteractable = opts.laserInteractable || false;
+		this.terminatesLaser = opts.terminatesLaser || false;
 	}
 
 	/** Rotates the puzzle item the number of degrees provided. Must either be 90 or -90. */
@@ -105,6 +106,10 @@ export class PuzzleItem {
 	/** Sets the image to the image provided. */
 	setImg(img) {
 		this.img = img;
+	}
+
+	terminatesLaser() {
+		return this.terminatesLaser;
 	}
 
 	/** Helper method. Returns the item closest to the */

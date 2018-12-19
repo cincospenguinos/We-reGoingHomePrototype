@@ -127,6 +127,52 @@ QUnit.test('collisionPointWest', (assert) => {
 	assert.notOk(surface2.getLaserCollisionPoint(originPoint, direction), 'No collision point should be available for surface2');
 });
 
+QUnit.test('reflectiveSurface', (assert) => {
+	let surface = new Surface({
+		type: Surface.REFLECTIVE,
+		position: { x: 10, y: 50 },
+		dimensions: { width: 20, height: 20 },
+		direction: Direction.EAST
+	});
+
+	assert.equal(surface.reflectiveDirection(Direction.SOUTH), Direction.EAST, '');
+	assert.equal(surface.reflectiveDirection(Direction.WEST), Direction.NORTH, '');
+	assert.notOk(surface.reflectiveDirection(Direction.NORTH), 'The mirror should not reflect in this case');
+
+	surface = new Surface({
+		type: Surface.REFLECTIVE,
+		position: { x: 10, y: 50 },
+		dimensions: { width: 20, height: 20 },
+		direction: Direction.SOUTH
+	});
+
+	assert.equal(surface.reflectiveDirection(Direction.WEST), Direction.SOUTH, '');
+	assert.equal(surface.reflectiveDirection(Direction.NORTH), Direction.EAST, '');
+	assert.notOk(surface.reflectiveDirection(Direction.EAST), 'The mirror should not reflect in this case');
+
+	surface = new Surface({
+		type: Surface.REFLECTIVE,
+		position: { x: 10, y: 50 },
+		dimensions: { width: 20, height: 20 },
+		direction: Direction.WEST
+	});
+
+	assert.equal(surface.reflectiveDirection(Direction.EAST), Direction.SOUTH, '');
+	assert.equal(surface.reflectiveDirection(Direction.NORTH), Direction.WEST, '');
+	assert.notOk(surface.reflectiveDirection(Direction.SOUTH), 'The mirror should not reflect in this case');
+
+	surface = new Surface({
+		type: Surface.REFLECTIVE,
+		position: { x: 10, y: 50 },
+		dimensions: { width: 20, height: 20 },
+		direction: Direction.NORTH
+	});
+
+	assert.equal(surface.reflectiveDirection(Direction.EAST), Direction.NORTH, '');
+	assert.equal(surface.reflectiveDirection(Direction.SOUTH), Direction.WEST, '');
+	assert.notOk(surface.reflectiveDirection(Direction.NORTH), 'The mirror should not reflect in this case');
+});
+
 /*--- Puzzle tests */
 QUnit.test('solvedPuzzle', (assert) => {
 	let puzzle = new Puzzle({
@@ -146,7 +192,7 @@ QUnit.test('solvedPuzzle', (assert) => {
 
 	puzzle.addSurface(new Surface({
 		type: Surface.REFLECTIVE,
-		direction: Direction.SOUTH,
+		direction: Direction.WEST,
 		position: { x: 100, y: 10 },
 		dimensions: { width: 20, height: 20 },
 		laserInteractable: true
@@ -196,7 +242,7 @@ QUnit.test('notSolvedButThenSolved', (assert) => {
 
 	let mirror = new Surface({
 		type: Surface.REFLECTIVE,
-		direction: Direction.SOUTH,
+		direction: Direction.WEST,
 		position: { x: 100, y: 50 },
 		dimensions: { width: 20, height: 20 },
 		laserInteractable: true

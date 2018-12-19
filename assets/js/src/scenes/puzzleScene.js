@@ -25,8 +25,6 @@ export class PuzzleScene extends Phaser.Scene {
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleLaser);
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleTarget);
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleMirror);
-		// SceneHelper.loadImage(this, SPRITES.mirror);
-		// SceneHelper.loadImage(this, SPRITES.exit);
 	}
 
 	create() {
@@ -67,7 +65,7 @@ export class PuzzleScene extends Phaser.Scene {
 			target.setImg(targetImage);
 		});
 
-		this.puzzle.getSurfaces().forEach((surface) => {
+		this.puzzle.surfaces.forEach((surface) => {
 			let surfacePosition = surface.getPosition();
 			let surfaceImage = null;
 
