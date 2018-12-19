@@ -23,7 +23,7 @@ export class Puzzle {
 		this.panels = [];
 		this.exits = {};
 		this.lasers = {};
-		this.solved = false;
+		this.valid = true;
 
 		if (!this.key || !this.roomKey) {
 			throw 'Every Puzzle requires a key and must belong to a room!'

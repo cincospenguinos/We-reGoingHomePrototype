@@ -60,7 +60,7 @@
 					"dimensions": { "width": 32, "height": 32 }
 				}
 			],
-			"playerPosition": { "x": 50, "y": 50 }
+			"playerPosition": { "x": 125, "y": 16 }
 		}
 	}
 }

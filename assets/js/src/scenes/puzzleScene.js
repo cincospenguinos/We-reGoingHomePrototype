@@ -27,6 +27,7 @@ export class PuzzleScene extends Phaser.Scene {
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleMirror);
 		SceneHelper.loadImage(this, SPRITES.puzzlePanel);
 		SceneHelper.loadImage(this, SPRITES.puzzleExit);
+		SceneHelper.loadImage(this, SPRITES.puzzlePlayer);
 	}
 
 	create() {
@@ -96,6 +97,9 @@ export class PuzzleScene extends Phaser.Scene {
 				}
 			});
 		});
+
+		let playerPosition = this.puzzle.player.getPosition();
+		this.add.image(playerPosition.x, playerPosition.y, SPRITES.puzzlePlayer.key);
 
 		// Handle other input bits
 		this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);

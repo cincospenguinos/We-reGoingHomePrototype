@@ -78,10 +78,10 @@ export class DungeonHelper {
 			puzzle.addExit(new Exit(exitData));
 		});
 
-		// puzzle.player = new Player({
-		// 	position: { x: puzzleData.playerPosition.x, y: puzzleData.playerPosition.y },
-		// 	dimensions: { width: 64, height: 64 }
-		// });
+		puzzle.player = new Player({
+			position: { x: puzzleData.playerPosition.x, y: puzzleData.playerPosition.y },
+			dimensions: { width: 8, height: 8 }
+		});
 
 		return puzzle;
 	}

@@ -24,6 +24,7 @@ export const SPRITES = {
 	puzzleMirror: { key: 'puzzleMirror', location: spriteDir + 'puzzle/mirror.png', frameWidth: 16, frameHeight: 16 },
 	puzzlePanel: { key: 'puzzlePanel', location: spriteDir + 'puzzle/panel.png' },
 	puzzleExit: { key: 'puzzleExit', location: spriteDir + 'puzzle/exit.png' },
+	puzzlePlayer: { key: 'puzzlePlayer', location: spriteDir + 'puzzle/player.png' },
 
 	// Room-sized sprites
 	roomLaser: { key: 'roomLaser', location: spriteDir + 'room/laser.png', frameWidth: 256, frameHeight: 256 },
@@ -31,6 +32,7 @@ export const SPRITES = {
 	roomMirror: { key: 'roomMirror', location: spriteDir + 'room/mirror.png', frameWidth: 128, frameHeight: 128 },
 	roomPanel: { key: 'roomPanel', location: spriteDir + 'room/panel.png', frameWidth: 64, frameHeight: 64 },
 	roomExit: { key: 'roomExit', location: spriteDir + 'room/exit.png', frameWidth: 64, frameHeight: 64 },
+	roomPlayer: { key: 'roomPlayer', location: spriteDir + 'room/player.png' },
 
 	// mainCharacter: { key: 'somethingelse', location: spriteDir + 'nameoffile.png' }
 	mainCharacter: { key: 'mainCharacter', location: spriteDir + 'mainCharacter.png' },
