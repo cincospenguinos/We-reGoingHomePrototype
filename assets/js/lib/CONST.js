@@ -18,8 +18,14 @@ export const KEYS = {
 };
 
 export const SPRITES = {
+	// Puzzle-sized sprites
 	puzzleLaser: { key: 'puzzleLaser', location: spriteDir + 'puzzle/laser.png', frameWidth: 32, frameHeight: 32 },
-	roomLaser: { key: 'roomLaser', location: spriteDir + 'room/laser.png' },
+	puzzleTarget: { key: 'puzzleTarget', location: spriteDir + 'puzzle/target.png', frameWidth: 32, frameHeight: 32 },
+
+	// Room-sized sprites
+	roomLaser: { key: 'roomLaser', location: spriteDir + 'room/laser.png', frameWidth: 256, frameHeight: 256 },
+	roomTarget: { key: 'roomTarget', location: spriteDir + 'room/target.png', frameWidth: 256, frameHeight: 256 },
+
 	mirror: { key: 'mirror', location: spriteDir + 'mirror.png' },
 	opaqueSurface: { key: 'opaqueSurface', location: spriteDir + 'opaqueSurface.png' },
 	menuOne: { key: 'menuOne', location: spriteDir + 'one.png' },

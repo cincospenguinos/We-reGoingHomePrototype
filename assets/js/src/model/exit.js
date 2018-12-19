@@ -9,14 +9,15 @@ export class Exit {
 	
 	constructor(opts) {
 		this.key = opts.key;
+		this.laserKeys = opts.laserKeys;
 		this.position = opts.position;
 		this.nextPuzzleKey = opts.nextPuzzleKey;
 		this.direction = opts.direction;
 
 		this.isOpen = false;
 
-		if (!this.key || !Direction.validDirection(this.direction)) {
-			throw 'key and direction are required for Exit!';
+		if (!this.key || !this.laserKeys || !Direction.validDirection(this.direction)) {
+			throw 'key, laser keys, and direction are required for Exit!';
 		}
 	}
 

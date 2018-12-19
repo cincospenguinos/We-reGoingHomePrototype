@@ -23,9 +23,9 @@ export class PuzzleScene extends Phaser.Scene {
 
 	preload() {
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleLaser);
+		SceneHelper.loadSpritesheet(this, SPRITES.puzzleTarget);
 		// SceneHelper.loadImage(this, SPRITES.mirror);
 		// SceneHelper.loadImage(this, SPRITES.exit);
-		// SceneHelper.loadSpritesheet(this, SPRITES.target);
 	}
 
 	create() {
@@ -53,6 +53,17 @@ export class PuzzleScene extends Phaser.Scene {
 					alpha: 1
 				}
 			});
+		});
+
+		this.puzzle.getTargets().forEach((target) => {
+			let targetPosition = target.getPosition();
+			let targetImage = this.physics.add.sprite(targetPosition.x, targetPosition.y, SPRITES.puzzleTarget.key);
+
+			if (target.movable || target.rotatable) {
+				this.setupInteractivity(target, targetImage);
+			}
+
+			target.setImg(targetImage);
 		});
 
 		// Create the targets

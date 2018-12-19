@@ -137,6 +137,7 @@ QUnit.test('solvedPuzzle', (assert) => {
 
 	puzzle.addLaser(new Laser({
 		key: 'laserKey',
+		exitKeys: ['exitKey'],
 		direction: Direction.EAST,
 		position: { x: 10, y: 10 },
 		dimensions: { width: 0, height: 0 },
@@ -153,6 +154,7 @@ QUnit.test('solvedPuzzle', (assert) => {
 
 	puzzle.addExit(new Exit({
 		key: 'exitKey',
+		laserKeys: [ 'laserKey' ],
 		position: { x: 100, height: 190},
 		dimensions: { width: 10, height: 10 },
 		direction: Direction.EAST
@@ -185,6 +187,7 @@ QUnit.test('notSolvedButThenSolved', (assert) => {
 
 	puzzle.addLaser(new Laser({
 		key: 'laserKey',
+		exitKeys: ['exitKey'],
 		direction: Direction.EAST,
 		position: { x: 10, y: 10 },
 		dimensions: { width: 0, height: 0 },
@@ -202,6 +205,7 @@ QUnit.test('notSolvedButThenSolved', (assert) => {
 
 	puzzle.addExit(new Exit({
 		key: 'exitKey',
+		laserKeys: [ 'laserKey' ],
 		position: { x: 100, height: 190},
 		dimensions: { width: 10, height: 10 },
 		direction: Direction.EAST
@@ -209,8 +213,6 @@ QUnit.test('notSolvedButThenSolved', (assert) => {
 
 	puzzle.addTarget(new Target({
 		key: 'targetKey',
-		laserKey: 'laserKey',
-		exitKey: 'exitKey',
 		position: { x: 90, y: 100 },
 		dimensions: { width: 20, height: 20 },
 		laserInteractable: true
@@ -231,5 +233,3 @@ QUnit.test('notSolvedButThenSolved', (assert) => {
 	assert.ok(puzzle.targets['targetKey'].isStruckBy('laserKey'), 'Target should be struck by laserKey');
 	assert.ok(puzzle.exits['exitKey'].isOpen, 'Exit should be open');
 });
-
-// TODO: Check if a puzzle that is not solved is not solved, then move the pieces, and ensure that it is solved right after

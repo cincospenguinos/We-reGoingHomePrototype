@@ -13,11 +13,12 @@ export class Laser extends PuzzleItem {
 
 		this.key = opts.key;
 		this.color = opts.color;
+		this.exitKeys = opts.exitKeys;
 		
 		this.terminatesLaser = true;
 
-		if (!this.key || !Direction.validDirection(this.direction)) {
-			throw 'Laser key and direction required for laser!';
+		if (!this.key || !this.exitKeys || !Direction.validDirection(this.direction)) {
+			throw 'Laser key, a set of exit keys, and a direction required for laser!';
 		}
 	}
 

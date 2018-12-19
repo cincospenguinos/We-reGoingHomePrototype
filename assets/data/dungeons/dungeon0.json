@@ -27,6 +27,11 @@
 			"surfaces": [],
 			"exits": [],
 			"panels": [],
+			"targets": [ 
+				{
+					"key": "target0"
+				}
+			],
 			"playerPosition": { "x": 50, "y": 50 }
 		}
 	}

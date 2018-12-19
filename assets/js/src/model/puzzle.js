@@ -79,7 +79,10 @@ export class Puzzle {
 					// Now that we know that the laser hits this item, we can handle it as we need to
 					if (closestItem instanceof Target) {
 						closestItem.addStrikingLaser(laser.key);
-						this.exits[closestItem.exitKey].isOpen = true;
+
+						// Since an exit is tied to a laser rather than a target, we find the exit
+						// that is tied to this laser and set it to be open.
+						this.exitsConnectedTo(laser).forEach((exit) => { exit.isOpen = true });
 					}
 
 					if (closestItem.terminatesLaser) {
@@ -122,19 +125,6 @@ export class Puzzle {
 		Object.keys(this.targets).map((key) => { return this.targets[key] }).forEach((target) => { target.resetStrikingLasers(); });
 	}
 
-	getLaserPath(laserKey) {
-		let laser = this.lasers[laserKey];
-
-		if (!laser) {
-			throw 'No laser matching "' + laserKey + '" found!';
-		}
-	}
-
-	/** Returns the target surface in the set of surfaces. */
-	getTargetSurface() {
-		return this.surfaces.filter((s) => s.isTarget)[0];
-	}
-
 	/** Helper method. Returns the closest item in the list that the laser is intersecting, or null if none exists. */
 	findClosestItem(items, origin, direction) {
 		let relevantItems = items.filter((s) => s.getLaserCollisionPoint(origin, direction) !== null);
@@ -164,5 +154,11 @@ export class Puzzle {
 	/** Helper method. Returns the lasers as an array. */
 	getLasers() {
 		return Object.keys(this.lasers).map((lKey) => { return this.lasers[lKey] });
+	}
+
+	/** Helper method. Returns the exits that are connected to the laser provided. */
+	exitsConnectedTo(laser) {
+		return Object.keys(this.exits).map((eKey) => { return this.exits[eKey] })
+			.filter((exit) => { return laser.exitKeys.includes(exit.key) });
 	}
 }

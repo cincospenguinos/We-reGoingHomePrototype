@@ -12,14 +12,40 @@ export class Target extends PuzzleItem {
 		super(opts);
 
 		this.key = opts.key;
-		this.laserKey = opts.laserKey;
-		this.exitKey = opts.exitKey;
 
 		this.lasersStruck = [];
 		this.terminatesLaser = true;
 
-		if (!this.key || !this.laserKey || !this.exitKey) {
+		if (!this.key) {
 			throw 'A target key, laser key, and exit key are required to instantiate a target';
+		}
+	}
+
+	/** Helper method. Manages sprites of this target. */
+	pointerOver() {
+		if (this.img) {
+			let frame = 0;
+
+			if (this.movable && this.rotatable) {
+				frame = 3;
+			} else if (this.movable) {
+				frame = 1;
+			} else if (this.rotatable) {
+				frame = 2;
+			}
+
+			if (this.isLit()) {
+				frame += 4;
+			}
+
+			this.img.setFrame(frame);
+		}
+	}
+
+	/** Helper method. Manages sprites of this target. */
+	pointerOut() {
+		if (this.img) {
+			this.isLit() ? this.img.setFrame(4) : this.img.setFrame(0);
 		}
 	}
 

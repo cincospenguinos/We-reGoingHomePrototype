@@ -16,6 +16,8 @@
 * Rooms that are given a puzzle must have the same aspect ratio between the two
 	* Here's an example: a puzzle that is 800x600 can belong to a room that is 1000:750, because their aspect ratios are 4:3
 	* A room cannot have a puzzle that does not fit its aspect ratio
+* Exits are tied to lasers, NOT targets. It doesn't matter what target is hit in a room--all that matters is the color of the laser that hits it.
+	* This will give us a much larger space to explore
 
 ## Discoveries
 
