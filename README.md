@@ -122,6 +122,7 @@ Since we are drawing a lot off of Zelda and D&D, we may want to explore combat e
 * [This video](https://www.youtube.com/watch?v=zsjC6fa_YBg) on puzzle design is excellent
 * Also [this video](https://www.youtube.com/watch?v=2zK8ItePe3Y) on how Jonathan Blow designs puzzles
 * [Here](https://www.youtube.com/watch?v=fJosaT1sCfs) is an interesting animation video
+* And [this video on player engagement](https://www.youtube.com/watch?v=hbzGO_Qonu0)
 
 ### Design Notes
 

@@ -20,7 +20,6 @@ export const KEYS = {
 export const SPRITES = {
 	puzzleLaser: { key: 'puzzleLaser', location: spriteDir + 'puzzle/laser.png', frameWidth: 32, frameHeight: 32 },
 	roomLaser: { key: 'roomLaser', location: spriteDir + 'room/laser.png' },
-	laser: { key: 'laser', location: spriteDir + 'redLaser.png' },
 	mirror: { key: 'mirror', location: spriteDir + 'mirror.png' },
 	opaqueSurface: { key: 'opaqueSurface', location: spriteDir + 'opaqueSurface.png' },
 	menuOne: { key: 'menuOne', location: spriteDir + 'one.png' },

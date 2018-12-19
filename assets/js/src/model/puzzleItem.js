@@ -23,7 +23,11 @@ export class PuzzleItem {
 
 	/** Rotates the puzzle item the number of degrees provided. Must either be 90 or -90. */
 	rotate(degrees) {
-		throw 'Implement me!';
+		this.direction = Direction.directionFromRotation(this.direction, degrees);
+
+		if (this.img) {
+			this.img.setAngle(Direction.angleFromDirection(this.direction));
+		}
 	}
 
 	/** Returns the position of this puzzle item. */
@@ -57,8 +61,14 @@ export class PuzzleItem {
 
 	/** Helper method. To be used by children classes to modify their sprite when moused over in puzzle mode. */
 	pointerOver() {
-		if (this.img) { // NOTE: This is assuming that this.img is a sprite, and the second frame is what to show on hover
-			this.img.setFrame(1);
+		if (this.img) {
+			if (this.movable && this.rotatable) {
+				this.img.setFrame(3);
+			} else if (this.movable) {
+				this.img.setFrame(1);
+			} else if (this.rotatable) {
+				this.img.setFrame(2);
+			}
 		}
 	}
 
