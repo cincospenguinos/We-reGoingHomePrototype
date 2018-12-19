@@ -10,6 +10,8 @@ export class Room {
 	constructor(opts) {
 		this.key = opts.key;
 		this.dimensions = opts.dimensions;
+		this.mapName = opts.mapName;
+		this.puzzleKey = opts.puzzleKey;
 
 		if (!this.key) {
 			throw 'No key provided for this Room!';

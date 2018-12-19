@@ -19,13 +19,13 @@ export class Direction {
 	/** Helper method. Returns the direction given a direction string. */
 	static directionFromString(str) {
 		if (str === 'EAST') {
-			return DIRECTION.EAST;
+			return Direction.EAST;
 		} else if (str === 'SOUTH') {
-			return DIRECTION.SOUTH;
+			return Direction.SOUTH;
 		} else if (str === 'WEST') {
-			return DIRECTION.WEST;
+			return Direction.WEST;
 		} else if (str === 'NORTH') {
-			return DIRECTION.NORTH;
+			return Direction.NORTH;
 		}
 
 		return undefined;

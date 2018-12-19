@@ -10,19 +10,19 @@ import { Exit } from '../model/exit.js';
 import { PuzzleItem } from '../model/puzzleItem.js';
 import { Dungeon } from '../model/dungeon.js';
 import { Player } from '../model/player.js';
-import { KEYS, DIRECTION } from '../../lib/CONST.js';
+import { Room } from '../model/room.js';
+import { KEYS, COLORS } from '../../lib/CONST.js';
+import { Direction } from '../model/direction.js';
 
 export class DungeonHelper {
 
 	/** Returns list of all the puzzles. */
 	static getPuzzleList(scene) {
-		let dungeonData = scene.cache.json.get(KEYS.dungeons.key);
+		let dungeonData = scene.cache.json.get('dungeon0');
 		let list = [];
 
-		Object.keys(dungeonData.dungeons).forEach((dungeonKey) => {
-			dungeonData.dungeons[dungeonKey].puzzles.forEach((puzzleData) => {
-				list.push(puzzleData.key);
-			})
+		Object.keys(dungeonData.rooms).forEach((roomKey) => {
+			list.push(roomKey);
 		});
 
 		return list;
@@ -30,63 +30,70 @@ export class DungeonHelper {
 
 	/** Generates the dungeon requested. */
 	static generateDungeon(scene, dungeonKey) {
-		let dungeonData = scene.cache.json.get(KEYS.dungeons.key).dungeons[dungeonKey];
+		let dungeonData = scene.cache.json.get('dungeon0');
 
 		let dungeon = new Dungeon();
-		dungeonData.puzzles.forEach((puzzleData) => {
-			let puzzle = this.generatePuzzle(scene, puzzleData);
-			dungeon.addPuzzle(puzzleData.key, puzzle);
+		Object.keys(dungeonData.rooms).map((k) => { return dungeonData.rooms[k] }).forEach((roomData) => {
+			dungeon.addRoom(roomData.key, new Room(roomData));
 		});
 
 		return dungeon;
 	}
 
 	/** Helper method. Returns a puzzle object with all of the data outlined in the data hash provided. */
-	static generatePuzzle(scene, puzzleData) {
-		let puzzle = new Puzzle(puzzleData.dimensions.width, puzzleData.dimensions.height);
-		puzzle.laser = new Laser({
-			direction: this.directionFromString(puzzleData.laser.direction),
-			dimensions: puzzleData.laser.dimensions,
-			movable: puzzleData.laser.movable,
-			rotatable: puzzleData.laser.rotatable,
-			position: puzzleData.laser.position
+	static generatePuzzle(scene, puzzleKey) {
+		let puzzleData = scene.cache.json.get('dungeon0')['puzzles'][puzzleKey];
+
+		let puzzle = new Puzzle({
+			key: puzzleData.key,
+			dimensions: { width: puzzleData.dimensions.width, height: puzzleData.dimensions.height },
+			roomKey: puzzleData.roomKey,
 		});
 
-		puzzleData.surfaces.forEach((surfaceData) => {
-			puzzle.addSurface(new Surface({
-				type: this.surfaceTypeFromString(surfaceData.type),
-				isTarget: surfaceData.isTarget,
-				reflectiveDirection: this.directionFromString(surfaceData.reflectiveDirection),
-				movable: surfaceData.movable,
-				rotatable: surfaceData.rotatable,
-				position: surfaceData.position,
-				dimensions: surfaceData.dimensions,
-				direction: this.directionFromString(surfaceData.reflectiveDirection)
-			}));
+		puzzleData.lasers.forEach((laserData) => {
+			laserData.direction = Direction.directionFromString(laserData.direction);
+			laserData.color = COLORS[laserData.color];
+			puzzle.addLaser(new Laser(laserData));
 		});
 
-		puzzleData.panels.forEach((panelData) => {
-			puzzle.addPanel(new PuzzleItem({
-				position: panelData.position,
-				dimensions: panelData.dimensions,
-				direction: this.directionFromString(panelData.direction)
-			}));
-		});
+		// console.log(puzzle);
+		// throw 'Fix me!';
 
-		puzzleData.exits.forEach((exitData) => {
-			let direction = this.directionFromString(exitData.direction);
+		// puzzleData.surfaces.forEach((surfaceData) => {
+		// 	puzzle.addSurface(new Surface({
+		// 		type: this.surfaceTypeFromString(surfaceData.type),
+		// 		isTarget: surfaceData.isTarget,
+		// 		reflectiveDirection: this.directionFromString(surfaceData.reflectiveDirection),
+		// 		movable: surfaceData.movable,
+		// 		rotatable: surfaceData.rotatable,
+		// 		position: surfaceData.position,
+		// 		dimensions: surfaceData.dimensions,
+		// 		direction: this.directionFromString(surfaceData.reflectiveDirection)
+		// 	}));
+		// });
 
-			puzzle.addExit(new Exit({
-				position: exitData.position,
-				nextPuzzleKey: exitData.nextPuzzleKey,
-				direction: direction
-			}));
-		});
+		// puzzleData.panels.forEach((panelData) => {
+		// 	puzzle.addPanel(new PuzzleItem({
+		// 		position: panelData.position,
+		// 		dimensions: panelData.dimensions,
+		// 		direction: this.directionFromString(panelData.direction)
+		// 	}));
+		// });
 
-		puzzle.player = new Player({
-			position: { x: puzzleData.playerPosition.x, y: puzzleData.playerPosition.y },
-			dimensions: { width: 64, height: 64 }
-		});
+		// puzzleData.exits.forEach((exitData) => {
+		// 	let direction = this.directionFromString(exitData.direction);
+
+		// 	puzzle.addExit(new Exit({
+		// 		position: exitData.position,
+		// 		nextPuzzleKey: exitData.nextPuzzleKey,
+		// 		direction: direction
+		// 	}));
+		// });
+
+		// puzzle.player = new Player({
+		// 	position: { x: puzzleData.playerPosition.x, y: puzzleData.playerPosition.y },
+		// 	dimensions: { width: 64, height: 64 }
+		// });
 
 		return puzzle;
 	}

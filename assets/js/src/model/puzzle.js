@@ -14,9 +14,9 @@ import { Target } from './target.js';
 export class Puzzle {
 
 	constructor(opts) {
-		this.dimensions = opts.key;
+		this.dimensions = opts.dimensions;
 		this.key = opts.key;
-		this.roomKey = opts.key;
+		this.roomKey = opts.roomKey;
 
 		this.targets = {};
 		this.surfaces = {};

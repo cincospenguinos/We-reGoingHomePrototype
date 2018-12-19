@@ -55,6 +55,20 @@ export class PuzzleItem {
 		return extrema;
 	}
 
+	/** Helper method. To be used by children classes to modify their sprite when moused over in puzzle mode. */
+	pointerOver() {
+		if (this.img) { // NOTE: This is assuming that this.img is a sprite, and the second frame is what to show on hover
+			this.img.setFrame(1);
+		}
+	}
+
+	/** Helper method. To be used by children classes to modify their sprite when moused over in puzzle mode. */
+	pointerOut() {
+		if (this.img) {
+			this.img.setFrame(0);
+		}
+	}
+
 	/** Returns the collision point of this puzzle item. Returns null if this item does not interact with a laser, or if the laser does not hit this item. 
 		Note that the direction provided is the direction that is approaching this item. */
 	getLaserCollisionPoint(point, direction) {

@@ -14,10 +14,12 @@ export const KEYS = {
 		topDownScene: 'TopDownScene'
 	},
 
-	dungeons: { key: 'dungeons', location: dungeonDir + 'puzzles.json' }
+	dungeon0: { key: 'dungeon0', location: dungeonDir + 'dungeon0.json' }
 };
 
 export const SPRITES = {
+	puzzleLaser: { key: 'puzzleLaser', location: spriteDir + 'puzzle/laser.png', frameWidth: 32, frameHeight: 32 },
+	roomLaser: { key: 'roomLaser', location: spriteDir + 'room/laser.png' },
 	laser: { key: 'laser', location: spriteDir + 'redLaser.png' },
 	mirror: { key: 'mirror', location: spriteDir + 'mirror.png' },
 	opaqueSurface: { key: 'opaqueSurface', location: spriteDir + 'opaqueSurface.png' },
@@ -40,7 +42,5 @@ export const DIRECTION = {
 };
 
 export const COLORS = {
-	tintMovable: 0xFF0000,
-	tintRotatable: 0x0000FF,
-	tintBoth: 0xAA00AA
+	RED: 0xFF1010
 };

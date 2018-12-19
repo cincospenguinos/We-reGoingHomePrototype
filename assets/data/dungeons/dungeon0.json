@@ -1,0 +1,32 @@
+{
+	"key": "dungeon0",
+	"rooms": {
+		"room0": {
+			"key": "room0",
+			"dimensions": { "width": 4000, "height": 4000 },
+			"mapName": "room0",
+			"puzzleKey": "puzzle0"
+		}
+	},
+	"puzzles": {
+		"puzzle0": {
+			"key": "puzzle0",
+			"roomKey": "room0",
+			"dimensions": { "width": 250, "height": 250 },
+			"lasers": [
+				{
+					"key": "laser0",
+					"color": "RED",
+					"direction":"EAST",
+					"movable": false,
+					"position": { "x": 32, "y": 32 },
+					"dimensions": { "width": 32, "height": 32 }
+				}
+			],
+			"surfaces": [],
+			"exits": [],
+			"panels": [],
+			"playerPosition": { "x": 50, "y": 50 }
+		}
+	}
+}

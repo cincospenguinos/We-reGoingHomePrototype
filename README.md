@@ -117,6 +117,8 @@ Since we are drawing a lot off of Zelda and D&D, we may want to explore combat e
 * [This](https://medium.com/@jerra.haynes/a-real-persons-guide-to-phaser-3-or-how-i-learned-to-stop-worrying-and-love-the-gun-part-1-9cc6361f377c) article is very insightful and will help you understand the various pieces of Phaser 3.
 	* Turns out there's a game state store manager in Phaser 3. This article mentions it. Later down the road you should look into using it.
 * [This](https://medium.com/@michaelwesthadley/modular-game-worlds-in-phaser-3-tilemaps-1-958fc7e6bbd6) article goes over how to do tilemaps. Holy shit it's so helpful.
+* The puzzle items will all be 32x32 when in puzzle mode, but will be 256x256 in large mode
+	* **That is a scale of 8**. This is also subject to change.
 
 ### Design Notes
 
