@@ -80,7 +80,7 @@ export class PuzzleItem {
 	}
 
 	/** Returns the collision point of this puzzle item. Returns null if this item does not interact with a laser, or if the laser does not hit this item. 
-		Note that the direction provided is the direction that is approaching this item. */
+		Note that the direction provided is the direction the item at the point provided is facing. */
 	getLaserCollisionPoint(point, direction) {
 		let extrema = this.getExtrema();
 		let p = this.getPosition();
@@ -89,13 +89,13 @@ export class PuzzleItem {
 		if (this.laserInteractable) {
 			switch(direction) {
 			case Direction.EAST:
-				return point.y > extrema.y.min && point.y < extrema.y.max ? { x: p.x - d.width / 2, y: point.y } : null;
+				return point.y > extrema.y.min && point.y < extrema.y.max && point.x < p.x ? { x: p.x - d.width / 2, y: point.y } : null;
 			case Direction.SOUTH:
-				return point.x > extrema.x.min && point.x < extrema.x.max ? { x: point.x, y: p.y - d.height / 2 } : null;
+				return point.x > extrema.x.min && point.x < extrema.x.max && point.y < p.y ? { x: point.x, y: p.y - d.height / 2 } : null;
 			case Direction.WEST:
-				return point.y > extrema.y.min && point.y < extrema.y.max ? { x: p.x + d.width / 2, y: point.y } : null;
+				return point.y > extrema.y.min && point.y < extrema.y.max && point.x > p.x ? { x: p.x + d.width / 2, y: point.y } : null;
 			case Direction.NORTH:
-				return point.x > extrema.x.min && point.x < extrema.x.max ? { x: point.x, y: p.y + d.height / 2 } : null;
+				return point.x > extrema.x.min && point.x < extrema.x.max && point.y > p.y ? { x: point.x, y: p.y + d.height / 2 } : null;
 			}
 		} else {
 			return null;

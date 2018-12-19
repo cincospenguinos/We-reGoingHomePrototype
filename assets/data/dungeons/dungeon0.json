@@ -18,6 +18,7 @@
 					"key": "laser0",
 					"color": "RED",
 					"direction":"EAST",
+					"exitKeys": ["exitKey"],
 					"movable": true,
 					"rotatable": true,
 					"position": { "x": 32, "y": 32 },
@@ -29,7 +30,12 @@
 			"panels": [],
 			"targets": [ 
 				{
-					"key": "target0"
+					"key": "target0",
+					"direction": "EAST",
+					"movable": true,
+					"rotatable": true,
+					"position": { "x": 128, "y": 128 },
+					"dimensions": { "width": 32, "height": 32 }
 				}
 			],
 			"playerPosition": { "x": 50, "y": 50 }

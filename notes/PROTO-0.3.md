@@ -24,6 +24,9 @@
 * So we can't move the images around in the PuzzleScene without altering where the various pieces of the puzzle sit
 	* This is because the puzzle relies on the position of the sprite image, and modifying the position of the sprite image will change where the image will sit in the puzzle.
 	* A potential solution is to have the PuzzleScene set its boundaries in the window according to the puzzle's dimensions, and then the panel scene is displayed over main gameplay scene
+* Creating a "Model-View" architecture out of the puzzle pieces leads to cleaner code, but creates some unique issues:
+	* There are magic numbers now for what frames do what when hovering over items. This should be cleaned up.
+	* I believe there is a way to import a spritesheet and name each of the frames. Do research on this. That would make this code base a WHOLE lot cleaner to work with
 
 ## To Improve
 

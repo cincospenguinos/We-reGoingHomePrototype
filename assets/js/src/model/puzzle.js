@@ -121,8 +121,8 @@ export class Puzzle {
 
 	/** Helper method. Resets the various state variables so that they can be properly set by solve() */
 	resetSolution() {
-		Object.keys(this.exits).map((key) => { return this.exits[key] }).forEach((exit) => { exit.isOpen = false; });
-		Object.keys(this.targets).map((key) => { return this.targets[key] }).forEach((target) => { target.resetStrikingLasers(); });
+		this.getExits().forEach((exit) => { exit.isOpen = false; });
+		this.getTargets().forEach((target) => { target.resetStrikingLasers(); });
 	}
 
 	/** Helper method. Returns the closest item in the list that the laser is intersecting, or null if none exists. */
@@ -144,11 +144,7 @@ export class Puzzle {
 
 	/** Helper method. Returns all PuzzleItems that are interactable with a laser. */
 	getLaserInteractable() {
-		let surfaces = Object.keys(this.surfaces).map((sKey) => { return this.surfaces[sKey] });
-		let lasers = Object.keys(this.lasers).map((lKey) => { return this.lasers[lKey] });
-		let targets = Object.keys(this.targets).map((tKey) => { return this.targets[tKey] });
-
-		return surfaces.concat(lasers, targets).filter((i) => i.laserInteractable);
+		return this.getLasers().concat(this.getSurfaces(), this.getTargets()).filter((i) => i.laserInteractable);
 	}
 
 	/** Helper method. Returns the lasers as an array. */
@@ -156,9 +152,23 @@ export class Puzzle {
 		return Object.keys(this.lasers).map((lKey) => { return this.lasers[lKey] });
 	}
 
+	/** Helper method. Returns array of targets. */
+	getTargets() {
+		return Object.keys(this.targets).map((tKey) => { return this.targets[tKey] });
+	}
+
+	/** Helper method. Returns array of surfaces. */
+	getSurfaces() {
+		return Object.keys(this.surfaces).map((sKey) => { return this.surfaces[sKey] });
+	}
+
+	/** Helper method. Returns array of exits. */
+	getExits() {
+		return Object.keys(this.exits).map((eKey) => { return this.exits[eKey] });
+	}
+
 	/** Helper method. Returns the exits that are connected to the laser provided. */
 	exitsConnectedTo(laser) {
-		return Object.keys(this.exits).map((eKey) => { return this.exits[eKey] })
-			.filter((exit) => { return laser.exitKeys.includes(exit.key) });
+		return this.getExits().filter((exit) => { return laser.exitKeys.includes(exit.key) });
 	}
 }

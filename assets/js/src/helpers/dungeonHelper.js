@@ -3,6 +3,7 @@
  *
  * Helper class. Holds static functions that generate the various puzzles.
  */
+import { Target } from '../model/target.js';
 import { Puzzle } from '../model/puzzle.js';
 import { Surface } from '../model/surface.js';
 import { Laser } from '../model/laser.js';
@@ -54,6 +55,11 @@ export class DungeonHelper {
 			laserData.direction = Direction.directionFromString(laserData.direction);
 			laserData.color = COLORS[laserData.color];
 			puzzle.addLaser(new Laser(laserData));
+		});
+
+		puzzleData.targets.forEach((targetData) => {
+			targetData.direction = Direction.directionFromString(targetData.direction);
+			puzzle.addTarget(new Target(targetData));
 		});
 
 		// console.log(puzzle);
