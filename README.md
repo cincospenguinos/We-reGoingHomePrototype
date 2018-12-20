@@ -106,6 +106,7 @@ Since we are drawing a lot off of Zelda and D&D, we may want to explore combat e
 - [ ] Add a mini-map. Large rooms will be much more challenging to navigate without one.
 - [ ] We could have secret rooms or doors that open with specific targets to allow you to move from one dungeon to another
 - [ ] Lasers could be specific colors, and when a target is hit by a laser, it lights up that color, but if it's hit by more than one color, it mixes the colors together to make a new color and that new color opens a door specific to that color
+- [ ] What if only certain panels can modify certain puzzle pieces? This would give us even more to tinker with, but may cause frustration in the player
 
 ## Notes
 

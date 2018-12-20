@@ -95,14 +95,6 @@ export class PuzzleScene extends Phaser.Scene {
 			let exitImage = this.add.image(exitPosition.x, exitPosition.y, SPRITES.puzzleExit.key);
 		});
 
-		let exitButton = this.add.image(this.puzzle.dimensions.width - 8, 8, SPRITES.closePanelButton.key);
-		exitButton.setInteractive();
-		exitButton.on('pointerdown', (a, b) => {
-			if (this.puzzle.valid) {
-				this.scene.start(KEYS.scene.topDownScene, { puzzle: this.puzzle, dungeon: this.dungeon, roomKey: this.puzzle.roomKey })
-			}
-		});
-
 		// Since we want the laser on top of everything else, we should draw the laser on top of everything:
 		this.puzzle.getLasers().forEach((laser) => {
 			this.laserGraphics[laser.key] = this.add.graphics({
@@ -115,8 +107,18 @@ export class PuzzleScene extends Phaser.Scene {
 			});
 		});
 
-		let playerPosition = this.puzzle.player.getPosition();
+		// If there is a player position, we need to respect that
+		let playerPosition = this.playerPosition ? this.playerPosition : this.puzzle.player.getPosition();
 		this.add.image(playerPosition.x, playerPosition.y, SPRITES.puzzlePlayer.key);
+
+		let exitButton = this.add.image(this.puzzle.dimensions.width - 8, 8, SPRITES.closePanelButton.key);
+		exitButton.setInteractive();
+		exitButton.on('pointerdown', (a, b) => {
+			if (this.puzzle.valid) {
+				this.puzzle.player.position = playerPosition;
+				this.scene.start(KEYS.scene.topDownScene, { puzzle: this.puzzle, dungeon: this.dungeon, roomKey: this.puzzle.roomKey })
+			}
+		});
 
 		// Handle other input bits
 		this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);

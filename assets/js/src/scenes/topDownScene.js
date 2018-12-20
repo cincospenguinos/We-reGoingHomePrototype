@@ -3,7 +3,7 @@
  *
  * Scene to manage a top-down scrolling view. Mostly for experimentation.
  */
-import { KEYS, SPRITES, COLORS } from '../../lib/CONST.js';
+import { KEYS, SPRITES, COLORS, PUZZLE_ROOM_SCALE } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
 import { DungeonHelper } from '../helpers/dungeonHelper.js';
 import { Surface } from '../model/surface.js';
@@ -58,15 +58,9 @@ export class TopDownScene extends Phaser.Scene {
 		this.layout = DungeonHelper.generateTopDownLayout(this.puzzle, roomDimensions);
 
 		let puzzleItemGroup = this.physics.add.staticGroup();
-		// let exitGroup = this.physics.add.staticGroup();
 
 		this.layout.lasers.forEach((laser) => {
 			puzzleItemGroup.create(laser.x, laser.y, SPRITES.roomLaser.key);
-		});
-
-		this.layout.panels.forEach((panel) => {
-			let panelImage = puzzleItemGroup.create(panel.x, panel.y, SPRITES.roomPanel.key).setInteractive();
-			// TODO: Going to the panel view
 		});
 
 		// Setup the surfaces
@@ -94,9 +88,32 @@ export class TopDownScene extends Phaser.Scene {
 		this.layout.exits.forEach((exit) => {
 			let exitImg = this.physics.add.image(exit.x, exit.y, SPRITES.roomExit.key);
 			this.physics.add.overlap(this.playerImg, exitImg, (evt) => {
+				console.log(exit.isOpen)
 				if (exit.isOpen) {
 					let room = this.dungeon.getRoom(exit.nextRoomKey);
 					this.scene.start(KEYS.scene.topDownScene, { puzzle: room.puzzle, dungeon: this.dungeon, roomKey: room.key });
+				}
+			});
+		});
+
+		// Setup the panels
+		this.layout.panels.forEach((panel) => {
+			let panelImage = puzzleItemGroup.create(panel.x, panel.y, SPRITES.roomPanel.key).setInteractive();
+			panelImage.on('pointerover', (evt) => { panelImage.setFrame(1) });
+			panelImage.on('pointerout', (evt) => { panelImage.setFrame(0) });
+			panelImage.on('pointerdown', (evt) => {
+				// If the player is close enough to the panel, we'll let them modify the puzzle
+				let distance = Math.sqrt(Math.pow(this.playerImg.x - panel.x, 2) + Math.pow(this.playerImg.y - panel.y, 2))
+				if (distance <= 150) {
+					this.scene.start(KEYS.scene.puzzleScene, 
+						{ 
+							puzzle: this.puzzle, 
+							dungeon: this.dungeon, 
+							playerPosition: { 
+								x: (this.playerImg.x - (roomDimensions.paddingLeft + roomDimensions.paddingRight)) / PUZZLE_ROOM_SCALE, 
+								y: (this.playerImg.y - (roomDimensions.paddingTop + roomDimensions.paddingBottom)) / PUZZLE_ROOM_SCALE 
+							}
+					});
 				}
 			});
 		});
@@ -133,7 +150,6 @@ export class TopDownScene extends Phaser.Scene {
 			});
 		});
 
-		// TODO: Look into adding the world boundaries
 		this.physics.world.setBounds(0, 0, sandboxMap.widthInPixels, sandboxMap.heightInPixels, true, true, true, true);
 		this.playerImg.setCollideWorldBounds(true);
 		this.physics.add.collider(this.playerImg, puzzleItemGroup);
