@@ -19,11 +19,13 @@ export class TopDownScene extends Phaser.Scene {
 		this.dungeon = data.dungeon;
 		this.roomKey = data.roomKey;
 		this.playerPosition = data.playerPosition;
+
+		this.mapKey = this.dungeon.getRoom(this.roomKey).mapName;
 	}
 
 	preload() {
 		SceneHelper.loadImage(this, SPRITES.shittyTilesheet);
-		this.load.tilemapTiledJSON(this.roomKey, 'assets/data/maps/' + this.roomKey + '.json');
+		this.load.tilemapTiledJSON(this.mapKey, 'assets/data/maps/' + this.mapKey + '.json');
 		
 		SceneHelper.loadImage(this, SPRITES.mainCharacter);
 		SceneHelper.loadSpritesheet(this, SPRITES.roomPanel);
@@ -36,7 +38,7 @@ export class TopDownScene extends Phaser.Scene {
 
 	create() {
 		// First generate the map
-		let sandboxMap = this.make.tilemap({ key: this.roomKey, tileWidth: 64, tileHeight: 64 });
+		let sandboxMap = this.make.tilemap({ key: this.mapKey, tileWidth: 64, tileHeight: 64 });
 
 		const tileset = sandboxMap.addTilesetImage(SPRITES.shittyTilesheet.key, SPRITES.shittyTilesheet.key);
 
