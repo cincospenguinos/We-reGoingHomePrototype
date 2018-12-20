@@ -56,3 +56,5 @@ export const DIRECTION = {
 export const COLORS = {
 	RED: 0xFF1010
 };
+
+export const PUZZLE_ROOM_SCALE = 8; // puzzle dimensions * SCALE = room dimensions

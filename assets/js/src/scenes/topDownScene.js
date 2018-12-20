@@ -3,7 +3,7 @@
  *
  * Scene to manage a top-down scrolling view. Mostly for experimentation.
  */
-import { KEYS, SPRITES, DIRECTION } from '../../lib/CONST.js';
+import { KEYS, SPRITES, COLORS } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
 import { DungeonHelper } from '../helpers/dungeonHelper.js';
 import { Surface } from '../model/surface.js';
@@ -26,22 +26,20 @@ export class TopDownScene extends Phaser.Scene {
 		this.load.tilemapTiledJSON(this.roomKey, 'assets/data/maps/' + this.roomKey + '.json');
 		
 		SceneHelper.loadImage(this, SPRITES.mainCharacter);
-		SceneHelper.loadSpritesheet(this, SPRITES.roompanel);
+		SceneHelper.loadSpritesheet(this, SPRITES.roomPanel);
 		SceneHelper.loadSpritesheet(this, SPRITES.roomLaser);
 		SceneHelper.loadSpritesheet(this, SPRITES.roomMirror);
 		SceneHelper.loadSpritesheet(this, SPRITES.roomTarget);
 		SceneHelper.loadImage(this, SPRITES.roomExit);
+		SceneHelper.loadImage(this, SPRITES.roomPlayer);
 	}
 
 	create() {
-		throw 'Fix me!';
-
 		// First generate the map
 		let sandboxMap = this.make.tilemap({ key: this.roomKey, tileWidth: 64, tileHeight: 64 });
 
 		const tileset = sandboxMap.addTilesetImage(SPRITES.shittyTilesheet.key, SPRITES.shittyTilesheet.key);
 
-		// TODO: Collisions with floorLayer
 		const floorLayer = sandboxMap.createStaticLayer('FloorLayer', tileset, 0, 0);
 		const wallLayer = sandboxMap.createDynamicLayer('WallLayer', tileset, 0, 0);
 
@@ -54,97 +52,84 @@ export class TopDownScene extends Phaser.Scene {
 			paddingLeft: 64,
 			paddingRight: 64,
 			paddingTop: 128,
-			paddingBottom: 64
+			paddingBottom: 0
 		};
 
 		this.layout = DungeonHelper.generateTopDownLayout(this.puzzle, roomDimensions);
 
 		let puzzleItemGroup = this.physics.add.staticGroup();
+		// let exitGroup = this.physics.add.staticGroup();
 
-		let laserImg = puzzleItemGroup.create(this.layout.laser.position.x, this.layout.laser.position.y, SPRITES.laser.key);
-		laserImg.setScale(this.layout.laser.scale).refreshBody();
-
-		this.layout.surfaces.forEach((surface) => {
-			let surfaceImg;
-
-			if (surface.isTarget) {
-				surfaceImg = puzzleItemGroup.create(surface.position.x, surface.position.y, SPRITES.target.key);
-				this.puzzle.complete ? surfaceImg.setFrame(1) : surfaceImg.setFrame(0);
-			} else if (surface.type === Surface.REFLECTIVE) {
-				surfaceImg = puzzleItemGroup.create(surface.position.x, surface.position.y, SPRITES.mirror.key);
-			} else {
-				throw 'I do not have a sprite for this surface!';
-			}
-
-			surfaceImg.setScale(surface.scale).refreshBody();
+		this.layout.lasers.forEach((laser) => {
+			puzzleItemGroup.create(laser.x, laser.y, SPRITES.roomLaser.key);
 		});
 
 		this.layout.panels.forEach((panel) => {
-			let panelSprite = this.add.sprite(panel.position.x, panel.position.y, SPRITES.panel.key).setInteractive();
-			this.setupPanelInteractive(panel, panelSprite);
+			let panelImage = puzzleItemGroup.create(panel.x, panel.y, SPRITES.roomPanel.key).setInteractive();
+			// TODO: Going to the panel view
 		});
 
-		// Put together a new player
-		if (this.playerPosition) {
-			this.playerImg = this.physics.add.image(this.playerPosition.x, this.playerPosition.y, SPRITES.mainCharacter.key);
-		} else {
-			this.playerImg = this.physics.add.image(this.layout.player.position.x, this.layout.player.position.y, SPRITES.mainCharacter.key);
-		}
-
-		this.layout.exits.forEach((exit) => {
-			let exitImg = this.physics.add.sprite(exit.position.x, exit.position.y, SPRITES.topDownDoor.key);
-
-			switch(exit.direction) {
-			case DIRECTION.EAST:
-				this.puzzle.complete ? exitImg.setFrame(7) : exitImg.setFrame(6);
-				break;
-			case DIRECTION.SOUTH:
-				this.puzzle.complete ? exitImg.setFrame(1) : exitImg.setFrame(0);
-				break;
-			case DIRECTION.WEST:
-				this.puzzle.complete ? exitImg.setFrame(3) : exitImg.setFrame(2);
-				break;
-			case DIRECTION.NORTH:
-				this.puzzle.complete ? exitImg.setFrame(5) : exitImg.setFrame(4);
-				break;
+		// Setup the surfaces
+		this.layout.surfaces.forEach((surface) => {
+			if (surface.type === Surface.REFLECTIVE) {
+				puzzleItemGroup.create(surface.x, surface.y, SPRITES.roomMirror.key);
+			} else {
+				throw 'I do not have an opaque suraface sprite!';
 			}
-
-			this.physics.add.overlap(exitImg, this.playerImg, (evt) => {
-				let nextPuzzle = this.dungeon.getPuzzle(exit.nextPuzzleKey);
-				this.scene.start(KEYS.scene.topDownScene, { 
-					dungeon: this.dungeon, 
-					puzzle: nextPuzzle, 
-				});
-			}, null, this);
 		});
 
-		// Draw the laser using graphics
+		// Setup the targets
+		this.layout.targets.forEach((target) => {
+			let targetImg = puzzleItemGroup.create(target.x, target.y, SPRITES.roomTarget.key);
+
+			if (target.isLit) {
+				targetImg.setFrame(1);
+			}
+		})
+
+		// Setup the player
+		this.playerImg = this.physics.add.image(this.layout.playerPosition.x, this.layout.playerPosition.y, SPRITES.roomPlayer.key);
+
+		// Setup the exits
+		this.layout.exits.forEach((exit) => {
+			let exitImg = this.physics.add.image(exit.x, exit.y, SPRITES.roomExit.key);
+			this.physics.add.overlap(this.playerImg, exitImg, (evt) => {
+				if (exit.isOpen) {
+					let room = this.dungeon.getRoom(exit.nextRoomKey);
+					this.scene.start(KEYS.scene.topDownScene, { puzzle: room.puzzle, dungeon: this.dungeon, roomKey: room.key });
+				}
+			});
+		});
+
+		// Setup the laser paths
+		// TODO: lasers of other colors?
 		let laserGraphics = this.add.graphics({
 			add: true,
 			lineStyle: {
-				width: 10,
-				color: 0xFF0707,
+				width: 8,
+				color: COLORS.RED,
 				alpha: 1
 			}
 		});
-		
-		this.layout.lines.forEach((line) => {
-			let midpoint = this.midpointOfLine(line);
-			let zone;
 
-			if (line.horizontal) {
-				zone = this.add.zone(midpoint.x, midpoint.y, Math.abs(line.x2 - line.x1), 10);
-			} else {
-				zone = this.add.zone(midpoint.x, midpoint.y, 10, Math.abs(line.y2 - line.y1));
-			}
+		this.layout.laserPaths.forEach((path) => {
+			path.forEach((line) => {
+				let midpoint = this.midpointOfLine(line);
+				let zone;
 
-			puzzleItemGroup.add(zone);
+				if (line.isHorizontal) {
+					zone = this.add.zone(midpoint.x, midpoint.y, Math.abs(line.x2 - line.x1), 8);
+				} else {
+					zone = this.add.zone(midpoint.x, midpoint.y, 8, Math.abs(line.y2 - line.y1));
+				}
 
-			laserGraphics.strokeLineShape({
-				x1: line.x1,
-				y1: line.y1,
-				x2: line.x2,
-				y2: line.y2
+				puzzleItemGroup.add(zone);
+				laserGraphics.strokeLineShape({
+					x1: line.x1,
+					y1: line.y1,
+					x2: line.x2,
+					y2: line.y2
+				});
 			});
 		});
 
@@ -254,7 +239,11 @@ export class TopDownScene extends Phaser.Scene {
 
 		panelSprite.on('pointerdown', (a, b) => {
 			// TODO: Add the player here
-			this.scene.start(KEYS.scene.puzzleScene, { dungeon: this.dungeon, puzzle: this.puzzle, playerPosition: { x: this.playerImg.x, y: this.playerImg.y }  });
+			this.scene.start(KEYS.scene.puzzleScene, { 
+				dungeon: this.dungeon, 
+				puzzle: this.puzzle, 
+				playerPosition: { x: this.playerImg.x, y: this.playerImg.y }  
+			});
 		});
 	}
 
