@@ -16,6 +16,7 @@ export class Exit extends PuzzleItem {
 		this.position = opts.position;
 		this.nextRoomKey = opts.nextRoomKey;
 		this.direction = opts.direction;
+		this.nextRoomPlayerPosition = opts.nextRoomPlayerPosition;
 
 		this.isOpen = false;
 

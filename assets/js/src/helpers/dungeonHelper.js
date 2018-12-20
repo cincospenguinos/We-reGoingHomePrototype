@@ -52,29 +52,29 @@ export class DungeonHelper {
 		});
 
 		puzzleData.lasers.forEach((laserData) => {
-			laserData.direction = Direction.directionFromString(laserData.direction);
-			laserData.color = COLORS[laserData.color];
+			if (typeof laserData.direction === 'string') laserData.direction = Direction.directionFromString(laserData.direction);
+			if (typeof laserData.color === 'string') laserData.color = COLORS[laserData.color];
 			puzzle.addLaser(new Laser(laserData));
 		});
 
 		puzzleData.targets.forEach((targetData) => {
-			targetData.direction = Direction.directionFromString(targetData.direction);
+			if (typeof targetData.direction === 'string') targetData.direction = Direction.directionFromString(targetData.direction);
 			puzzle.addTarget(new Target(targetData));
 		});
 
 		puzzleData.surfaces.forEach((surfaceData) => {
-			surfaceData.type = Surface.typeFromString(surfaceData.type);
-			surfaceData.direction = Direction.directionFromString(surfaceData.direction);
+			if (typeof surfaceData.type === 'string' && !Surface.validType(surfaceData.type)) surfaceData.type = Surface.typeFromString(surfaceData.type);
+			if (typeof surfaceData.direction === 'string') surfaceData.direction = Direction.directionFromString(surfaceData.direction);
 			puzzle.addSurface(new Surface(surfaceData));
 		});
 
 		puzzleData.panels.forEach((panelData) => { // NOTE: The panel's direction is used to determine where in the room it is
-			panelData.direction = Direction.directionFromString(panelData.direction);
+			if (typeof panelData.direction === 'string') panelData.direction = Direction.directionFromString(panelData.direction);
 			puzzle.addPanel(new PuzzleItem(panelData));
 		});
 
 		puzzleData.exits.forEach((exitData) => {
-			exitData.direction = Direction.directionFromString(exitData.direction);
+			if (typeof exitData.direction === 'string') exitData.direction = Direction.directionFromString(exitData.direction);
 			puzzle.addExit(new Exit(exitData));
 		});
 
@@ -137,13 +137,22 @@ export class DungeonHelper {
 		});
 
 		puzzle.getExits().forEach((exit) => {
-			layout.exits.push({
+			let exitData = {
 				x: exit.getPosition().x * PUZZLE_ROOM_SCALE + padX,
 				y: exit.getPosition().y * PUZZLE_ROOM_SCALE + padY,
 				direction: exit.direction,
 				nextRoomKey: exit.nextRoomKey,
 				isOpen: exit.isOpen
-			});
+			};
+
+			if (exit.nextRoomPlayerPosition) {
+				exitData.nextRoomPlayerPosition = {
+					x: exit.nextRoomPlayerPosition.x * PUZZLE_ROOM_SCALE + padX,
+					y: exit.nextRoomPlayerPosition.y * PUZZLE_ROOM_SCALE + padY
+				}
+			}
+
+			layout.exits.push(exitData);
 		});
 
 		puzzle.surfaces.forEach((surface) => {

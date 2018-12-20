@@ -74,6 +74,11 @@ export class Surface extends PuzzleItem {
 
 		throw 'Surface type "' + str + '" is invalid!';
 	}
+
+	/** Helper method. Determines whether the type provided is or is not a valid type*/
+	static validType(type) {
+		return type === Surface.REFLECTIVE || type === Surface.OPAQUE;
+	}
 }
 
 Surface.REFLECTIVE = '__reflective__';

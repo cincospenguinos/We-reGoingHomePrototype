@@ -12,8 +12,8 @@ These are important notes about the project that **MUST NEVER BE DELETED:**
 
 ## TODO
 
-- [ ] Create dungeon of puzzles
-- [ ] Playtest and fix bugs
+- [ ] Fix rotation on TopDownScene issue
+- [ ] Fix puzzle item collision issue
 
 ## The Story
 

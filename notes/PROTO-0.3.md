@@ -34,7 +34,8 @@
 * Holy shit test-driven development is the only way to make anything
 	* Over and over again issues that I saw on the front end were discovered and fixed by referring back to the tests that I wrote and checking to make sure they were working properly
 	* Always, always, **ALWAYS WRITE YOUR TESTS FIRST**, *then* go ahead with the implementation and images. This forces you to consider how you want your model to be designed and to check if that design is working properly
-* So getting the various scenes to interact with each other is tricky. Figuring out good methods for 
+* So getting the various scenes to interact with each other is tricky. Figuring out good methods to handle that is something to think about for the main game
+* Also, level design SUCKS in this current implementation. Consider making a little program that allows you to design puzzles super easily
 
 ## To Improve
 

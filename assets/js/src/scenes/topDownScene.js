@@ -34,6 +34,8 @@ export class TopDownScene extends Phaser.Scene {
 		SceneHelper.loadSpritesheet(this, SPRITES.roomTarget);
 		SceneHelper.loadImage(this, SPRITES.roomExit);
 		SceneHelper.loadImage(this, SPRITES.roomPlayer);
+
+		this.load.json('dungeon0', 'assets/data/dungeons/dungeon0.json');
 	}
 
 	create() {
@@ -84,7 +86,8 @@ export class TopDownScene extends Phaser.Scene {
 		})
 
 		// Setup the player
-		this.playerImg = this.physics.add.image(this.layout.playerPosition.x, this.layout.playerPosition.y, SPRITES.roomPlayer.key);
+		let playerPos = this.playerPosition ? this.playerPosition : this.layout.playerPosition;
+		this.playerImg = this.physics.add.image(playerPos.x, playerPos.y, SPRITES.roomPlayer.key);
 
 		// Setup the exits
 		this.layout.exits.forEach((exit) => {
@@ -92,7 +95,14 @@ export class TopDownScene extends Phaser.Scene {
 			this.physics.add.overlap(this.playerImg, exitImg, (evt) => {
 				if (exit.isOpen) {
 					let room = this.dungeon.getRoom(exit.nextRoomKey);
-					this.scene.start(KEYS.scene.topDownScene, { puzzle: DungeonHelper.generatePuzzle(this, room.puzzleKey), dungeon: this.dungeon, roomKey: room.key });
+					let puzzle = DungeonHelper.generatePuzzle(this, room.puzzleKey);
+					this.scene.start(KEYS.scene.topDownScene, 
+						{ 
+							puzzle: puzzle,
+							dungeon: this.dungeon, 
+							roomKey: room.key,
+							playerPosition: exit.nextRoomPlayerPosition
+						});
 				}
 			});
 		});
