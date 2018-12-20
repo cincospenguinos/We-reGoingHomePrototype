@@ -6,6 +6,12 @@
 			"dimensions": { "width": 4000, "height": 4000 },
 			"mapName": "room0",
 			"puzzleKey": "puzzle0"
+		},
+		"room1": {
+			"key": "room1",
+			"dimensions": { "width": 1152, "height": 1152 },
+			"mapName": "room1",
+			"puzzleKey": "puzzle1"
 		}
 	},
 	"puzzles": {
@@ -17,35 +23,26 @@
 				{
 					"key": "laser0",
 					"color": "RED",
-					"direction":"EAST",
+					"direction":"SOUTH",
 					"exitKeys": ["exit0"],
-					"position": { "x": 32, "y": 32 },
+					"position": { "x": 16, "y": 16 },
 					"dimensions": { "width": 32, "height": 32 }
 				}
 			],
-			"surfaces": [
-				{
-					"type": "REFLECTIVE",
-					"direction": "EAST",
-					"movable": true,
-					"rotatable": true,
-					"position": { "x": 10, "y": 150 },
-					"dimensions": { "width": 16, "height": 16 }
-				}
-			],
+			"surfaces": [],
 			"exits": [
 				{
 					"key": "exit0",
 					"laserKeys": ["laser0"],
 					"direction": "NORTH",
 					"nextRoomKey": "room1",
-					"position": { "x": 108, "y": 8 },
+					"position": { "x": 124, "y": 16 },
 					"dimensions": { "width": 16, "height": 16 }
 				}
 			],
 			"panels": [ 
 				{
-					"position": { "x": 125, "y": 4 },
+					"position": { "x": 130, "y": 244 },
 					"dimensions": { "width": 8, "height": 8 },
 					"direction": "SOUTH"
 				}
@@ -55,12 +52,54 @@
 					"key": "target0",
 					"direction": "EAST",
 					"movable": true,
-					"rotatable": true,
 					"position": { "x": 128, "y": 128 },
 					"dimensions": { "width": 32, "height": 32 }
 				}
 			],
-			"playerPosition": { "x": 125, "y": 16 }
+			"playerPosition": { "x": 120, "y": 240 }
+		},
+		"puzzle1": {
+			"key": "puzzle1",
+			"roomKey": "room1",
+			"dimensions": { "width": 128, "height": 128 },
+			"lasers": [
+				{
+					"key": "laser0",
+					"color": "RED",
+					"direction":"EAST",
+					"exitKeys": ["exit1"],
+					"position": { "x": 8, "y": 16 },
+					"dimensions": { "width": 32, "height": 32 }
+				}
+			],
+			"surfaces": [],
+			"exits": [
+				{
+					"key": "exit1",
+					"laserKeys": ["laser0"],
+					"direction": "NORTH",
+					"nextRoomKey": "room1",
+					"position": { "x": 96, "y": 8 },
+					"dimensions": { "width": 16, "height": 16 }
+				}
+			],
+			"panels": [ 
+				{
+					"position": { "x": 64, "y": 124 },
+					"dimensions": { "width": 8, "height": 8 },
+					"direction": "SOUTH"
+				}
+			],
+			"targets": [ 
+				{
+					"key": "target0",
+					"direction": "EAST",
+					"movable": true,
+					"position": { "x": 16, "y": 112 },
+					"dimensions": { "width": 32, "height": 32 }
+				}
+			],
+			"playerPosition": { "x": 54, "y": 124 }
 		}
 	}
 }

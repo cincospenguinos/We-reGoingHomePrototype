@@ -88,10 +88,9 @@ export class TopDownScene extends Phaser.Scene {
 		this.layout.exits.forEach((exit) => {
 			let exitImg = this.physics.add.image(exit.x, exit.y, SPRITES.roomExit.key);
 			this.physics.add.overlap(this.playerImg, exitImg, (evt) => {
-				console.log(exit.isOpen)
 				if (exit.isOpen) {
 					let room = this.dungeon.getRoom(exit.nextRoomKey);
-					this.scene.start(KEYS.scene.topDownScene, { puzzle: room.puzzle, dungeon: this.dungeon, roomKey: room.key });
+					this.scene.start(KEYS.scene.topDownScene, { puzzle: DungeonHelper.generatePuzzle(this, room.puzzleKey), dungeon: this.dungeon, roomKey: room.key });
 				}
 			});
 		});

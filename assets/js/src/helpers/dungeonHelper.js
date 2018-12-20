@@ -141,6 +141,7 @@ export class DungeonHelper {
 				x: exit.getPosition().x * PUZZLE_ROOM_SCALE + padX,
 				y: exit.getPosition().y * PUZZLE_ROOM_SCALE + padY,
 				direction: exit.direction,
+				nextRoomKey: exit.nextRoomKey,
 				isOpen: exit.isOpen
 			});
 		});
@@ -159,7 +160,7 @@ export class DungeonHelper {
 				x: target.getPosition().x * PUZZLE_ROOM_SCALE + padX,
 				y: target.getPosition().y * PUZZLE_ROOM_SCALE + padY,
 				direction: target.direction,
-				isLit: target.isLit
+				isLit: target.isLit()
 			})
 		});
 

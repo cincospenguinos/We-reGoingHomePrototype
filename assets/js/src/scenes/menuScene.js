@@ -33,7 +33,7 @@ export class MenuScene extends Phaser.Scene {
 			puzzleText.on('pointerdown', (evt, objects) => {
 				let puzzleKey = dungeon.getRoom(roomName).puzzleKey;
 
-				this.scene.start(KEYS.scene.puzzleScene, { dungeon: dungeon, puzzle: DungeonHelper.generatePuzzle(this, puzzleKey) });
+				this.scene.start(KEYS.scene.topDownScene, { dungeon: dungeon, puzzle: DungeonHelper.generatePuzzle(this, puzzleKey), roomKey: roomName });
 
 				// this.scene.start(KEYS.scene.topDownScene, { dungeon: dungeon, puzzle: puzzle });
 				// this.scene.start(KEYS.scene.puzzleScene, { dungeon: dungeon, puzzle: puzzle });
