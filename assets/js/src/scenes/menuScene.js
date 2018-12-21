@@ -18,20 +18,25 @@ export class MenuScene extends Phaser.Scene {
 	}
 
 	preload() {
-		SceneHelper.loadJson(this, KEYS.dungeons);
+		// TODO: Put this information into CONST
+		this.load.json(KEYS.dungeon0.key, KEYS.dungeon0.location);
 	}
 
 	create() {
-		let dungeon = DungeonHelper.generateDungeon(this, 'dungeon0');
-		let puzzleList = DungeonHelper.getPuzzleList(this);
+		let dungeon = DungeonHelper.generateDungeon(this, KEYS.dungeon0.key);
+		let roomList = DungeonHelper.getPuzzleList(this);
 
-		for (let i = 0; i < puzzleList.length; i++) {
-			let puzzleName = puzzleList[i];
+		for (let i = 0; i < roomList.length; i++) {
+			let roomName = roomList[i];
 
-			let puzzleText = this.add.text(32, i * 32 + 16, puzzleName, { fontSize: '16px', fill: '#FFFFFF'}).setInteractive();
+			let puzzleText = this.add.text(32, i * 32 + 16, roomName, { fontSize: '16px', fill: '#FFFFFF'}).setInteractive();
 			puzzleText.on('pointerdown', (evt, objects) => {
-				let puzzle = dungeon.getPuzzle(puzzleName);
-				this.scene.start(KEYS.scene.topDownScene, { dungeon: dungeon, puzzle: puzzle });
+				let puzzleKey = dungeon.getRoom(roomName).puzzleKey;
+
+				this.scene.start(KEYS.scene.topDownScene, { dungeon: dungeon, puzzle: DungeonHelper.generatePuzzle(this, puzzleKey), roomKey: roomName });
+
+				// this.scene.start(KEYS.scene.topDownScene, { dungeon: dungeon, puzzle: puzzle });
+				// this.scene.start(KEYS.scene.puzzleScene, { dungeon: dungeon, puzzle: puzzle });
 			});
 		}
 	}

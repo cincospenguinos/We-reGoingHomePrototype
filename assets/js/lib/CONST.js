@@ -14,23 +14,37 @@ export const KEYS = {
 		topDownScene: 'TopDownScene'
 	},
 
-	dungeons: { key: 'dungeons', location: dungeonDir + 'puzzles.json' }
+	dungeon0: { key: 'dungeon0', location: dungeonDir + 'dungeon0.json' }
 };
 
 export const SPRITES = {
-	laser: { key: 'laser', location: spriteDir + 'redLaser.png' },
-	mirror: { key: 'mirror', location: spriteDir + 'mirror.png' },
-	opaqueSurface: { key: 'opaqueSurface', location: spriteDir + 'opaqueSurface.png' },
-	menuOne: { key: 'menuOne', location: spriteDir + 'one.png' },
-	target: { key: 'target', location: spriteDir + 'target.png', frameWidth: 64, frameHeight: 64 },
-	completeButton: { key: 'completeButton', location: spriteDir + 'complete.png' },
-	// mainCharacter: { key: 'somethingelse', location: spriteDir + 'nameoffile.png' }
+	// Puzzle-sized sprites
+	puzzleLaser: { key: 'puzzleLaser', location: spriteDir + 'puzzle/laser.png', frameWidth: 32, frameHeight: 32 },
+	puzzleTarget: { key: 'puzzleTarget', location: spriteDir + 'puzzle/target.png', frameWidth: 32, frameHeight: 32 },
+	puzzleMirror: { key: 'puzzleMirror', location: spriteDir + 'puzzle/mirror.png', frameWidth: 16, frameHeight: 16 },
+	puzzlePanel: { key: 'puzzlePanel', location: spriteDir + 'puzzle/panel.png' },
+	puzzleExit: { key: 'puzzleExit', location: spriteDir + 'puzzle/exit.png' },
+	puzzlePlayer: { key: 'puzzlePlayer', location: spriteDir + 'puzzle/player.png' },
+	closePanelButton: { key: 'closePanelButton', location: spriteDir + 'puzzle/closePanelButton.png' },
+
+	// Room-sized sprites
+	roomLaser: { key: 'roomLaser', location: spriteDir + 'room/laser.png', frameWidth: 256, frameHeight: 256 },
+	roomTarget: { key: 'roomTarget', location: spriteDir + 'room/target.png', frameWidth: 256, frameHeight: 256 },
+	roomMirror: { key: 'roomMirror', location: spriteDir + 'room/mirror.png', frameWidth: 128, frameHeight: 128 },
+	roomPanel: { key: 'roomPanel', location: spriteDir + 'room/panel.png', frameWidth: 64, frameHeight: 64 },
+	roomExit: { key: 'roomExit', location: spriteDir + 'room/exit.png', frameWidth: 64, frameHeight: 64 },
+	roomPlayer: { key: 'roomPlayer', location: spriteDir + 'room/player.png' },
+
 	mainCharacter: { key: 'mainCharacter', location: spriteDir + 'mainCharacter.png' },
-	background: { key: 'shittyBackground', location: spriteDir + 'shittyBackground.png' },
-	panel: { key: 'panel', location: spriteDir + 'panel.png', frameWidth: 32, frameHeight: 32 },
-	exit: { key: 'exitButton', location: spriteDir + 'exit.png' },
-	topDownDoor: { key: 'topDownDoor', location: spriteDir + 'door.png', frameWidth: 128, frameHeight: 128 }
+	topDownDoor: { key: 'topDownDoor', location: spriteDir + 'door.png', frameWidth: 128, frameHeight: 128 },
+
+	// Tilesheet shit
+	shittyTilesheet: { key: 'shittyTilesheet', location: spriteDir + 'shittyTilesheet.png' },
 };
+
+export const ROOMS = {
+	room0: 'room0'
+}
 
 export const DIRECTION = {
 	EAST: 0,
@@ -40,7 +54,7 @@ export const DIRECTION = {
 };
 
 export const COLORS = {
-	tintMovable: 0xFF0000,
-	tintRotatable: 0x0000FF,
-	tintBoth: 0xAA00AA
+	RED: 0xFF1010
 };
+
+export const PUZZLE_ROOM_SCALE = 8; // puzzle dimensions * SCALE = room dimensions

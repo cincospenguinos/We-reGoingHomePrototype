@@ -8,8 +8,8 @@ import { TopDownScene } from './scenes/topDownScene.js';
 
 var config = {
 	type: Phaser.Auto,
-	width: 1200,
-	height: 900,
+	width: 800,
+	height: 600,
 	scene: [ MenuScene, PuzzleScene, TraverseScene, TopDownScene ],
 	physics: {
 		default: 'arcade',

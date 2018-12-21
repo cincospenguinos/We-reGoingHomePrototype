@@ -3,31 +3,31 @@
  *
  * A dungeon is a set of rooms that the player can interact with. Each room is a puzzle, and vice-versa.
  */
-import { Puzzle } from './puzzle.js';
+import { Room } from './room.js';
 
 export class Dungeon {
 
 	constructor() {
-		this.puzzles = {};
+		this.rooms = {};
 	}
 
 	/** Adds the puzzle to the collection. */
-	addPuzzle(key, puzzle) {
-		if (puzzle instanceof Puzzle) {
-			this.puzzles[key] = puzzle;
+	addRoom(key, room) {
+		if (room instanceof Room) {
+			this.rooms[key] = room;
 		} else {
-			throw 'Object "' + puzzle + '" is not a puzzle!'
+			throw 'Object "' + room + '" is not a puzzle!'
 		}
 	}
 
 	/** Get the puzzle matching the key provided. */
-	getPuzzle(key) {
-		let puzzle = this.puzzles[key];
+	getRoom(key) {
+		let room = this.rooms[key];
 
-		if (!puzzle) {
-			throw 'No puzzle with key "' + key + '" was found!';
+		if (!room) {
+			throw 'No room with key "' + key + '" was found!';
 		}
 
-		return puzzle;
+		return room;
 	}
 }

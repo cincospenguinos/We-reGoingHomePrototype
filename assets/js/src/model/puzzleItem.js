@@ -3,7 +3,8 @@
  *
  * Represents a puzzle item. This is to avoid code duplication.
  */
-import { COLORS, DIRECTION } from '../../lib/CONST.js';
+import { COLORS } from '../../lib/CONST.js';
+import { Direction } from './direction.js';
 
 export class PuzzleItem {
 
@@ -11,45 +12,22 @@ export class PuzzleItem {
 		if (!opts.position || !opts.dimensions) {
 			throw 'PuzzleItem must have starting position and dimensions!';
 		}
-
-		this.direction = opts.direction;
+		
 		this.position = opts.position;
 		this.dimensions = opts.dimensions;
+		this.direction = opts.direction;
 		this.movable = opts.movable || false;
 		this.rotatable = opts.rotatable || false;
-		this.direction = opts.direction;
-	}
-
-	/** Modifies image of this puzzle item when the pointer is over it. */
-	pointerOver() {
-		if (this.img) {
-			if (this.movable && this.rotatable) {
-				this.img.setTint(COLORS.movableAndRotatable);
-			} else if (this.movable) {
-				this.img.setTint(COLORS.movable);
-			} else if (this.rotatable) {
-				this.img.setTint(COLORS.rotatable);
-			}
-		}
-	}
-
-	/** Modifies the image of this puzzle item when the pointer leaves it. */
-	pointerOut() {
-		if (this.img) {
-			this.img.clearTint();
-		}
+		this.laserInteractable = opts.laserInteractable || false;
+		this.terminatesLaser = opts.terminatesLaser || false;
 	}
 
 	/** Rotates the puzzle item the number of degrees provided. Must either be 90 or -90. */
 	rotate(degrees) {
-		if (this.img && PuzzleItem.validDirection(this.direction)) {
-			let newDirection = PuzzleItem.rotatedDirection(this.direction, degrees);
-			let angle = PuzzleItem.angleFor(newDirection);
+		this.direction = Direction.directionFromRotation(this.direction, degrees);
 
-			this.img.setAngle(angle);
-			this.direction = newDirection;
-		} else {
-			throw 'No image or direction found for this object!';
+		if (this.img) {
+			this.img.setAngle(Direction.angleFromDirection(this.direction));
 		}
 	}
 
@@ -82,64 +60,70 @@ export class PuzzleItem {
 		return extrema;
 	}
 
+	/** Helper method. To be used by children classes to modify their sprite when moused over in puzzle mode. */
+	pointerOver() {
+		if (this.img) {
+			if (this.movable && this.rotatable) {
+				this.img.setFrame(3);
+			} else if (this.movable) {
+				this.img.setFrame(1);
+			} else if (this.rotatable) {
+				this.img.setFrame(2);
+			}
+		}
+	}
+
+	/** Helper method. To be used by children classes to modify their sprite when moused over in puzzle mode. */
+	pointerOut() {
+		if (this.img) {
+			this.img.setFrame(0);
+		}
+	}
+
+	/** Returns the collision point of this puzzle item. Returns null if this item does not interact with a laser, or if the laser does not hit this item. 
+		Note that the direction provided is the direction the item at the point provided is facing. */
+	getLaserCollisionPoint(point, direction) {
+		let extrema = this.getExtrema();
+		let p = this.getPosition();
+		let d = this.getDimensions();
+
+		if (this.laserInteractable) {
+			switch(direction) {
+			case Direction.EAST:
+				return point.y > extrema.y.min && point.y < extrema.y.max && point.x < p.x ? { x: p.x - d.width / 2, y: point.y } : null;
+			case Direction.SOUTH:
+				return point.x > extrema.x.min && point.x < extrema.x.max && point.y < p.y ? { x: point.x, y: p.y - d.height / 2 } : null;
+			case Direction.WEST:
+				return point.y > extrema.y.min && point.y < extrema.y.max && point.x > p.x ? { x: p.x + d.width / 2, y: point.y } : null;
+			case Direction.NORTH:
+				return point.x > extrema.x.min && point.x < extrema.x.max && point.y > p.y ? { x: point.x, y: p.y + d.height / 2 } : null;
+			}
+		} else {
+			return null;
+		}
+	}
+
 	/** Sets the image to the image provided. */
 	setImg(img) {
 		this.img = img;
 	}
 
-	/** Helper method. Returns the direction after the angle passed is provided. */
-	static rotatedDirection(direction, angle) {
-		if (Math.abs(angle) !== 90) {
-			throw '"' + angle + '" is an invalid number of degrees. Please only use +90 or -90'
-		}
+	terminatesLaser() {
+		return this.terminatesLaser;
+	}
 
-		if (angle > 0) {
-			switch(direction) {
-			case DIRECTION.EAST:
-				return DIRECTION.SOUTH;
-			case DIRECTION.SOUTH:
-				return DIRECTION.WEST;
-			case DIRECTION.WEST:
-				return DIRECTION.NORTH;
-			case DIRECTION.NORTH:
-				return DIRECTION.EAST;
-			default:
-				throw 'Direction "' + direction + '" is invalid!'
-			}
+	/** Helper method. Returns the item closest to the */
+	static closestItem(point, item1, item2) {
+		let s1Pnt = item1.getPosition();
+		let s2Pnt = item2.getPosition();
+
+		let dist1 = { x: Math.abs(point.x - s1Pnt.x), y: Math.abs(point.y - s1Pnt.y) }
+		let dist2 = { x: Math.abs(point.x - s2Pnt.x), y: Math.abs(point.y - s2Pnt.y) }
+
+		if (Math.sqrt(dist1.x * dist1.x + dist1.y * dist1.y) < Math.sqrt(dist2.x * dist2.x + dist2.y * dist2.y)) {
+			return item1;
 		} else {
-			switch(direction) {
-			case DIRECTION.EAST:
-				return DIRECTION.NORTH;
-			case DIRECTION.SOUTH:
-				return DIRECTION.EAST;
-			case DIRECTION.WEST:
-				return DIRECTION.SOUTH;
-			case DIRECTION.NORTH:
-				return DIRECTION.WEST;
-			default:
-				throw 'Direction "' + direction + '" is invalid!'
-			}
+			return item2;
 		}
-	}
-
-	/** Helper method. Returns the angle in degrees corresponding to the direction provided. */
-	static angleFor(direction) {
-		switch(direction) {
-		case DIRECTION.EAST:
-			return 0;
-		case DIRECTION.SOUTH:
-			return 90;
-		case DIRECTION.WEST:
-			return 180;
-		case DIRECTION.NORTH:
-			return 270;
-		default:
-			throw 'Direction "' + direction + '" is invalid!'
-		}
-	}
-
-	static validDirection(direction) {
-		return DIRECTION.EAST === direction || DIRECTION.SOUTH === direction
-			|| DIRECTION.WEST === direction || DIRECTION.NORTH === direction;
 	}
 }

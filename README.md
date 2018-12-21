@@ -12,8 +12,8 @@ These are important notes about the project that **MUST NEVER BE DELETED:**
 
 ## TODO
 
-- [ ] Create dungeon of puzzles
-- [ ] Playtest and fix bugs
+- [ ] Fix rotation on TopDownScene issue
+- [ ] Fix puzzle item collision issue
 
 ## The Story
 
@@ -104,6 +104,9 @@ Since we are drawing a lot off of Zelda and D&D, we may want to explore combat e
 - [ ] Certain puzzle pieces are locked onto a track and can only be moved within a certain zone
 - [ ] Consider putting in a run button
 - [ ] Add a mini-map. Large rooms will be much more challenging to navigate without one.
+- [ ] We could have secret rooms or doors that open with specific targets to allow you to move from one dungeon to another
+- [ ] Lasers could be specific colors, and when a target is hit by a laser, it lights up that color, but if it's hit by more than one color, it mixes the colors together to make a new color and that new color opens a door specific to that color
+- [ ] What if only certain panels can modify certain puzzle pieces? This would give us even more to tinker with, but may cause frustration in the player
 
 ## Notes
 
@@ -115,6 +118,12 @@ Since we are drawing a lot off of Zelda and D&D, we may want to explore combat e
 * [This](https://medium.com/@jerra.haynes/a-real-persons-guide-to-phaser-3-or-how-i-learned-to-stop-worrying-and-love-the-gun-part-1-9cc6361f377c) article is very insightful and will help you understand the various pieces of Phaser 3.
 	* Turns out there's a game state store manager in Phaser 3. This article mentions it. Later down the road you should look into using it.
 * [This](https://medium.com/@michaelwesthadley/modular-game-worlds-in-phaser-3-tilemaps-1-958fc7e6bbd6) article goes over how to do tilemaps. Holy shit it's so helpful.
+* The puzzle items will all be 32x32 when in puzzle mode, but will be 256x256 in large mode
+	* **That is a scale of 8**. This is also subject to change.
+* [This video](https://www.youtube.com/watch?v=zsjC6fa_YBg) on puzzle design is excellent
+* Also [this video](https://www.youtube.com/watch?v=2zK8ItePe3Y) on how Jonathan Blow designs puzzles
+* [Here](https://www.youtube.com/watch?v=fJosaT1sCfs) is an interesting animation video
+* And [this video on player engagement](https://www.youtube.com/watch?v=hbzGO_Qonu0)
 
 ### Design Notes
 

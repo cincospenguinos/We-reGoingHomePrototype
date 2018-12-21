@@ -3,14 +3,10 @@
  *
  * Class representing a surface that a laser can hit.
  *
- * Since we're following the MVC architecture, we have to find a way to have a model be able to do
- * all of the logic of our game while letting it be anchored into some sort of view. The solution
- * that I came up with was to let the surface either take an image from Phaser, or position and
- * dimensions from the user to establish where it may be in space. Then we will use methods to
- * grab that data as needed in the various methods that manage it. This way we can test if our
- * algorithms work without having to write tons of code to do it.
+ * NOTE: If this is a reflective surface (mirror,) then we will use the direction to determine where the
+ *       reflective surface is. East means that it is facing east.
  */
-import { DIRECTION } from '../../lib/CONST.js';
+import { Direction } from './direction.js';
 import { PuzzleItem } from './puzzleItem.js';
 
 export class Surface extends PuzzleItem {
@@ -19,70 +15,69 @@ export class Surface extends PuzzleItem {
 		super(opts);
 
 		this.type = opts.type;
-		this.reflectiveDirection = opts.reflectiveDirection;
-		this.isTarget = opts.isTarget || false;
-		this.movable = opts.movable || false;
-	}
 
-	/** Returns a collision point, or null if none exists. */
-	getCollisionPoint(point, approachingDirection) {
-		let extrema = this.getExtrema();
-		let centerPoint = this.getPosition();
-
-		switch(approachingDirection) {
-		case DIRECTION.EAST:
-			if (point.x < extrema.x.min && point.y > extrema.y.min && point.y < extrema.y.max) {
-				return { x: extrema.x.min, y: point.y };
-			}
-
-			break;
-		case DIRECTION.SOUTH:
-			if (point.y < extrema.y.min && point.x > extrema.x.min && point.x < extrema.x.max) {
-				return { x: point.x, y: extrema.y.min };
-			}
-
-			break;
-		case DIRECTION.WEST:
-			if (point.x > extrema.x.max && point.y > extrema.y.min && point.y < extrema.y.max) {
-				return { x: extrema.x.max, y: point.y};
-			}
-
-			break;
-		case DIRECTION.NORTH:
-			if (point.y > extrema.y.max && point.x > extrema.x.min && point.x < extrema.x.max) {
-				return { x: point.x, y: extrema.y.max };
-			}
-
-			break;
-		default:
-			throw 'Direction "' + approachingDirection + '" not valid!'
+		if (this.type === Surface.REFLECTIVE && !Direction.validDirection(this.direction)) {
+			throw 'Reflective surface requires a direction to direct lasers to!';
 		}
 
-		return null;
+		this.laserInteractable = true;
+		this.terminatesLaser = this.type === Surface.REFLECTIVE ? false : true;
 	}
 
-	/** Included for the case that we need to rotate and modify the reflective direction. */
-	rotate(degrees) {
-		super.rotate(degrees);
-
+	/** Returns the reflective direction of this surface given the direction the laser is approaching, or null if it does not reflect.*/
+	reflectiveDirection(approachingDirection) {// NOTE: approachingDirection means "the laser is going in that direction"
 		if (this.type === Surface.REFLECTIVE) {
-			this.reflectiveDirection = PuzzleItem.rotatedDirection(this.reflectiveDirection, degrees);
+			switch(this.direction) {
+			case Direction.EAST:
+				if (approachingDirection === Direction.SOUTH) {
+					return Direction.EAST;
+				} else if (approachingDirection === Direction.WEST) {
+					return Direction.NORTH;
+				}
+
+				return null;
+			case Direction.SOUTH:
+				if (approachingDirection === Direction.WEST) {
+					return Direction.SOUTH;
+				} else if (approachingDirection === Direction.NORTH) {
+					return Direction.EAST;
+				}
+
+				return null;
+			case Direction.WEST:
+				if (approachingDirection === Direction.EAST) {
+					return Direction.SOUTH;
+				} else if (approachingDirection === Direction.NORTH) {
+					return Direction.WEST;
+				}
+
+				return null;
+			case Direction.NORTH:
+				if (approachingDirection === Direction.EAST) {
+					return Direction.NORTH;
+				} else if (approachingDirection === Direction.SOUTH) {
+					return Direction.WEST;
+				}
+
+				return null;
+			}
 		}
 	}
 
-	/** Static helper method. Returns closest surface to the point provided. */
-	static closestSurface(point, surface1, surface2) {
-		let s1Pnt = surface1.getPosition();
-		let s2Pnt = surface2.getPosition();
-
-		let dist1 = { x: Math.abs(point.x - s1Pnt.x), y: Math.abs(point.y - s1Pnt.y) }
-		let dist2 = { x: Math.abs(point.x - s2Pnt.x), y: Math.abs(point.y - s2Pnt.y) }
-
-		if (Math.sqrt(dist1.x * dist1.x + dist1.y * dist1.y) < Math.sqrt(dist2.x * dist2.x + dist2.y * dist2.y)) {
-			return surface1;
-		} else {
-			return surface2;
+	/** Helper method. Returns the surface type enum from the string provided. */
+	static typeFromString(str) {
+		if (str === 'OPAQUE') {
+			return Surface.OPAQUE;
+		} else if (str === 'REFLECTIVE') {
+			return Surface.REFLECTIVE;
 		}
+
+		throw 'Surface type "' + str + '" is invalid!';
+	}
+
+	/** Helper method. Determines whether the type provided is or is not a valid type*/
+	static validType(type) {
+		return type === Surface.REFLECTIVE || type === Surface.OPAQUE;
 	}
 }
 

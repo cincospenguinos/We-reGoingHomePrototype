@@ -11,10 +11,11 @@
 
 * The model needs to be adjusted to accomodate the changes in the puzzle format
 	* Puzzles should be of any size, regardless of the room size
-	* Puzzle items should be very specific sizes--like 
+	* Puzzle items should be very specific sizes
 	* Puzzles can have multiple lasers
 	* Doors must be tied to specific lasers (this will help the laser/target phenomenon)
 	* Puzzles may have more than one target
+	* Multiple lasers may be necessary to hit one target to win
 * There should be static sizes for the various pieces
 	* PuzzleScene items should always be 16x16, 32x32, etc.
 	* Their larger equivalents should always be some scalar amount greater than themselves

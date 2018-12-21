@@ -3,7 +3,7 @@
  *
  * Represents a laser in a puzzle.
  */
-import { DIRECTION } from '../../lib/CONST.js';
+import { Direction } from './direction.js';
 import { PuzzleItem } from './puzzleItem.js';
 
 export class Laser extends PuzzleItem {
@@ -11,15 +11,22 @@ export class Laser extends PuzzleItem {
 	constructor(opts) {
 		super(opts);
 
-		this.direction = opts.direction;
-		this.movable = opts.movable || false;
+		this.key = opts.key;
+		this.color = opts.color;
+		this.exitKeys = opts.exitKeys;
+		
+		this.terminatesLaser = true;
+
+		if (!this.key || !this.exitKeys || !Direction.validDirection(this.direction)) {
+			throw 'Laser key, a set of exit keys, and a direction required for laser!';
+		}
 	}
 
 	/** Sets the img to the img provided. */
 	setImg(img) {
 		super.setImg(img);
 
-		let angle = PuzzleItem.angleFor(this.direction);
+		let angle = Direction.angleFromDirection(this.direction);
 		this.img.setAngle(angle);
 	}
 
@@ -29,13 +36,13 @@ export class Laser extends PuzzleItem {
 		let dimensions = this.getDimensions();
 
 		switch(this.direction) {
-		case DIRECTION.EAST:
+		case Direction.EAST:
 			return { x: position.x + dimensions.width / 2, y: position.y };
-		case DIRECTION.SOUTH:
+		case Direction.SOUTH:
 			return { x: position.x, y: position.y + dimensions.height / 2 };
-		case DIRECTION.NORTH:
+		case Direction.NORTH:
 			return { x: position.x, y: position.y - dimensions.height / 2 };
-		case DIRECTION.WEST:
+		case Direction.WEST:
 			return { x: position.x - dimensions.width / 2, y: position.y };
 		default:
 			throw 'Direction "' + this.direction + '" is invalid';
