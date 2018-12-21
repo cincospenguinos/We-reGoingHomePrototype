@@ -11,7 +11,8 @@ export const KEYS = {
 		puzzleScene: 'PuzzleScene',
 		traverseScene: 'TraverseScene',
 		menuScene: 'MenuScene',
-		topDownScene: 'TopDownScene'
+		topDownScene: 'TopDownScene',
+		levelEditorScene: 'LevelEditorScene'
 	},
 
 	dungeon0: { key: 'dungeon0', location: dungeonDir + 'dungeon0.json' }
