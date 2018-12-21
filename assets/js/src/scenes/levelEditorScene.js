@@ -33,9 +33,10 @@ export class LevelEditorScene extends Phaser.Scene {
 	}
 
 	create() {
-		// TODO: Create the set of panels and things
 		this.createInfoPanel();
-		
+
+		// TODO: Setup buttons to insert various things
+
 		// TODO: Draw the puzzle
 		this.boundariesGraphics = this.add.graphics({
 				add: true,
@@ -48,7 +49,23 @@ export class LevelEditorScene extends Phaser.Scene {
 	}
 
 	update() {
-		// TODO: Manage the graphics components for the laser
+		this.puzzle.solve();
+		// TODO: Manage the graphics components for the lasers
+	}
+
+	/** Helper method. Sets the selected piece. */
+	setSelectedPiece(puzzlePiece) {
+		this.selectedPiece = puzzlePiece;
+
+		$('#puzzle-piece-movable').prop('checked', this.selectedPiece.movable);
+		$('#puzzle-piece-rotatable').prop('checked', this.selectedPiece.rotatable);
+
+		$('#puzzle-piece-info').show();
+	}
+
+	deselectPiece() {
+		this.selectedPiece = null;
+		$('#puzzle-piece-info').hide();
 	}
 
 	/** Helper method. Uses jQuery to create the info panel that will be used to modify the various pieces of things. */
@@ -71,6 +88,7 @@ export class LevelEditorScene extends Phaser.Scene {
 			.on('input', (evt) => {
 				this.puzzle.dimensions.width = parseInt($('#room-width').val());
 				this.drawPuzzleBounds();
+				$('#puzzle-bounds-tiles').text(this.puzzleBoundsInTiles());
 			}).append('<br/>');
 		$('#room-width').val(this.puzzle.dimensions.width);
 
@@ -78,13 +96,38 @@ export class LevelEditorScene extends Phaser.Scene {
 			.on('input', (evt) => {
 				this.puzzle.dimensions.height = parseInt($('#room-height').val());
 				this.drawPuzzleBounds();
+				$('#puzzle-bounds-tiles').text(this.puzzleBoundsInTiles());
 			});
 		$('#room-height').val(this.puzzle.dimensions.height);
+		puzzleInfo.append('<p id="puzzle-bounds-tiles"></p>')
+		$('#puzzle-bounds-tiles').text(this.puzzleBoundsInTiles());
+
+		let pieceInfo = editorInfo.append('<div id="puzzle-piece-info"/>'); // For information specific about pieces
+		pieceInfo.append('<div>Movable:<input type="checkbox" id="puzzle-piece-movable" /></div>');
+		$('#puzzle-piece-movable').change(() => {
+			if (this.selectedPiece) {
+				this.selectedPiece.movable = $('#puzzle-piece-movable').checked;
+			}
+		}).append('<br/>');
+
+		pieceInfo.append('<div>Rotatable: <input type="checkbox" id="puzzle-piece-rotatable" /></div>');
+		$('#puzzle-piece-rotatable').change(() => {
+			if (this.selectedPiece) {
+				this.selectedPiece.rotatable = $('#puzzle-piece-rotatable').checked;
+			}
+		}).append('<br/>');
+
+		$('#puzzle-piece-info').hide();
 	}
 
 	/** Helper method. Draws the puzzle's boundaries. */
 	drawPuzzleBounds() {
 		this.boundariesGraphics.clear();
 		this.boundariesGraphics.fillRect(0, 0, this.puzzle.dimensions.width, this.puzzle.dimensions.height);
+	}
+
+	/** Helper method. Returns text of the dimensions in tiles of this pzuzle. */
+	puzzleBoundsInTiles() {
+		return this.puzzle.dimensions.width / 8 + 'x' + this.puzzle.dimensions.height / 8;
 	}
 }
