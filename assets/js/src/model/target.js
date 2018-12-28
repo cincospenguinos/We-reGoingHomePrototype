@@ -12,13 +12,12 @@ export class Target extends PuzzleItem {
 		super(opts);
 
 		this.key = opts.key;
-
 		this.lasersStruck = [];
 		this.terminatesLaser = true;
 		this.laserInteractable = true;
 
 		if (!this.key) {
-			throw 'A target key is required to instantiate a target';
+			throw 'A key is necessary to instantiate a target!';
 		}
 	}
 
@@ -27,17 +26,9 @@ export class Target extends PuzzleItem {
 		if (this.img) {
 			let frame = 0;
 
-			if (this.movable && this.rotatable) {
-				frame = 3;
-			} else if (this.movable) {
-				frame = 1;
-			} else if (this.rotatable) {
-				frame = 2;
-			}
-
-			if (this.isLit()) {
-				frame += 4;
-			}
+			if (this.movable) frame += 1;
+			if (this.rotatable) frame += 2;
+			if (this.isLit()) frame += 4;
 
 			this.img.setFrame(frame);
 		}
@@ -51,8 +42,8 @@ export class Target extends PuzzleItem {
 	}
 
 	/** Adds laser that strikes the key provided to the collection of lasers hitting this target. */
-	addStrikingLaser(laserKey) {
-		this.lasersStruck.push(laserKey);
+	addStrikingLaser(color) {
+		this.lasersStruck.push(color.key);
 
 		if (this.img) {
 			this.img.setFrame(this.img.frame.name + 4);
@@ -60,8 +51,8 @@ export class Target extends PuzzleItem {
 	}
 
 	/** Removes the striking laser provided. */
-	removeStrikingLaser(laserKey) {
-		this.lasersStruck.remove(laserKey);
+	removeStrikingLaser(color) {
+		this.lasersStruck.remove(color.key);
 
 		if (this.img && !this.isLit()) {
 			this.img.setFrame(this.img.frame.name - 4);	
@@ -69,8 +60,8 @@ export class Target extends PuzzleItem {
 	}
 
 	/** Returns true if this target is being struck by the laser matching the key provided. */
-	isStruckBy(laserKey) {
-		return this.lasersStruck.includes(laserKey);
+	isStruckBy(color) {
+		return this.lasersStruck.includes(color.key);
 	}
 
 	/** Resets the lasers that were striking this target. */
