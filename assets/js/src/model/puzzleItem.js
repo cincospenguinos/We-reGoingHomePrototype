@@ -112,6 +112,17 @@ export class PuzzleItem {
 		return this.terminatesLaser;
 	}
 
+	/** Override toJSON(). Ensures that puzzle items have all their necessary components. */
+	toJSON() {
+		return {
+			position: this.getPosition(),
+			dimensions: this.getDimensions(),
+			direction: this.direction,
+			movable: this.movable,
+			rotatable: this.rotatable
+		}
+	}
+
 	/** Helper method. Returns the item closest to the */
 	static closestItem(point, item1, item2) {
 		let s1Pnt = item1.getPosition();

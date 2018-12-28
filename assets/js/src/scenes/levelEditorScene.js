@@ -118,22 +118,7 @@ export class LevelEditorScene extends Phaser.Scene {
 					direction: Direction.EAST
 				});
 
-				let img = this.physics.add.image(position.x, position.y, SPRITES.puzzleLaser.key);
-				laser.setImg(img);
-
-				this.setupInteractive(laser);
-
-				this.puzzle.addLaser(laser);
-				this.setSelectedPiece(laser);
-
-				this.laserGraphics[laser.key] = this.add.graphics({
-					add: true,
-					lineStyle: {
-						width: 1,
-						color: 0xFF1010,
-						alpha: 1
-					}
-				});
+				this.addPuzzleItem(laser, SPRITES.puzzleLaser.key);
 			} else if (keyboard.JustDown(this.validKeys.addTarget)) {
 				let target = new Target({
 					key: this.newKey('target'),
@@ -142,19 +127,35 @@ export class LevelEditorScene extends Phaser.Scene {
 					direction: Direction.EAST
 				});
 
-				let img = this.physics.add.image(position.x, position.y, SPRITES.puzzleTarget.key);
-				target.setImg(img);
-
-				this.setupInteractive(target);
-
-				this.puzzle.addTarget(target);
-				this.setSelectedPiece(target);
+				this.addPuzzleItem(target, SPRITES.puzzleTarget.key);
 			} else if (keyboard.JustDown(this.validKeys.addMirror)) {
+				let mirror = new Surface({
+					key: this.newKey('mirror'),
+					position: position,
+					dimensions: { width: 16, height: 16},
+					direction: Direction.EAST,
+					type: Surface.REFLECTIVE
+				});
 
+				this.addPuzzleItem(mirror, SPRITS.puzzleMirror.key);
 			} else if (keyboard.JustDown(this.validKeys.addPanel)) {
+				let panel = new PuzzleItem({
+					position: position,
+					dimensions: { width: 8, height: 8 },
+					direction: Direction.EAST
+				});
 
+				this.addPuzzleItem(panel, SPRITES.puzzlePanel.key);
 			} else if (keyboard.JustDown(this.validKeys.addExit)) {
+				let exit = new Exit({
+					key: this.newKey('exit'),
+					laserKeys: [],
+					position: position,
+					dimensions: { width: 8, height: 8 },
+					direction: Direction.EAST
+				});
 
+				this.addPuzzleItem(exit, SPRITES.puzzleExit.key);
 			}
 		} else {
 			if (keyboard.JustDown(this.validKeys.rotateClockwise)) {
@@ -165,10 +166,39 @@ export class LevelEditorScene extends Phaser.Scene {
 		}
 	}
 
+	/** Helper method. Returns a new key for the puzzle editor. */
 	newKey(str) {
 		str += this.incrementingKey;
 		this.incrementingKey++;
 		return str;
+	}
+
+	addPuzzleItem(item, spriteKey) {
+		let img = this.physics.add.image(item.position.x, item.position.y, spriteKey);
+		item.setImg(img);
+		this.setupInteractive(item);
+		this.setSelectedPiece(item);
+
+		if (item instanceof Surface) {
+			this.puzzle.addSurface(item);
+		} else if (item instanceof Target) {
+			this.puzzle.addTarget(item);
+		} else if (item instanceof Laser) {
+			this.puzzle.addLaser(item);
+
+			this.laserGraphics[item.key] = this.add.graphics({
+				add: true,
+				lineStyle: {
+					width: 1,
+					color: 0xFF1010,
+					alpha: 1
+				}
+			});
+		} else if (item instanceof Exit) {
+			this.puzzle.addExit(item);
+		} else { // Last case, it's a panel
+			this.puzzle.addPanel(item);
+		}
 	}
 
 	/** Helper method. Sets interactive elements. */
@@ -249,6 +279,16 @@ export class LevelEditorScene extends Phaser.Scene {
 		}).append('<br/>');
 
 		$('#puzzle-piece-info').hide();
+
+		editorInfo.append('<button id="export-json">Export JSON</button>')
+		editorInfo.append('<br/>')
+		editorInfo.append('<div><pre id="json-space"></pre></div>');
+
+		$('#export-json').click((evt) => {
+			console.log('Exporting puzzle to JSON...');
+			let json = JSON.stringify(this.puzzle);
+			$('#json-space').text(json);
+		});
 	}
 
 	/** Helper method. Draws the puzzle's boundaries. */
