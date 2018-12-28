@@ -18,7 +18,7 @@ export class Target extends PuzzleItem {
 		this.laserInteractable = true;
 
 		if (!this.key) {
-			throw 'A target key, laser key, and exit key are required to instantiate a target';
+			throw 'A target key is required to instantiate a target';
 		}
 	}
 

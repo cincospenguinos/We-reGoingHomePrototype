@@ -18,7 +18,6 @@ export class MenuScene extends Phaser.Scene {
 	}
 
 	preload() {
-		// TODO: Put this information into CONST
 		this.load.json(KEYS.dungeon0.key, KEYS.dungeon0.location);
 	}
 
@@ -39,5 +38,11 @@ export class MenuScene extends Phaser.Scene {
 				// this.scene.start(KEYS.scene.puzzleScene, { dungeon: dungeon, puzzle: puzzle });
 			});
 		}
+
+		this.add.text(this.sys.canvas.width - 128, 16, 'Editor', { fontSize: '16px', fill: '#FFFFFF'})
+			.setInteractive()
+			.on('pointerdown', (evt, objects) => {
+				this.scene.start(KEYS.scene.levelEditorScene);
+			});
 	}
 }
