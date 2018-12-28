@@ -5,6 +5,7 @@
  */
 import { PuzzleItem } from './puzzleItem.js';
 import { Direction } from './direction.js';
+import { LaserColor } from './laserColor.js';
 
 export class Exit extends PuzzleItem {
 	
@@ -12,7 +13,7 @@ export class Exit extends PuzzleItem {
 		super(opts);
 
 		this.key = opts.key;
-		this.laserKeys = opts.laserKeys;
+		this.color = opts.color
 		this.position = opts.position;
 		this.nextRoomKey = opts.nextRoomKey;
 		this.direction = opts.direction;
@@ -20,8 +21,8 @@ export class Exit extends PuzzleItem {
 
 		this.isOpen = false;
 
-		if (!this.key || !this.laserKeys || !Direction.validDirection(this.direction)) {
-			throw 'key, laser keys, and direction are required for Exit!';
+		if (!this.key || !this.color || !(this.color instanceof LaserColor) || !Direction.validDirection(this.direction)) {
+			throw 'A key, laser color, and valid direction are necessary to instantiate an Exit!';
 		}
 	}
 

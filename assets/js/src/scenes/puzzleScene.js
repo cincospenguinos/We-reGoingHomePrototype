@@ -101,7 +101,7 @@ export class PuzzleScene extends Phaser.Scene {
 				add: true,
 				lineStyle: {
 					width: 1,
-					color: laser.color,
+					color: laser.color.val,
 					alpha: 1
 				}
 			});

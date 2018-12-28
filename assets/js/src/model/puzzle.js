@@ -80,7 +80,7 @@ export class Puzzle {
 
 					// Now that we know that the laser hits this item, we can handle it as we need to
 					if (closestItem instanceof Target) {
-						closestItem.addStrikingLaser(laser.key);
+						closestItem.addStrikingLaser(laser.color);
 
 						// Since an exit is tied to a laser rather than a target, we find the exit
 						// that is tied to this laser and set it to be open.
@@ -202,6 +202,6 @@ export class Puzzle {
 
 	/** Helper method. Returns the exits that are connected to the laser provided. */
 	exitsConnectedTo(laser) {
-		return this.getExits().filter((exit) => { return laser.exitKeys.includes(exit.key) });
+		return this.getExits().filter((exit) => { return laser.color === exit.color });
 	}
 }
