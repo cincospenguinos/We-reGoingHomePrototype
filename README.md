@@ -6,9 +6,7 @@ Prototype of a game Stefano and I are making.
 
 These are important notes about the project that **MUST NEVER BE DELETED:**
 
-* Puzzles always, **always** have a 4:3 aspect ratio. Going from puzzle to room must respect that
-	* This does mean that changing room size will change very little when it comes to gameplay while traversing a room. We may want to experiment with other room sizes and static sprites for traversal sections
-* Rooms in `TopDownScene` must always have a single tile of padding on the left, one on the right, one on the bottom, and two on the top
+* Rooms in `TopDownScene` must always have a single tile of padding on the left, one on the right, and two on the top
 
 ## TODO
 
