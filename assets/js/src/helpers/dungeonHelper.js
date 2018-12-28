@@ -14,6 +14,7 @@ import { Player } from '../model/player.js';
 import { Room } from '../model/room.js';
 import { KEYS, COLORS, PUZZLE_ROOM_SCALE } from '../../lib/CONST.js';
 import { Direction } from '../model/direction.js';
+import { LaserColor } from '../model/laserColor.js';
 
 export class DungeonHelper {
 
@@ -53,7 +54,7 @@ export class DungeonHelper {
 
 		puzzleData.lasers.forEach((laserData) => {
 			if (typeof laserData.direction === 'string') laserData.direction = Direction.directionFromString(laserData.direction);
-			if (typeof laserData.color === 'string') laserData.color = COLORS[laserData.color];
+			if (typeof laserData.color === 'string') laserData.color = LaserColor.colorFromKey(laserData.color);
 			puzzle.addLaser(new Laser(laserData));
 		});
 
@@ -75,6 +76,7 @@ export class DungeonHelper {
 
 		puzzleData.exits.forEach((exitData) => {
 			if (typeof exitData.direction === 'string') exitData.direction = Direction.directionFromString(exitData.direction);
+			if (typeof exitData.color === 'string') exitData.color = LaserColor.colorFromKey(exitData.color);
 			puzzle.addExit(new Exit(exitData));
 		});
 

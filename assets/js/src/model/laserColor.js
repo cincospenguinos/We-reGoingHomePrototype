@@ -8,6 +8,18 @@ export class LaserColor {
 		this.key = key;
 		this.val = colorVal;
 	}
+
+	static colorFromKey(key) {
+		if (key === 'l-red') {
+			return LaserColor.RED;
+		} else if (key === 'l-green') {
+			return LaserColor.GREEN;
+		} else if (key === 'l-blue') {
+			return LaserColor.BLUE;
+		}
+
+		throw 'Invalid color key "' + key + '"!';
+	}
 }
 
 LaserColor.RED = new LaserColor('l-red', 0xFF1010);
