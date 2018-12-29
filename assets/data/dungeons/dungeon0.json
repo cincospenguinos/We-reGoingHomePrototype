@@ -18,7 +18,6 @@
 					"key": "laser0",
 					"color": "l-red",
 					"direction":"SOUTH",
-					"exitKeys": ["exit0"],
 					"position": { "x": 16, "y": 16 },
 					"dimensions": { "width": 32, "height": 32 }
 				}
