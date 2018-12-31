@@ -13,7 +13,8 @@ The puzzle sections are half of the main element of the game. Each puzzle has a 
 3. A door whose color matches the target in the room will open only for that color, and for none other.
 4. A target struck by multiple lasers will blend into a new color.
 5. An opaque surface will always cause the laser to terminate.
-6. A reflective surface will always cause the laser to either change directions.
+6. A reflective surface will always cause the laser to either change directions or terminate, depending on where the surface is facing.
+7. A laser cannot cross with another laser of another color, but may cross with a laser of the same color.
 
 ## Traversal
 

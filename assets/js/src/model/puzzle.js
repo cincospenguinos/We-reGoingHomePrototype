@@ -84,7 +84,10 @@ export class Puzzle {
 
 						// Since an exit is tied to a laser rather than a target, we find the exit
 						// that is tied to this laser and set it to be open.
-						this.exitsConnectedTo(laser).forEach((exit) => { exit.isOpen = true });
+						this.exitsConnectedTo(laser).forEach((exit) => {
+							exit.setOpen(true);
+							exit.isOpen = true;
+						});
 					} 
 
 					// Now we check our cases. If what we have terminates the laser, then terminate it. If it
@@ -159,7 +162,7 @@ export class Puzzle {
 
 	/** Helper method. Resets the various state variables so that they can be properly set by solve() */
 	resetSolution() {
-		this.getExits().forEach((exit) => { exit.isOpen = false; });
+		this.getExits().forEach((exit) => { exit.setOpen(false); });
 		this.getTargets().forEach((target) => { target.resetStrikingLasers(); });
 	}
 

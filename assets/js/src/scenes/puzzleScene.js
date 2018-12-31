@@ -7,6 +7,12 @@ import { KEYS, SPRITES } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
 import { Surface } from '../model/surface.js';
 
+// TODO: Fix the door to look correct in the traverse scene
+// TODO: Make the door change luminosity when the target's color matches
+// TODO: Make the target look correct when hit with the right color laser
+// TODO: Make the player "animate" correctly
+// TODO: Fix mouse over stuff
+
 export class PuzzleScene extends Phaser.Scene {
 
 	constructor() {
@@ -25,8 +31,9 @@ export class PuzzleScene extends Phaser.Scene {
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleLaser);
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleTarget);
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleMirror);
+		SceneHelper.loadSpritesheet(this, SPRITES.puzzleExit);
+
 		SceneHelper.loadImage(this, SPRITES.puzzlePanel);
-		SceneHelper.loadImage(this, SPRITES.puzzleExit);
 		SceneHelper.loadImage(this, SPRITES.puzzlePlayer);
 		SceneHelper.loadImage(this, SPRITES.closePanelButton);
 	}
@@ -93,6 +100,7 @@ export class PuzzleScene extends Phaser.Scene {
 		this.puzzle.getExits().forEach((exit) => {
 			let exitPosition = exit.getPosition();
 			let exitImage = this.add.image(exitPosition.x, exitPosition.y, SPRITES.puzzleExit.key);
+			exit.setImg(exitImage);
 		});
 
 		// Since we want the laser on top of everything else, we should draw the laser on top of everything:

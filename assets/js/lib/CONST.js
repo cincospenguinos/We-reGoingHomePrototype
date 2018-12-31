@@ -24,7 +24,7 @@ export const SPRITES = {
 	puzzleTarget: { key: 'puzzleTarget', location: spriteDir + 'puzzle/target.png', frameWidth: 32, frameHeight: 32 },
 	puzzleMirror: { key: 'puzzleMirror', location: spriteDir + 'puzzle/mirror.png', frameWidth: 16, frameHeight: 16 },
 	puzzlePanel: { key: 'puzzlePanel', location: spriteDir + 'puzzle/panel.png' },
-	puzzleExit: { key: 'puzzleExit', location: spriteDir + 'puzzle/exit.png' },
+	puzzleExit: { key: 'puzzleExit', location: spriteDir + 'puzzle/exit.png', frameWidth: 16, frameHeight: 16 },
 	puzzlePlayer: { key: 'puzzlePlayer', location: spriteDir + 'puzzle/player.png' },
 	closePanelButton: { key: 'closePanelButton', location: spriteDir + 'puzzle/closePanelButton.png' },
 
@@ -34,7 +34,7 @@ export const SPRITES = {
 	roomMirror: { key: 'roomMirror', location: spriteDir + 'room/mirror.png', frameWidth: 128, frameHeight: 128 },
 	roomPanel: { key: 'roomPanel', location: spriteDir + 'room/panel.png', frameWidth: 64, frameHeight: 64 },
 	roomExit: { key: 'roomExit', location: spriteDir + 'room/exit.png', frameWidth: 64, frameHeight: 64 },
-	roomPlayer: { key: 'roomPlayer', location: spriteDir + 'room/player.png' },
+	roomPlayer: { key: 'roomPlayer', location: spriteDir + 'room/player.png', frameWidth: 64, frameHeight: 64 },
 
 	mainCharacter: { key: 'mainCharacter', location: spriteDir + 'mainCharacter.png' },
 	topDownDoor: { key: 'topDownDoor', location: spriteDir + 'door.png', frameWidth: 128, frameHeight: 128 },

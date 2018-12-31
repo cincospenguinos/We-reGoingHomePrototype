@@ -26,8 +26,37 @@ export class Exit extends PuzzleItem {
 		}
 	}
 
+	/** Sets whether or not the door is open. */
+	setOpen(open) {
+		this.isOpen = open;
+		this.setProperFrame();
+	}
+
+	setImg(img) {
+		super.setImg(img);
+		this.setProperFrame();
+	}
+
 	/** Helper method. Returns true if the direction of the exit is located in either the north or south. */
 	useHorizontalDoor() {
 		return this.direction === Direction.NORTH || this.direction === Direction.SOUTH;
+	}
+
+	setProperFrame() {
+		if (this.img) {
+			if (this.color === LaserColor.RED) {
+				this.img.setFrame(0);
+			} else if (this.color === LaserColor.BLUE) {
+				this.img.setFrame(1);
+			} else if (this.color === LaserColor.GREEN) {
+				this.img.setFrame(2);
+			} else {
+				throw 'LaserColor is not valid!';
+			}
+
+			if (this.isOpen) {
+				this.img.setFrame(this.img.frame.name + 4);
+			}
+		}
 	}
 }
