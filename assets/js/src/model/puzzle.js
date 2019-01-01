@@ -66,7 +66,7 @@ export class Puzzle {
 			let currentPoint = laser.getLaserPoint(); // Current point we're looking at
 			let currentDirection = laser.direction; // Current direction the laser is facing
 			let path = [currentPoint]; // The path we will assign to our laser
-			let terminated = false; // Whether or not the laser's path terminated by hitting a surface
+			let terminated = false; // Whether or not the laser's path terminated by hitting a surface or other colored laser
 			let lastItem = null;
 
 			// Get the closest item
@@ -81,13 +81,6 @@ export class Puzzle {
 					// Now that we know that the laser hits this item, we can handle it as we need to
 					if (closestItem instanceof Target) {
 						closestItem.addStrikingLaser(laser.color);
-
-						// Since an exit is tied to a laser rather than a target, we find the exit
-						// that is tied to this laser and set it to be open.
-						this.exitsConnectedTo(laser).forEach((exit) => {
-							exit.setOpen(true);
-							exit.isOpen = true;
-						});
 					} 
 
 					// Now we check our cases. If what we have terminates the laser, then terminate it. If it
@@ -112,6 +105,7 @@ export class Puzzle {
 				}
 			}
 
+			// Handle final point of non-terminated laser
 			if (!terminated) {
 				let newPoint = { x: currentPoint.x, y: currentPoint.y };
 				switch(currentDirection) {
@@ -130,6 +124,13 @@ export class Puzzle {
 				}
 				path.push(newPoint);
 			}
+
+			// Handle opening the exits if the proper color is hitting the target.
+			this.getTargets().forEach((t) => {
+				this.exitsConnectedTo(t.color).forEach((exit) => {
+					exit.setOpen(true);
+				});
+			});
 
 			// Now let's check if any of the points in the path hit the player
 			if (this.player) {
@@ -212,7 +213,7 @@ export class Puzzle {
 	}
 
 	/** Helper method. Returns the exits that are connected to the laser provided. */
-	exitsConnectedTo(laser) {
-		return this.getExits().filter((exit) => { return laser.color === exit.color });
+	exitsConnectedTo(color) {
+		return this.getExits().filter((exit) => { return color === exit.color });
 	}
 }

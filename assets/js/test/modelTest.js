@@ -175,6 +175,58 @@ QUnit.test('reflectiveSurface', (assert) => {
 	assert.notOk(surface.reflectiveDirection(Direction.NORTH), 'The mirror should not reflect in this case');
 });
 
+/*--- LaserColor tests */
+QUnit.test('laserColorBlends', (assert) => {
+	assert.equal(LaserColor.blend([LaserColor.RED, LaserColor.GREEN]), LaserColor.ORANGE, 'RED + GREEN = ORANGE');
+	assert.equal(LaserColor.blend([LaserColor.RED, LaserColor.BLUE]), LaserColor.PURPLE, 'RED + BLUE = PURPLE');
+	assert.equal(LaserColor.blend([LaserColor.GREEN, LaserColor.BLUE]), LaserColor.YELLOW, 'GREEN + BLUE = YELLOW');
+	assert.equal(LaserColor.blend([LaserColor.RED, LaserColor.RED]), LaserColor.RED, 'Blending the same color returns the same color');
+	assert.equal(LaserColor.blend([LaserColor.RED, LaserColor.GREEN, LaserColor.BLUE]), LaserColor.WHITE, 'Blending all the colors yields white');
+	assert.equal(LaserColor.blend([LaserColor.RED, LaserColor.GREEN, LaserColor.RED]), LaserColor.ORANGE, 'Multiples of a color make no difference.')
+});
+
+/*--- Target tests */
+QUnit.test('targetBlendByLasers', (assert) => {
+	let puzzle = new Puzzle({
+		dimensions: { width: 200, height: 200 },
+		key: 'somepuzzle',
+		roomKey: 'someroom'
+	});
+
+	puzzle.addLaser(new Laser({
+		key: 'laser',
+		color: LaserColor.RED,
+		direction: Direction.EAST,
+		position: { x: 10, y: 10 },
+		dimensions: { width: 0, height: 0 },
+		laserInteractable: true
+	}));
+
+	puzzle.addLaser(new Laser({
+		key: 'otherLaser',
+		color: LaserColor.GREEN,
+		direction: Direction.WEST,
+		position: { x: 150, y: 10 },
+		dimensions: { width: 0, height: 0 },
+		laserInteractable: true
+	}));
+
+	puzzle.addTarget(new Target({
+		key: 'target',
+		position: { x: 50, y: 10 },
+		dimensions: { width: 20, height: 20 },
+		laserInteractable: true
+	}));
+
+	puzzle.solve();
+
+	let target = puzzle.targets['target'];
+	assert.ok(target.isLit(), 'Target should be lit');
+	assert.ok(target.isStruckBy(LaserColor.RED), 'Target should be hit by red laser');
+	assert.ok(target.isStruckBy(LaserColor.GREEN), 'Target should be hit by blue laser');
+	assert.equal(target.color, LaserColor.ORANGE, 'Target should be lit orange.');
+});
+
 /*--- Puzzle tests */
 QUnit.test('solvedPuzzle', (assert) => {
 	let puzzle = new Puzzle({
@@ -222,6 +274,56 @@ QUnit.test('solvedPuzzle', (assert) => {
 	assert.ok(puzzle.targets['target'].isLit(), 'Target should be lit');
 	assert.ok(puzzle.targets['target'].isStruckBy(LaserColor.RED), 'Target should be struck by red laser');
 	assert.ok(puzzle.exits['exit'].isOpen, 'Exit should be open');
+});
+
+QUnit.test('solvedPuzzleWithBlendedColor', (assert) => {
+	let puzzle = new Puzzle({
+		dimensions: { width: 200, height: 200 },
+		key: 'somepuzzle',
+		roomKey: 'someroom'
+	});
+
+	puzzle.addLaser(new Laser({
+		key: 'laser',
+		color: LaserColor.RED,
+		direction: Direction.EAST,
+		position: { x: 10, y: 10 },
+		dimensions: { width: 0, height: 0 },
+		laserInteractable: true
+	}));
+
+	puzzle.addLaser(new Laser({
+		key: 'otherLaser',
+		color: LaserColor.GREEN,
+		direction: Direction.WEST,
+		position: { x: 150, y: 10 },
+		dimensions: { width: 0, height: 0 },
+		laserInteractable: true
+	}));
+
+	puzzle.addTarget(new Target({
+		key: 'target',
+		position: { x: 50, y: 10 },
+		dimensions: { width: 20, height: 20 },
+		laserInteractable: true
+	}));
+
+	puzzle.addExit(new Exit({
+		key: 'exit',
+		position: { x: 200, y: 200 },
+		dimensions: { width: 0, height: 0 },
+		direction: Direction.EAST,
+		color: LaserColor.ORANGE
+	}))
+
+	puzzle.solve();
+
+	let target = puzzle.targets['target'];
+	assert.ok(target.isLit(), 'Target should be lit');
+	assert.ok(target.isStruckBy(LaserColor.RED), 'Target should be hit by red laser');
+	assert.ok(target.isStruckBy(LaserColor.GREEN), 'Target should be hit by blue laser');
+	assert.equal(target.color, LaserColor.ORANGE, 'Target should be lit orange.');
+	assert.ok(puzzle.exits['exit'].isOpen, 'Exit should be open.');
 });
 
 QUnit.test('notSolvedButThenSolved', (assert) => {

@@ -16,6 +16,7 @@ export class Target extends PuzzleItem {
 		this.lasersStruck = [];
 		this.terminatesLaser = true;
 		this.laserInteractable = true;
+		this.color = null;
 
 		if (!this.key) {
 			throw 'A key is necessary to instantiate a target!';
@@ -45,12 +46,18 @@ export class Target extends PuzzleItem {
 	/** Adds laser that strikes the key provided to the collection of lasers hitting this target. */
 	addStrikingLaser(color) {
 		this.lasersStruck.push(color.key);
+		this.color = LaserColor.blend(this.laserColorsStruck());
 		this.setProperFrame();
 	}
 
 	/** Removes the striking laser provided. */
 	removeStrikingLaser(color) {
 		this.lasersStruck.remove(color.key);
+
+		if (this.isLit()) {
+			this.color = LaserColor.blend(this.laserColorsStruck());
+		}
+
 		this.setProperFrame();
 	}
 
@@ -85,6 +92,11 @@ export class Target extends PuzzleItem {
 	resetStrikingLasers() {
 		this.lasersStruck = [];
 		this.setProperFrame();
+	}
+
+	/** Helper method. Returns the literal laser colors striking this target.*/
+	laserColorsStruck() {
+		return this.lasersStruck.map((key) => { return LaserColor.colorFromKey(key) });
 	}
 
 	/** Returns true if this target is getting hit by at least one laser. */
