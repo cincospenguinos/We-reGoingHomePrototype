@@ -25,3 +25,5 @@ export class LaserColor {
 LaserColor.RED = new LaserColor('l-red', 0xFF1010);
 LaserColor.GREEN = new LaserColor('l-green', 0x10FF10);
 LaserColor.BLUE = new LaserColor('l-blue', 0x1010FF);
+
+// TODO: Other colors

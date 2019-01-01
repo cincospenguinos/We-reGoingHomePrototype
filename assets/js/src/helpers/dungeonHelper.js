@@ -140,6 +140,7 @@ export class DungeonHelper {
 
 		puzzle.getExits().forEach((exit) => {
 			let exitData = {
+				key: exit.key,
 				x: exit.getPosition().x * PUZZLE_ROOM_SCALE + padX,
 				y: exit.getPosition().y * PUZZLE_ROOM_SCALE + padY,
 				direction: exit.direction,

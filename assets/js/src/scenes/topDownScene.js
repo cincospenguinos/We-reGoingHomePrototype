@@ -28,12 +28,13 @@ export class TopDownScene extends Phaser.Scene {
 		this.load.tilemapTiledJSON(this.mapKey, 'assets/data/maps/' + this.mapKey + '.json');
 		
 		SceneHelper.loadImage(this, SPRITES.mainCharacter);
+		
+		SceneHelper.loadSpritesheet(this, SPRITES.roomExit);
+		SceneHelper.loadSpritesheet(this, SPRITES.roomPlayer);
 		SceneHelper.loadSpritesheet(this, SPRITES.roomPanel);
 		SceneHelper.loadSpritesheet(this, SPRITES.roomLaser);
 		SceneHelper.loadSpritesheet(this, SPRITES.roomMirror);
 		SceneHelper.loadSpritesheet(this, SPRITES.roomTarget);
-		SceneHelper.loadImage(this, SPRITES.roomExit);
-		SceneHelper.loadImage(this, SPRITES.roomPlayer);
 
 		this.load.json('dungeon0', 'assets/data/dungeons/dungeon0.json');
 	}
@@ -105,6 +106,10 @@ export class TopDownScene extends Phaser.Scene {
 						});
 				}
 			});
+
+			this.puzzle.exits[exit.key].setImg(exitImg);
+
+			// exit.setImg(exitImg);
 		});
 
 		// Setup the panels
@@ -114,8 +119,9 @@ export class TopDownScene extends Phaser.Scene {
 			panelImage.on('pointerout', (evt) => { panelImage.setFrame(0) });
 			panelImage.on('pointerdown', (evt) => {
 				// If the player is close enough to the panel, we'll let them modify the puzzle
-				let distance = Math.sqrt(Math.pow(this.playerImg.x - panel.x, 2) + Math.pow(this.playerImg.y - panel.y, 2))
+				let distance = Math.sqrt(Math.pow(this.playerImg.x - panel.x, 2) + Math.pow(this.playerImg.y - panel.y, 2));
 				if (distance <= 150) {
+					this.puzzle.resetImgs();
 					this.scene.start(KEYS.scene.puzzleScene, 
 						{ 
 							puzzle: this.puzzle, 
@@ -187,18 +193,22 @@ export class TopDownScene extends Phaser.Scene {
 
 			if (north) {
 				this.playerImg.setVelocityY(-512);
+				this.playerImg.setFrame(2);
 			}
 
 			if (east) {
 				this.playerImg.setVelocityX(512);
+				this.playerImg.setFrame(1);
 			}
 
 			if (south) {
 				this.playerImg.setVelocityY(512);
+				this.playerImg.setFrame(0);
 			}
 
 			if (west) {
 				this.playerImg.setVelocityX(-512);
+				this.playerImg.setFrame(3);
 			}
 
 			if (!east && !west) {

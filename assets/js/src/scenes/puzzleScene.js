@@ -7,11 +7,7 @@ import { KEYS, SPRITES } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
 import { Surface } from '../model/surface.js';
 
-// TODO: Fix the door to look correct in the traverse scene
-// TODO: Make the door change luminosity when the target's color matches
-// TODO: Make the target look correct when hit with the right color laser
 // TODO: Make the player "animate" correctly
-// TODO: Fix mouse over stuff
 
 export class PuzzleScene extends Phaser.Scene {
 
@@ -99,7 +95,7 @@ export class PuzzleScene extends Phaser.Scene {
 
 		this.puzzle.getExits().forEach((exit) => {
 			let exitPosition = exit.getPosition();
-			let exitImage = this.add.image(exitPosition.x, exitPosition.y, SPRITES.puzzleExit.key);
+			let exitImage = this.add.sprite(exitPosition.x, exitPosition.y, SPRITES.puzzleExit.key);
 			exit.setImg(exitImage);
 		});
 
@@ -180,12 +176,12 @@ export class PuzzleScene extends Phaser.Scene {
 
 		gameObj.on('pointerover', (evt, objects) => {
 			this.pointerOverObj = modelObj;
-			modelObj.pointerOver();
+			// modelObj.pointerOver();
 		});
 
 		gameObj.on('pointerout', (evt, objects) => {
 			this.pointerOverObj = null;
-			modelObj.pointerOut();
+			// modelObj.pointerOut();
 		});
 	}
 }
