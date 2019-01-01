@@ -63,7 +63,10 @@ Your kids have a few basic needs:
 	* Acts of service (cleaning up after your kids)
 4. Esteem
 	* Opportunities to do things on their own
-	* Instruction and encouragement from Dad
+	* Encouragement and praise from Dad
+5. Self-Actualization
+	* Instruction for new skills development
+	* Opportunities for self-guided work and maintenance
 
 I'm still working out in my head how I would design this, but my idea is this:
 
@@ -82,3 +85,6 @@ I'm still working out in my head how I would design this, but my idea is this:
 	* You can encourage one to go play or comfort the other
 	* You can give them something they are obviously reaching for (water, food, a cool thing, etc.)
 	* Objects of theirs may break and repairing them requires resources that you have to go collect, and then spend time to fix
+* Your main antagonists when caring for the kids are time and entropy
+	* You have a limited amount of time to do things for your kids, and the end of the game is dependent upon you getting your ass through the dungeons, so you need to balance things to accomodate
+	* Things around the house may break, and food needs to be replenished, and chores need to be done
