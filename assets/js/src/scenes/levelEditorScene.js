@@ -34,8 +34,9 @@ export class LevelEditorScene extends Phaser.Scene {
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleLaser);
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleTarget);
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleMirror);
+		SceneHelper.loadSpritesheet(this, SPRITES.puzzleExit);
+
 		SceneHelper.loadImage(this, SPRITES.puzzlePanel);
-		SceneHelper.loadImage(this, SPRITES.puzzleExit);
 		SceneHelper.loadImage(this, SPRITES.puzzlePlayer);
 		SceneHelper.loadImage(this, SPRITES.closePanelButton);
 	}
@@ -278,6 +279,14 @@ export class LevelEditorScene extends Phaser.Scene {
 				this.selectedPiece.rotatable = $('#puzzle-piece-rotatable').is(':checked');
 			}
 		}).append('<br/>');
+
+		pieceInfo.append('<div>Laser Color:<select id="laser-color-selector">' +
+				'<option value="l-red">Red</option><option value="l-green">Green</option><option value="l-blue">Blue</option>' +
+			'</select>');
+		$('#laser-color-selector').change((evt) => {
+			let color = LaserColor.colorFromKey($('#laser-color-selector').val());
+			this.selectedPiece.setColor(color);
+		});
 
 		$('#puzzle-piece-info').hide();
 

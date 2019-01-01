@@ -24,9 +24,12 @@ export class Laser extends PuzzleItem {
 	/** Sets the img to the img provided. */
 	setImg(img) {
 		super.setImg(img);
+		this.setProperFrame();
+	}
 
-		let angle = Direction.angleFromDirection(this.direction);
-		this.img.setAngle(angle);
+	setColor(laserColor) {
+		this.color = laserColor;
+		this.setProperFrame();
 	}
 
 	/** Returns the point from which the light of this laser extends. */
@@ -61,5 +64,17 @@ export class Laser extends PuzzleItem {
 		} else {
 			throw 'No path assigned!';
 		}
+	}
+
+	setProperFrame() {
+		let angle = Direction.angleFromDirection(this.direction);
+		this.img.setAngle(angle);
+	}
+
+	/** Override toJSON(). Ensures that puzzle items have all their necessary components. */
+	toJSON() {
+		let obj = super.toJSON();
+		obj.color = this.color.key;
+		return obj;
 	}
 }

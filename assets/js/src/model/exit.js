@@ -37,6 +37,11 @@ export class Exit extends PuzzleItem {
 		this.setProperFrame();
 	}
 
+	setColor(color) {
+		this.color = color;
+		this.setProperFrame();
+	}
+
 	/** Helper method. Returns true if the direction of the exit is located in either the north or south. */
 	useHorizontalDoor() {
 		return this.direction === Direction.NORTH || this.direction === Direction.SOUTH;
@@ -58,5 +63,12 @@ export class Exit extends PuzzleItem {
 				this.img.setFrame(this.img.frame.name + 4);
 			}
 		}
+	}
+
+	/** Override toJSON(). Ensures that puzzle items have all their necessary components. */
+	toJSON() {
+		let obj = super.toJSON();
+		obj.color = this.color.key;
+		return obj;
 	}
 }
