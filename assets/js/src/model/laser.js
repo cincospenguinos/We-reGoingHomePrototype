@@ -47,4 +47,19 @@ export class Laser extends PuzzleItem {
 			throw 'Direction "' + this.direction + '" is invalid';
 		}
 	}
+
+	/** Helper method. Returns the path of this laser as a set of "line" hashes. */
+	getPathAsLines() {
+		if (this.path) {
+			let newPath = [];
+
+			for (let i = 0; i < this.path.length - 1; i++) {
+				newPath.push({ x1: this.path[i].x, y1: this.path[i].y, x2: this.path[i + 1].x, y2: this.path[i + 1].y });
+			}
+
+			return newPath;
+		} else {
+			throw 'No path assigned!';
+		}
+	}
 }
