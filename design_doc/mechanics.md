@@ -16,6 +16,17 @@ The puzzle sections are half of the main element of the game. Each puzzle has a 
 6. A reflective surface will always cause the laser to either change directions or terminate, depending on where the surface is facing.
 7. A laser cannot cross with another laser of another color, but may cross with a laser of the same color.
 
+### Color Blending
+
+Since colors can be blended together, it is important to remember what colors blend to what.
+
+* RED + GREEN = ORANGE
+* RED + BLUE = PURPLE
+* GREEN + BLUE = YELLOW
+* RED + GREEN + BLUE = WHITE
+
+A target may be hit by multiple copies of the same color, but will still act as if it was only hit by one color.
+
 ## Traversal
 
 The traversal sections are the other half of the main element. The layout of the room that you are in changes directly by changing the layout of the puzzle inside the room. The solution of the puzzle you discovered will influence how well you are to move from one end of the room to the other.
