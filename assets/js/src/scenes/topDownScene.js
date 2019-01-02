@@ -64,8 +64,18 @@ export class TopDownScene extends Phaser.Scene {
 
 		let puzzleItemGroup = this.physics.add.staticGroup();
 
+		this.laserGraphics = {};
 		this.layout.lasers.forEach((laser) => {
 			puzzleItemGroup.create(laser.x, laser.y, SPRITES.roomLaser.key);
+
+			this.laserGraphics[laser.key] = this.add.graphics({
+				add: true,
+				lineStyle: {
+					width: 8,
+					color: laser.color.val,
+					alpha: 1
+				}
+			});
 		});
 
 		// Setup the surfaces
@@ -135,18 +145,10 @@ export class TopDownScene extends Phaser.Scene {
 			});
 		});
 
-		// Setup the laser paths
-		let laserGraphics = this.add.graphics({
-			add: true,
-			lineStyle: {
-				width: 8,
-				color: COLORS.RED,
-				alpha: 1
-			}
-		});
+		this.layout.lasers.forEach((laser) => {
+			let laserGraphics = this.laserGraphics[laser.key];
 
-		this.layout.laserPaths.forEach((path) => {
-			path.forEach((line) => {
+			this.layout.laserPaths[laser.key].forEach((line) => {
 				let midpoint = this.midpointOfLine(line);
 				let zone;
 

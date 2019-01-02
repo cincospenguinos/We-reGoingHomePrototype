@@ -199,6 +199,9 @@ export class Puzzle {
 			});
 		});
 
+		// Make sure the proper frame is shown for an exit
+		this.getExits().forEach((exit) => { exit.setProperFrame(); });
+
 		// 4) Check each laser's new path and ensure that none of them strike the player
 		this.getLasers().forEach((laser) => {
 			if (this.player && this.valid) {
@@ -232,7 +235,7 @@ export class Puzzle {
 
 	/** Helper method. Resets the various state variables so that they can be properly set by solve() */
 	resetSolution() {
-		this.getExits().forEach((exit) => { exit.setOpen(false); });
+		this.getExits().forEach((exit) => { exit.reset(); });
 		this.getTargets().forEach((target) => { target.resetStrikingLasers(); });
 		this.valid = true;
 	}

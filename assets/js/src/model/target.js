@@ -91,6 +91,7 @@ export class Target extends PuzzleItem {
 	/** Resets the lasers that were striking this target. */
 	resetStrikingLasers() {
 		this.lasersStruck = [];
+		this.color = null;
 		this.setProperFrame();
 	}
 

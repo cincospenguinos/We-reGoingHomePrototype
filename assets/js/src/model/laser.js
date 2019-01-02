@@ -67,6 +67,11 @@ export class Laser extends PuzzleItem {
 	}
 
 	setProperFrame() {
+		let frame = 0;
+		if (this.movable) frame += 1;
+		if (this.rotatable) frame += 2;
+
+		this.img.setFrame(frame);
 		let angle = Direction.angleFromDirection(this.direction);
 		this.img.setAngle(angle);
 	}

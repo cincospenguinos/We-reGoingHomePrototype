@@ -108,7 +108,7 @@ export class DungeonHelper {
 
 		let layout = {
 			lasers: [],
-			laserPaths: [],
+			laserPaths: {},
 			exits: [],
 			panels: [],
 			surfaces: [],
@@ -121,10 +121,12 @@ export class DungeonHelper {
 
 		puzzle.getLasers().forEach((laser) => {
 			layout.lasers.push({
+				key: laser.key,
 				x: laser.getPosition().x * PUZZLE_ROOM_SCALE + padX, 
 				y: laser.getPosition().y * PUZZLE_ROOM_SCALE + padY,
 				width: 256,
 				height: 256,
+				color: laser.color,
 				direction: laser.direction
 			});
 
@@ -136,9 +138,9 @@ export class DungeonHelper {
 					x2: laser.path[i + 1].x * PUZZLE_ROOM_SCALE + padX,
 					y2: laser.path[i + 1].y * PUZZLE_ROOM_SCALE + padY,
 					isHorizontal: laser.path[i].y === laser.path[i + 1].y
-				})
+				});
 			}
-			layout.laserPaths.push(path);
+			layout.laserPaths[laser.key] = path;
 		});
 
 		puzzle.getExits().forEach((exit) => {

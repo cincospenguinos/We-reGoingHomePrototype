@@ -65,6 +65,11 @@ export class Exit extends PuzzleItem {
 		}
 	}
 
+	/** Resets this exit to be "closed" in accordance to the puzzle solution setting thigns up again. */
+	reset() {
+		this.isOpen = false;
+	}
+
 	/** Override toJSON(). Ensures that puzzle items have all their necessary components. */
 	toJSON() {
 		let obj = super.toJSON();
