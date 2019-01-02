@@ -24,7 +24,7 @@ export class TopDownScene extends Phaser.Scene {
 	}
 
 	preload() {
-		SceneHelper.loadImage(this, SPRITES.shittyTilesheet);
+		SceneHelper.loadImage(this, SPRITES.malkhutTilesheet);
 		this.load.tilemapTiledJSON(this.mapKey, 'assets/data/maps/' + this.mapKey + '.json');
 		
 		SceneHelper.loadImage(this, SPRITES.mainCharacter);
@@ -43,7 +43,7 @@ export class TopDownScene extends Phaser.Scene {
 		// First generate the map
 		let sandboxMap = this.make.tilemap({ key: this.mapKey, tileWidth: 64, tileHeight: 64 });
 
-		const tileset = sandboxMap.addTilesetImage(SPRITES.shittyTilesheet.key, SPRITES.shittyTilesheet.key);
+		const tileset = sandboxMap.addTilesetImage(SPRITES.malkhutTilesheet.key, SPRITES.malkhutTilesheet.key);
 
 		const floorLayer = sandboxMap.createStaticLayer('FloorLayer', tileset, 0, 0);
 		const wallLayer = sandboxMap.createDynamicLayer('WallLayer', tileset, 0, 0);
@@ -126,7 +126,7 @@ export class TopDownScene extends Phaser.Scene {
 						{ 
 							puzzle: this.puzzle, 
 							dungeon: this.dungeon, 
-							playerPosition: { 
+							playerPosition: {
 								x: (this.playerImg.x - (roomDimensions.paddingLeft + roomDimensions.paddingRight)) / PUZZLE_ROOM_SCALE, 
 								y: (this.playerImg.y - (roomDimensions.paddingTop + roomDimensions.paddingBottom)) / PUZZLE_ROOM_SCALE 
 							}
@@ -136,7 +136,6 @@ export class TopDownScene extends Phaser.Scene {
 		});
 
 		// Setup the laser paths
-		// TODO: lasers of other colors?
 		let laserGraphics = this.add.graphics({
 			add: true,
 			lineStyle: {
@@ -191,23 +190,25 @@ export class TopDownScene extends Phaser.Scene {
 			let south = this.keyboard.S.isDown;
 			let west = this.keyboard.A.isDown;
 
+			let vel = 300;
+
 			if (north) {
-				this.playerImg.setVelocityY(-512);
+				this.playerImg.setVelocityY(-vel);
 				this.playerImg.setFrame(2);
 			}
 
-			if (east) {
-				this.playerImg.setVelocityX(512);
-				this.playerImg.setFrame(1);
-			}
-
 			if (south) {
-				this.playerImg.setVelocityY(512);
+				this.playerImg.setVelocityY(vel);
 				this.playerImg.setFrame(0);
 			}
 
+			if (east) {
+				this.playerImg.setVelocityX(vel);
+				this.playerImg.setFrame(1);
+			}
+
 			if (west) {
-				this.playerImg.setVelocityX(-512);
+				this.playerImg.setVelocityX(-vel);
 				this.playerImg.setFrame(3);
 			}
 
@@ -238,7 +239,6 @@ export class TopDownScene extends Phaser.Scene {
 			panelSprite.setFrame(4);
 			break;
 		}
-
 
 		panelSprite.on('pointerover', (a, b) => {
 			switch(panel.direction) {

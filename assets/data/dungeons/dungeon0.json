@@ -10,46 +10,79 @@
 	},
 	"puzzles": {
 		"puzzle0": {
+			"dimensions": {
+				"width": 136,
+				"height": 136
+			},
 			"key": "puzzle0",
 			"roomKey": "room0",
-			"dimensions": { "width": 248, "height": 248 },
-			"lasers": [
-				{
-					"key": "laser0",
-					"color": "l-red",
-					"direction":"SOUTH",
-					"position": { "x": 16, "y": 16 },
-					"dimensions": { "width": 32, "height": 32 }
-				}
-			],
-			"surfaces": [],
-			"exits": [
-				{
-					"key": "exit0",
-					"color": "l-red",
-					"direction": "NORTH",
-					"nextRoomKey": "room1",
-					"position": { "x": 124, "y": 16 },
-					"dimensions": { "width": 16, "height": 16 }
-				}
-			],
-			"panels": [ 
-				{
-					"position": { "x": 130, "y": 244 },
-					"dimensions": { "width": 8, "height": 8 },
-					"direction": "SOUTH"
-				}
-			],
-			"targets": [ 
-				{
+			"targets": {
+				"target0": {
 					"key": "target0",
-					"direction": "EAST",
-					"movable": true,
-					"position": { "x": 128, "y": 128 },
-					"dimensions": { "width": 32, "height": 32 }
+					"position": {
+						"x": 16,
+						"y": 120
+					},
+					"dimensions": {
+						"width": 32,
+						"height": 32
+					},
+					"direction": 1,
+					"movable": false,
+					"rotatable": false
+				}
+			},
+			"surfaces": [],
+			"panels": [
+				{
+					"position": {
+						"x": 81,
+						"y": 4
+					},
+					"dimensions": {
+						"width": 8,
+						"height": 8
+					},
+					"direction": 0,
+					"movable": false,
+					"rotatable": false
 				}
 			],
-			"playerPosition": { "x": 120, "y": 240 }
+			"exits": {
+				"exit2": {
+					"key": "exit2",
+					"position": {
+						"x": 65,
+						"y": 8
+					},
+					"dimensions": {
+						"width": 16,
+						"height": 16
+					},
+					"direction": 0,
+					"movable": false,
+					"rotatable": false,
+					"color": "l-red"
+				}
+			},
+			"lasers": {
+				"laser1": {
+					"key": "laser1",
+					"position": {
+						"x": 118,
+						"y": 16
+					},
+					"dimensions": {
+						"width": 32,
+						"height": 32
+					},
+					"direction": 1,
+					"movable": true,
+					"rotatable": false,
+					"color": "l-red"
+				}
+			},
+			"playerPosition": { "x": 68, "y": 120 }
 		}
 	}
 }

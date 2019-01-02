@@ -52,13 +52,15 @@ export class DungeonHelper {
 			roomKey: puzzleData.roomKey,
 		});
 
-		puzzleData.lasers.forEach((laserData) => {
+		Object.keys(puzzleData.lasers).forEach((laserKey) => {
+			let laserData = puzzleData.lasers[laserKey];
 			if (typeof laserData.direction === 'string') laserData.direction = Direction.directionFromString(laserData.direction);
 			if (typeof laserData.color === 'string') laserData.color = LaserColor.colorFromKey(laserData.color);
 			puzzle.addLaser(new Laser(laserData));
 		});
 
-		puzzleData.targets.forEach((targetData) => {
+		Object.keys(puzzleData.targets).forEach((targetKey) => {
+			let targetData = puzzleData.targets[targetKey];
 			if (typeof targetData.direction === 'string') targetData.direction = Direction.directionFromString(targetData.direction);
 			puzzle.addTarget(new Target(targetData));
 		});
@@ -74,7 +76,8 @@ export class DungeonHelper {
 			puzzle.addPanel(new PuzzleItem(panelData));
 		});
 
-		puzzleData.exits.forEach((exitData) => {
+		Object.keys(puzzleData.exits).forEach((exitKey) => {
+			let exitData = puzzleData.exits[exitKey];
 			if (typeof exitData.direction === 'string') exitData.direction = Direction.directionFromString(exitData.direction);
 			if (typeof exitData.color === 'string') exitData.color = LaserColor.colorFromKey(exitData.color);
 			puzzle.addExit(new Exit(exitData));

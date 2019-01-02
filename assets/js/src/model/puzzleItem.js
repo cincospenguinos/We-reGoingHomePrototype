@@ -108,6 +108,14 @@ export class PuzzleItem {
 		this.img = img;
 	}
 
+	/** Resets the img of this puzzle item. Fixes a weird bug I found. */
+	resetImg() {
+		if (this.img) {
+			this.position = this.getPosition();
+			this.img = null;
+		}
+	}
+
 	terminatesLaser() {
 		return this.terminatesLaser;
 	}
@@ -115,6 +123,7 @@ export class PuzzleItem {
 	/** Override toJSON(). Ensures that puzzle items have all their necessary components. */
 	toJSON() {
 		return {
+			key: this.key,
 			position: this.getPosition(),
 			dimensions: this.getDimensions(),
 			direction: this.direction,

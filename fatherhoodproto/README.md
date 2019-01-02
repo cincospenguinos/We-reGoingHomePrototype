@@ -20,4 +20,3 @@ Just use commands, man. It's like a text adventure game, but shittier. But the p
 	* Love stat decreases dramatically when more basic needs are neglected
 	* Love stat increases slightly for lower-level needs, but increases more for higher-level needs, but doesn't increase at all when higher-level care is provided (hugs, encouragement, instruction, etc.) and physical needs are not met.
 - [ ] Add skills training for children
-- [ ] 

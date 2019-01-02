@@ -74,6 +74,7 @@ export class Laser extends PuzzleItem {
 	/** Override toJSON(). Ensures that puzzle items have all their necessary components. */
 	toJSON() {
 		let obj = super.toJSON();
+		obj.key = this.key;
 		obj.color = this.color.key;
 		return obj;
 	}

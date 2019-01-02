@@ -40,6 +40,7 @@ export const SPRITES = {
 
 	// Tilesheet shit
 	shittyTilesheet: { key: 'shittyTilesheet', location: spriteDir + 'shittyTilesheet.png' },
+	malkhutTilesheet: { key: 'malkhut_winter_outlined', location: spriteDir + 'tilesheets/malkhut_winter_outlined.png' }
 };
 
 export const ROOMS = {

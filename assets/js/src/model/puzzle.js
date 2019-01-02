@@ -240,9 +240,9 @@ export class Puzzle {
 	/** Helper method. To ensure that no weird bugs with position occur switching between scenes, this will reset images of the various pieces. */
 	resetImgs() {
 		this.getExits().forEach((i) => { i.img = null; });
-		this.getLasers().forEach((i) => { i.img = null; });
-		this.getTargets().forEach((i) => { i.img = null; });
-		this.getLaserInteractable().forEach((i) => { i.img = null; });
+		this.getLasers().forEach((i) => { i.resetImg(); });
+		this.getTargets().forEach((i) => { i.resetImg(); });
+		this.getLaserInteractable().forEach((i) => { i.resetImg(); });
 	}
 
 	/** Helper method. Returns the closest item in the list that the laser is intersecting, or null if none exists. */
