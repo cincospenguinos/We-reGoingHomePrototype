@@ -29,7 +29,7 @@ export class PuzzleScene extends Phaser.Scene {
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleMirror);
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleExit);
 
-		SceneHelper.loadImage(this, SPRITES.puzzlePanel);
+		SceneHelper.loadSpritesheet(this, SPRITES.puzzlePanel);
 		SceneHelper.loadImage(this, SPRITES.puzzlePlayer);
 		SceneHelper.loadImage(this, SPRITES.closePanelButton);
 	}
@@ -52,6 +52,7 @@ export class PuzzleScene extends Phaser.Scene {
 		this.puzzle.getLasers().forEach((laser) => {
 			let laserPosition = laser.getPosition();
 			let laserImage = this.physics.add.sprite(laserPosition.x, laserPosition.y, SPRITES.puzzleLaser.key);
+			laserImage.setScale(2);
 
 			if (laser.movable || laser.rotatable) {
 				this.setupInteractivity(laser, laserImage);
@@ -63,6 +64,7 @@ export class PuzzleScene extends Phaser.Scene {
 		this.puzzle.getTargets().forEach((target) => {
 			let targetPosition = target.getPosition();
 			let targetImage = this.physics.add.sprite(targetPosition.x, targetPosition.y, SPRITES.puzzleTarget.key);
+			targetImage.setScale(2);
 
 			if (target.movable || target.rotatable) {
 				this.setupInteractivity(target, targetImage);
@@ -81,6 +83,8 @@ export class PuzzleScene extends Phaser.Scene {
 				throw 'Need an opaque surface!';
 			}
 
+			surfaceImage.setScale(2);
+
 			if (surface.movable || surface.rotatable) {
 				this.setupInteractivity(surface, surfaceImage);
 			}
@@ -90,12 +94,14 @@ export class PuzzleScene extends Phaser.Scene {
 
 		this.puzzle.panels.forEach((panel) => {
 			let panelPosition = panel.getPosition();
-			let panelImage = this.add.image(panelPosition.x, panelPosition.y, SPRITES.puzzlePanel.key);
+			let panelImage = this.add.sprite(panelPosition.x, panelPosition.y, SPRITES.puzzlePanel.key);
+			panelImage.setScale(2);
 		});
 
 		this.puzzle.getExits().forEach((exit) => {
 			let exitPosition = exit.getPosition();
 			let exitImage = this.add.sprite(exitPosition.x, exitPosition.y, SPRITES.puzzleExit.key);
+			exitImage.setScale(2);
 			exit.setImg(exitImage);
 		});
 
@@ -113,7 +119,8 @@ export class PuzzleScene extends Phaser.Scene {
 
 		// If there is a player position, we need to respect that
 		let playerPosition = this.playerPosition ? this.playerPosition : this.puzzle.player.getPosition();
-		this.add.image(playerPosition.x, playerPosition.y, SPRITES.puzzlePlayer.key);
+		let playerImage = this.add.image(playerPosition.x, playerPosition.y, SPRITES.puzzlePlayer.key);
+		playerImage.setScale(2);
 
 		let exitButton = this.add.image(this.puzzle.dimensions.width - 8, 8, SPRITES.closePanelButton.key);
 		exitButton.setInteractive();

@@ -23,7 +23,7 @@ export const SPRITES = {
 	puzzleLaser: { key: 'puzzleLaser', location: spriteDir + 'puzzle/laser.png', frameWidth: 32, frameHeight: 32 },
 	puzzleTarget: { key: 'puzzleTarget', location: spriteDir + 'puzzle/target.png', frameWidth: 32, frameHeight: 32 },
 	puzzleMirror: { key: 'puzzleMirror', location: spriteDir + 'puzzle/mirror.png', frameWidth: 16, frameHeight: 16 },
-	puzzlePanel: { key: 'puzzlePanel', location: spriteDir + 'puzzle/panel.png' },
+	puzzlePanel: { key: 'puzzlePanel', location: spriteDir + 'puzzle/panel.png', frameWidth: 8, frameHeight: 8 },
 	puzzleExit: { key: 'puzzleExit', location: spriteDir + 'puzzle/exit.png', frameWidth: 16, frameHeight: 16 },
 	puzzlePlayer: { key: 'puzzlePlayer', location: spriteDir + 'puzzle/player.png' },
 	closePanelButton: { key: 'closePanelButton', location: spriteDir + 'puzzle/closePanelButton.png' },
@@ -58,4 +58,4 @@ export const COLORS = {
 	RED: 0xFF1010
 };
 
-export const PUZZLE_ROOM_SCALE = 8; // puzzle dimensions * SCALE = room dimensions
+export const PUZZLE_ROOM_SCALE = 4; // puzzle dimensions * SCALE = room dimensions

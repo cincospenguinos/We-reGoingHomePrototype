@@ -11,8 +11,8 @@
 	"puzzles": {
 		"puzzle0": {
 			"dimensions": {
-				"width": 136,
-				"height": 136
+				"width": 272,
+				"height": 272
 			},
 			"key": "puzzle0",
 			"roomKey": "room0",
@@ -20,23 +20,21 @@
 				"target0": {
 					"key": "target0",
 					"position": {
-						"x": 16,
-						"y": 120
+						"x": 32,
+						"y": 240
 					},
 					"dimensions": {
 						"width": 32,
 						"height": 32
 					},
-					"direction": 1,
-					"movable": false,
-					"rotatable": false
+					"direction": 1
 				}
 			},
 			"surfaces": [],
 			"panels": [
 				{
 					"position": {
-						"x": 81,
+						"x": 150,
 						"y": 4
 					},
 					"dimensions": {
@@ -52,7 +50,7 @@
 				"exit2": {
 					"key": "exit2",
 					"position": {
-						"x": 65,
+						"x": 120,
 						"y": 8
 					},
 					"dimensions": {
@@ -69,7 +67,7 @@
 				"laser1": {
 					"key": "laser1",
 					"position": {
-						"x": 118,
+						"x": 222,
 						"y": 64
 					},
 					"dimensions": {
@@ -82,7 +80,7 @@
 					"color": "l-red"
 				}
 			},
-			"playerPosition": { "x": 68, "y": 120 }
+			"playerPosition": { "x": 136, "y": 260 }
 		}
 	}
 }
