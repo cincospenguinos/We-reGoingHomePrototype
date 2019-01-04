@@ -75,10 +75,12 @@ export class DungeonHelper {
 
 		puzzle.getExits().forEach((exit) => {
 			room.addPuzzleItem(new Exit({
+				key: exit.key,
 				position: this.puzzlePosToRoomPos(exit.position),
 				dimensions: this.puzzleDimToRoomDim(exit.dimensions),
 				color: exit.color,
-				direction: exit.direction
+				direction: exit.direction,
+				isOpen: exit.isOpen
 			}));
 		});
 
@@ -143,7 +145,8 @@ export class DungeonHelper {
 					dimensions: dimensions,
 					color: item.color,
 					direction: item.direction,
-					key: item.key
+					key: item.key,
+					isOpen: item.isOpen
 				}));
 			} else if (item instanceof Surface) {
 				puzzle.addSurface(new Surface({
@@ -164,7 +167,7 @@ export class DungeonHelper {
 				puzzle.addPanel(new PuzzleItem({
 					position: position,
 					dimensions: dimensions,
-					direction: direction
+					direction: item.direction
 				}))
 			}
 		});

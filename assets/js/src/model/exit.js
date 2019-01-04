@@ -19,7 +19,7 @@ export class Exit extends PuzzleItem {
 		this.direction = opts.direction;
 		this.nextRoomPlayerPosition = opts.nextRoomPlayerPosition;
 
-		this.isOpen = false;
+		this.isOpen = opts.isOpen || false;
 
 		if (!this.key || !this.color || !(this.color instanceof LaserColor) || !Direction.validDirection(this.direction)) {
 			throw 'A key, laser color, and valid direction are necessary to instantiate an Exit!';
@@ -49,19 +49,39 @@ export class Exit extends PuzzleItem {
 
 	setProperFrame() {
 		if (this.img) {
+			let frame = 0;
+
 			if (this.color === LaserColor.RED) {
 				this.img.setFrame(0);
 			} else if (this.color === LaserColor.BLUE) {
-				this.img.setFrame(1);
+				this.img.setFrame(8);
 			} else if (this.color === LaserColor.GREEN) {
-				this.img.setFrame(2);
+				this.img.setFrame(16);
 			} else {
 				throw 'LaserColor is not valid!';
 			}
 
 			if (this.isOpen) {
-				this.img.setFrame(this.img.frame.name + 4);
+				frame += 4;
 			}
+
+			switch(this.direction) {
+			case Direction.EAST:
+				frame += 1;
+				break;
+			case Direction.SOUTH:
+				frame += 3;
+				break;
+			case Direction.WEST:
+				frame += 2;
+				break;
+			case Direction.NORTH:
+				break;
+			default:
+				throw 'No direction found for exit!';
+			}
+
+			this.img.setFrame(frame);
 		}
 	}
 

@@ -13,13 +13,34 @@
 					"color": "l-red",
 					"position": { "x": 150, "y": 150 },
 					"dimensions": { "width": 256, "height": 256 },
-					"direction": 0
+					"direction": "EAST"
 				},
 				{
 					"class": "Target",
 					"key": "target1",
 					"position": { "x": 450, "y": 150 },
 					"dimensions": { "width": 256, "height": 256 }
+				},
+				{
+					"class": "Exit",
+					"key": "exit1",
+					"position": { "x": 544, "y": 0 },
+					"dimensions": { "width": 256, "height": 256 },
+					"color": "l-red",
+					"direction": "NORTH"
+				},
+				{
+					"class": "Panel",
+					"position": { "x": 850, "y": 0 },
+					"dimensions": { "width": 64, "height": 64 },
+					"direction": "NORTH"
+				},
+				{
+					"class": "Surface",
+					"position": { "x": 850, "y": 500 },
+					"direction": "EAST",
+					"dimensions": { "width": 128, "height": 128 },
+					"type": "REFLECTIVE"
 				}
 			],
 			"player": {

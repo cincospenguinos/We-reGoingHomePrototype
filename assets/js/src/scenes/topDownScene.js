@@ -13,6 +13,7 @@ import { Puzzle } from '../model/puzzle.js';
 import { PuzzleItem } from '../model/puzzleItem.js';
 import { Exit } from '../model/exit.js';
 import { Player } from '../model/player.js';
+import { Direction } from '../model/direction.js';
 
 export class TopDownScene extends Phaser.Scene {
 
@@ -87,7 +88,7 @@ export class TopDownScene extends Phaser.Scene {
 
 		this.room.puzzleItems.forEach((item) => {
 			let pos = { x: item.position.x + pad / 2, y: item.position.y + pad };
-			let spriteKey;
+			let spriteKey, img;
 
 			if (item instanceof Laser) {
 				spriteKey = SPRITES.roomLaser.key;
@@ -106,25 +107,11 @@ export class TopDownScene extends Phaser.Scene {
 						x1: line.x1 + pad / 2,
 						y1: line.y1 + pad,
 						x2: line.x2 + pad / 2,
-						y2: line.y2 + pad
+						y2: line.y2 + pad,
+						isHorizontal: line.isHorizontal
 					};
 
-					let midpoint = this.midpointOfLine(adjustedLine);
-					let zone;
-
-					if (line.isHorizontal) {
-						zone = this.add.zone(midpoint.x, midpoint.y, Math.abs(line.x2 - line.x1), 8);
-					} else {
-						zone = this.add.zone(midpoint.x, midpoint.y, 8, Math.abs(line.y2 - line.y1));
-					}
-
-					puzzleItemGroup.add(zone);
-					laserGraphics.strokeLineShape({
-						x1: adjustedLine.x1,
-						y1: adjustedLine.y1,
-						x2: adjustedLine.x2,
-						y2: adjustedLine.y2
-					});
+					this.drawLaserLine(adjustedLine, laserGraphics, puzzleItemGroup);
 				});
 			} else if (item instanceof Exit) {
 				spriteKey = SPRITES.roomExit.key;
@@ -136,11 +123,34 @@ export class TopDownScene extends Phaser.Scene {
 				spriteKey = SPRITES.roomPanel.key;
 			}
 
-			if (spriteKey === SPRITES.roomExit.key) { // TODO: Handle the open door
+			// If we have an open door, we need an overlap, not a collision
+			if (spriteKey === SPRITES.roomExit.key && item.isOpen) {
+				switch(item.direction) {
+				case Direction.SOUTH:
+					pos.y += pad / 2;
+					break;
+				case Direction.NORTH:
+					pos.y -= pad / 2;
+					break;
+				}
 
-			} else { 
-				let img = puzzleItemGroup.create(pos.x, pos.y, spriteKey);
+				img = this.physics.add.image(pos.x, pos.y, SPRITES.roomExit.key);
 				item.setImg(img);
+
+				this.physics.add.overlap(this.room.player.img, img, (evt) => {
+					throw 'Implement moving rooms!';
+				});
+			} else { 
+				img = puzzleItemGroup.create(pos.x, pos.y, spriteKey);
+				item.setImg(img);
+			}
+
+			// If we have a panel, we need to set things up to be able to click on it and shit
+			if (spriteKey === SPRITES.roomPanel.key) {
+				img.setInteractive();
+				img.on('pointerdown', (evt) => {
+					console.log('Show the puzzle view!');
+				});
 			}
 		});
 
@@ -202,70 +212,28 @@ export class TopDownScene extends Phaser.Scene {
 		}
 	}
 
-	/** Helper method. Setup the interactive things for the panel. */
-	setupPanelInteractive(panel, panelSprite) {
-		// TODO: Add the check to see if the player is close enough to the panel
-		switch(panel.direction) {
-		case DIRECTION.EAST:
-			panelSprite.setFrame(2);
-			break;
-		case DIRECTION.SOUTH:
-			panelSprite.setFrame(0);
-			break;
-		case DIRECTION.WEST:
-			panelSprite.setFrame(2);
-			break;
-		case DIRECTION.NORTH:
-			panelSprite.setFrame(4);
-			break;
-		}
-
-		panelSprite.on('pointerover', (a, b) => {
-			switch(panel.direction) {
-			case DIRECTION.EAST:
-				panelSprite.setFrame(3);
-				break;
-			case DIRECTION.SOUTH:
-				panelSprite.setFrame(1);
-				break;
-			case DIRECTION.WEST:
-				panelSprite.setFrame(3);
-				break;
-			case DIRECTION.NORTH:
-				panelSprite.setFrame(5);
-				break;
-			}
-		});
-
-		panelSprite.on('pointerout', (a, b) => {
-			switch(panel.direction) {
-			case DIRECTION.EAST:
-				panelSprite.setFrame(2);
-				break;
-			case DIRECTION.SOUTH:
-				panelSprite.setFrame(0);
-				break;
-			case DIRECTION.WEST:
-				panelSprite.setFrame(2);
-				break;
-			case DIRECTION.NORTH:
-				panelSprite.setFrame(4);
-				break;
-			}
-		});
-
-		panelSprite.on('pointerdown', (a, b) => {
-			// TODO: Add the player here
-			this.scene.start(KEYS.scene.puzzleScene, { 
-				dungeon: this.dungeon, 
-				puzzle: this.puzzle, 
-				playerPosition: { x: this.playerImg.x, y: this.playerImg.y }  
-			});
-		});
-	}
-
 	/** Helper method. Returns the midpoint of the line provided. */
 	midpointOfLine(line) {
 		return { x: (line.x2 + line.x1) / 2, y: (line.y2 + line.y1) / 2 }
+	}
+
+	/** Helper method. Draws a laser line using the graphics provided.*/
+	drawLaserLine(line, graphics, group) {
+		let midpoint = this.midpointOfLine(line);
+		let zone;
+
+		if (line.isHorizontal) {
+			zone = this.add.zone(midpoint.x, midpoint.y, Math.abs(line.x2 - line.x1), 8);
+		} else {
+			zone = this.add.zone(midpoint.x, midpoint.y, 8, Math.abs(line.y2 - line.y1));
+		}
+
+		group.add(zone);
+		graphics.strokeLineShape({
+			x1: line.x1,
+			y1: line.y1,
+			x2: line.x2,
+			y2: line.y2
+		});
 	}
 }
