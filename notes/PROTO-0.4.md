@@ -4,6 +4,13 @@
 
 ## Decisions
 
+* TopDownScene now exclusively interacts with rooms, and PuzzleScene now exclusively interacts with puzzles
+	* This will make switching between the two scenes much more seamless
+	* This also makes the code for TopDownScene enormously better to look at--simpler, smaller, and easy
+	* Note that the dungeon JSON file now requires all puzzle items to include what class they belong to
+* Rooms defined in the JSON file have dimensions that **do not include** the padding of the rooms themselves
+	* This makes the conversion from puzzle to room and back a lot easier
+
 ## Discoveries
 
 ## To Improve

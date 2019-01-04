@@ -545,6 +545,12 @@ QUnit.test('converterMethods', (assert) => {
 	});
 	puzzle.addTarget(target);
 
+	let player = new Player({
+		position: { x: 50, y: 50 },
+		dimensions: { width: 0, height: 0 }
+	});
+	puzzle.setPlayer(player);
+
 	let room = DungeonHelper.puzzleToRoom(puzzle);
 
 	assert.ok(room.puzzleItems.length === 3, 'Room has correct puzzle items.');
@@ -560,6 +566,7 @@ QUnit.test('converterMethods', (assert) => {
 				item.position, 'Mirror is in correct position.');
 		}
 	});
+	assert.deepEqual(room.player.position, { x: 200, y: 200 }, 'Room should have a player');
 
 	let newPuzzle = DungeonHelper.roomToPuzzle(room);
 	newPuzzle.getLasers().forEach((laser) => {

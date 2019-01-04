@@ -16,7 +16,7 @@ export class Target extends PuzzleItem {
 		this.lasersStruck = [];
 		this.terminatesLaser = true;
 		this.laserInteractable = true;
-		this.color = null;
+		this.color = opts.color || null;
 
 		if (!this.key) {
 			throw 'A key is necessary to instantiate a target!';
@@ -61,6 +61,12 @@ export class Target extends PuzzleItem {
 		this.setProperFrame();
 	}
 
+	/** Overrides super. Ensures proper frame. */
+	setImg(img) {
+		this.img = img;
+		this.setProperFrame();
+	}
+
 	/** Returns true if this target is being struck by the laser matching the key provided. */
 	isStruckBy(color) {
 		return this.lasersStruck.includes(color.key);
@@ -69,18 +75,21 @@ export class Target extends PuzzleItem {
 	setProperFrame() {
 		if (this.img) {
 			if (this.isLit()) {
-				if (this.lasersStruck.length === 1) {
-					let colorKey = this.lasersStruck[0];
-
-					if (colorKey === LaserColor.RED.key) {
-						this.img.setFrame(1);
-					} else if (colorKey === LaserColor.GREEN.key) {
-						this.img.setFrame(2);
-					} else if (colorKey === LaserColor.BLUE.key) {
-						this.img.setFrame(3);
-					}
-				} else {
-					throw 'Handle blending of colors here!'
+				switch(this.color.key) {
+				case LaserColor.RED.key:
+					this.img.setFrame(1);
+					break;
+				case LaserColor.GREEN.key:
+					this.img.setFrame(2);
+					break;
+				case LaserColor.BLUE.key:
+					this.img.setFrame(3);
+					break;
+				case LaserColor.ORANGE.key:
+				case LaserColor.PURPLE.key:
+				case LaserColor.YELLOW.key:
+				case LaserColor.WHITE.key:
+					throw 'No frame for "' + this.color.key + '"!';
 				}
 			} else {
 				this.img.setFrame(0);
@@ -100,8 +109,8 @@ export class Target extends PuzzleItem {
 		return this.lasersStruck.map((key) => { return LaserColor.colorFromKey(key) });
 	}
 
-	/** Returns true if this target is getting hit by at least one laser. */
+	/** Returns true if this target is getting hit by at least one laser, or if the color is set. */
 	isLit() {
-		return this.lasersStruck.length >= 1;
+		return this.lasersStruck.length >= 1 || this.color;
 	}
 }

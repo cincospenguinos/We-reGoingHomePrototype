@@ -3,84 +3,29 @@
 	"rooms": {
 		"room0": {
 			"key": "room0",
-			"dimensions": { "width": 4000, "height": 4000 },
+			"puzzleKey": "puzzle0",
+			"dimensions": { "width": 1088, "height": 1088 },
 			"mapName": "room0",
-			"puzzleKey": "puzzle0"
-		}
-	},
-	"puzzles": {
-		"puzzle0": {
-			"dimensions": {
-				"width": 272,
-				"height": 272
-			},
-			"key": "puzzle0",
-			"roomKey": "room0",
-			"targets": {
-				"target0": {
-					"key": "target0",
-					"position": {
-						"x": 32,
-						"y": 240
-					},
-					"dimensions": {
-						"width": 32,
-						"height": 32
-					},
-					"direction": 1
-				}
-			},
-			"surfaces": [],
-			"panels": [
+			"puzzleItems": [
 				{
-					"position": {
-						"x": 150,
-						"y": 4
-					},
-					"dimensions": {
-						"width": 8,
-						"height": 8
-					},
-					"direction": 0,
-					"movable": false,
-					"rotatable": false
+					"class": "Laser",
+					"key": "laser1",
+					"color": "l-red",
+					"position": { "x": 150, "y": 150 },
+					"dimensions": { "width": 256, "height": 256 },
+					"direction": 0
+				},
+				{
+					"class": "Target",
+					"key": "target1",
+					"position": { "x": 450, "y": 150 },
+					"dimensions": { "width": 256, "height": 256 }
 				}
 			],
-			"exits": {
-				"exit2": {
-					"key": "exit2",
-					"position": {
-						"x": 120,
-						"y": 8
-					},
-					"dimensions": {
-						"width": 16,
-						"height": 16
-					},
-					"direction": 0,
-					"movable": false,
-					"rotatable": false,
-					"color": "l-red"
-				}
-			},
-			"lasers": {
-				"laser1": {
-					"key": "laser1",
-					"position": {
-						"x": 222,
-						"y": 64
-					},
-					"dimensions": {
-						"width": 32,
-						"height": 32
-					},
-					"direction": 1,
-					"movable": true,
-					"rotatable": false,
-					"color": "l-red"
-				}
-			},
-			"playerPosition": { "x": 136, "y": 260 }
+			"player": {
+				"position": { "x": 550, "y": 1030 },
+				"dimensions": { "width": 128, "height": 128 }
+			}
 		}
 	}
 }

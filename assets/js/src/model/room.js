@@ -12,11 +12,15 @@ export class Room {
 		this.dimensions = opts.dimensions;
 		this.mapName = opts.mapName;
 		this.puzzleKey = opts.puzzleKey;
-
-		this.puzzleItems = [];
+		this.puzzleItems = opts.puzzleItems || [];
+		this.player = opts.player;
 
 		if (!this.key) {
-			throw 'No key provided for this Room!';
+			throw 'Key and player position required for a room!';
+		}
+
+		if (!this.player) {
+			console.warn('No player found for this room!');
 		}
 	}
 

@@ -16,6 +16,7 @@ export class Laser extends PuzzleItem {
 		this.color = opts.color;
 		this.terminatesLaser = true;
 		this.laserInteractable = true;
+		this.path = opts.path || [];
 
 		if (!this.key || !this.color || !(this.color instanceof LaserColor) || !Direction.validDirection(this.direction)) {
 			throw 'A laser color, key, and valid direction are necessary to instantiate a Laser!';
@@ -58,7 +59,13 @@ export class Laser extends PuzzleItem {
 			let newPath = [];
 
 			for (let i = 0; i < this.path.length - 1; i++) {
-				newPath.push({ x1: this.path[i].x, y1: this.path[i].y, x2: this.path[i + 1].x, y2: this.path[i + 1].y });
+				newPath.push({ 
+					x1: this.path[i].x, 
+					y1: this.path[i].y, 
+					x2: this.path[i + 1].x, 
+					y2: this.path[i + 1].y,
+					isHorizontal: this.path[i].y === this.path[i + 1].y
+				});
 			}
 
 			return newPath;

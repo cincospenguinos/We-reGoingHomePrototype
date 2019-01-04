@@ -10,6 +10,7 @@ import { PuzzleItem } from './puzzleItem.js';
 import { Exit } from './exit.js';
 import { Direction } from './direction.js';
 import { Target } from './target.js';
+import { Player } from './player.js';
 
 export class Puzzle {
 
@@ -53,6 +54,14 @@ export class Puzzle {
 	/** Adds the panel provided to the puzzle. */
 	addPanel(panel) {
 		panel instanceof PuzzleItem ? this.panels.push(panel) : (() => { throw 'panel must be an instance of Panel!'});
+	}
+
+	setPlayer(player) {
+		if (!(player instanceof Player)) {
+			throw 'Player provided is not a Player object!';
+		}
+
+		this.player = player;
 	}
 
 	/** Solves the puzzle. Sets up the solution variables of the various pieces according to its current state. */
