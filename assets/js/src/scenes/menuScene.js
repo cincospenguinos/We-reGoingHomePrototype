@@ -3,8 +3,6 @@
  *
  *
  * Scene for the main menu or pause menu. They can be the same thing.
- *
- * TODO: Design a good scene.
  */
 import { KEYS, SPRITES } from '../../lib/CONST.js';
 import { DungeonHelper } from '../helpers/dungeonHelper.js';

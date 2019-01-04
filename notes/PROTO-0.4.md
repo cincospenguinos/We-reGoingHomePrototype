@@ -10,6 +10,13 @@
 	* Note that the dungeon JSON file now requires all puzzle items to include what class they belong to
 * Rooms defined in the JSON file have dimensions that **do not include** the padding of the rooms themselves
 	* This makes the conversion from puzzle to room and back a lot easier
+* Puzzles must fit within the canvas element for now
+	* We may want to explore being able to zoom in and out of the puzzle scene, as well as scrolling through it. This adds complexity for us, but would give us an even wider design space to explore when it comes to dungeon and puzzle design.
+* Instead of an "exit puzzle" button you click on, you hit the escape key to exit the puzzle
+	* This means that everything visible to the player is potentially interactable
+	* This also removes issues of the puzzle pieces being under or over the exit button
+* Only lasers and mirrors are movable and rotatable right now
+	* I want things to be easy on the player, and this is one way of ensuring that that's the case
 
 ## Discoveries
 

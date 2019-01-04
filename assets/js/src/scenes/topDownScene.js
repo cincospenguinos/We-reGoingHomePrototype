@@ -6,6 +6,7 @@
 import { KEYS, SPRITES, COLORS, PUZZLE_ROOM_SCALE } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
 import { DungeonHelper } from '../helpers/dungeonHelper.js';
+
 import { Surface } from '../model/surface.js';
 import { Laser } from '../model/laser.js';
 import { Target } from '../model/target.js';
@@ -74,8 +75,8 @@ export class TopDownScene extends Phaser.Scene {
 		let puzzleItemGroup = this.physics.add.staticGroup();
 
 		// We are using the room provided to help us get everything down
-
-		let playerImg = this.physics.add.image(this.room.player.position.x + (pad / 2), this.room.player.position.y + pad, SPRITES.roomPlayer.key);
+		let playerImg = this.physics.add.image(this.room.player.position.x + (pad / 2), 
+			this.room.player.position.y + pad, SPRITES.roomPlayer.key);
 		playerImg.setCollideWorldBounds(true);
 		this.room.player.setImg(playerImg);
 
@@ -142,6 +143,10 @@ export class TopDownScene extends Phaser.Scene {
 			if (spriteKey === SPRITES.roomPanel.key) {
 				img.setInteractive();
 				img.on('pointerdown', (evt) => {
+					// Since we had the player move over according to padding, we will need to remove that
+					// padding before we jump right into the puzzle scene
+					let newPlayerPos = { x: this.room.player.getPosition().x - (pad / 2), y: this.room.player.getPosition().y - pad };
+					this.room.player.setPosition(newPlayerPos);
 					SceneHelper.transitionToPuzzleScene(this, this.dungeon, this.room);
 				});
 			}

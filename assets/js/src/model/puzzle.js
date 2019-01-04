@@ -65,17 +65,12 @@ export class Puzzle {
 		this.player = player;
 	}
 
-	/** Solves the puzzle. Sets up the solution variables of the various pieces according to its current state. */
-	solve() {
+	/** Solves the puzzle. Sets up the solution variables of the various pieces according to its current state. Optional
+		parameter for calculating laser paths in the puzzle scene included.*/
+	solve(translation = { x: 0, y: 0 }) {
 		this.resetSolution();
 
 		let interactable = this.getLaserInteractable();
-
-		// Okay, new algorithim because this is getting messy:
-		// 1) Calculate the full paths of every laser
-		// 2) Calculate the trimmed paths of the laser, using every other laser's path
-		// 3) Figure out which targets are still hit by what lasers, and manage accordingly
-		// 4) Check each laser's new path and ensure that none of them strike the player
 
 		// 1) Calculate the full path of every laser and assign it to the laser itself
 		let targetLaserPairs = {}; // Pairs each target to the lasers that are striking it
@@ -133,10 +128,10 @@ export class Puzzle {
 				let newPoint = { x: currentPoint.x, y: currentPoint.y };
 				switch(currentDirection) {
 				case Direction.EAST:
-					newPoint.x = this.dimensions.width;
+					newPoint.x = this.dimensions.width + translation.x;
 					break;
 				case Direction.SOUTH:
-					newPoint.y = this.dimensions.height;
+					newPoint.y = this.dimensions.height + translation.y;
 					break;
 				case Direction.WEST:
 					newPoint.x = 0;
@@ -295,6 +290,11 @@ export class Puzzle {
 	/** Helper method. Returns array of exits. */
 	getExits() {
 		return Object.keys(this.exits).map((eKey) => { return this.exits[eKey] });
+	}
+
+	/** Helper method. Returns all items in the puzzle. */
+	getAllItems() {
+		return this.getLasers().concat(this.surfaces, this.getTargets(), this.getExits(), this.panels);
 	}
 
 	/** Helper method. Returns the exits that are connected to the laser provided. */

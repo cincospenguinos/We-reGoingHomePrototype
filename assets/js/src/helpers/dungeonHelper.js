@@ -69,7 +69,9 @@ export class DungeonHelper {
 				key: laser.key,
 				color: laser.color,
 				direction: laser.direction,
-				path: laser.path.map((pnt) => { return { x: pnt.x * PUZZLE_ROOM_SCALE, y: pnt.y * PUZZLE_ROOM_SCALE }})
+				path: laser.path.map((pnt) => { return { x: pnt.x * PUZZLE_ROOM_SCALE, y: pnt.y * PUZZLE_ROOM_SCALE }}),
+				movable: laser.movable,
+				rotatable: laser.rotatable
 			}));
 		});
 
@@ -107,7 +109,9 @@ export class DungeonHelper {
 				position: this.puzzlePosToRoomPos(surface.position),
 				dimensions: this.puzzleDimToRoomDim(surface.dimensions),
 				type: surface.type,
-				direction: surface.direction
+				direction: surface.direction,
+				movable: surface.movable,
+				rotatable: surface.rotatable
 			}));
 		});
 
@@ -138,7 +142,9 @@ export class DungeonHelper {
 					dimensions: dimensions,
 					color: item.color,
 					direction: item.direction,
-					key: item.key
+					key: item.key,
+					movable: item.movable,
+					rotatable: item.rotatable
 				}));
 			} else if (item instanceof Exit) {
 				puzzle.addExit(new Exit({
@@ -154,7 +160,9 @@ export class DungeonHelper {
 					position: position,
 					dimensions: dimensions,
 					direction: item.direction,
-					type: item.type
+					type: item.type,
+					movable: item.movable,
+					rotatable: item.rotatable
 				}));
 			} else if (item instanceof Target) {
 				puzzle.addTarget(new Target({
@@ -174,7 +182,7 @@ export class DungeonHelper {
 		});
 
 		puzzle.setPlayer(new Player({
-			position: this.roomPosToPuzzlePos(room.player.position),
+			position: this.roomPosToPuzzlePos(room.player.getPosition()),
 			dimensions: this.roomDimToPuzzleDim(room.player.dimensions)
 		}));
 
