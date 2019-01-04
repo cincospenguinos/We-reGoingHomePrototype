@@ -14,6 +14,7 @@ export class Room {
 		this.puzzleKey = opts.puzzleKey;
 		this.puzzleItems = opts.puzzleItems || [];
 		this.player = opts.player;
+		this.thoughts = opts.thoughts || [];
 
 		if (!this.key) {
 			throw 'Key and player position required for a room!';

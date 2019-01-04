@@ -27,23 +27,26 @@ export class SceneHelper {
 	}
 
 	/** Helper method. Transitions to the puzzle scene, providing all of the necessary data and shit to do so. */
-	static transitionToPuzzleScene(currentScene, dungeon, room) {
+	static transitionToPuzzleScene(currentScene, dungeon, room, thoughtsController) {
 		let puzzle = DungeonHelper.roomToPuzzle(room);
 
 		currentScene.scene.start(KEYS.scene.puzzleScene, {
 			dungeon: dungeon,
 			puzzle: puzzle,
-			playerPosition: puzzle.player.getPosition()
+			playerPosition: puzzle.player.getPosition(),
+			thoughtsController: thoughtsController
 		});
 	}
 
-	static transitionToTopDownScene(currentScene, dungeon, puzzle) {
+	/** Helper method. Transitions to the top down scene, setting up all the necessary scaling as we go. */
+	static transitionToTopDownScene(currentScene, dungeon, puzzle, thoughtsController) {
 		puzzle.solve();
 		let room = DungeonHelper.puzzleToRoom(puzzle, dungeon.getRoom(puzzle.roomKey).mapKey);
 
 		currentScene.scene.start(KEYS.scene.topDownScene, {
 			dungeon: dungeon,
-			room: room
+			room: room,
+			thoughtsController: thoughtsController
 		});
 	}
 }

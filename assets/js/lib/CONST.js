@@ -15,7 +15,8 @@ export const KEYS = {
 		levelEditorScene: 'LevelEditorScene'
 	},
 
-	dungeon0: { key: 'dungeon0', location: dungeonDir + 'dungeon0.json' }
+	dungeon0: { key: 'dungeon0', location: dungeonDir + 'dungeon0.json' },
+	thoughts: { key: 'thoughts', location: 'assets/data/thoughts.json' }
 };
 
 export const SPRITES = {

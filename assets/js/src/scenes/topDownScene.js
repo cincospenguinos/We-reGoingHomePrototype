@@ -31,6 +31,8 @@ export class TopDownScene extends Phaser.Scene {
 
 		this.mapKey = data.room.mapName;
 		this.room = data.room;
+		this.thoughtsController = data.thoughtsController;
+		this.thoughtsController.setScene(this);
 	}
 
 	preload() {
@@ -162,6 +164,11 @@ export class TopDownScene extends Phaser.Scene {
 		this.cameras.main.startFollow(playerImg);
 
 	 	this.keyboard = this.input.keyboard.addKeys('W, A, S, D');
+
+	 	// Add the various thoughts we have
+	 	this.room.thoughts.forEach((thoughtData) => {
+	 		this.thoughtsController.showThought(thoughtData.key, thoughtData.position);
+	 	});
 	}
 
 	update(time, delta) {
@@ -183,6 +190,7 @@ export class TopDownScene extends Phaser.Scene {
 			if (north) {
 				playerImg.setVelocityY(-vel);
 				playerImg.setFrame(2);
+				this.thoughtsController.dismissThought('tutorialMovement');
 			}
 
 			if (south) {

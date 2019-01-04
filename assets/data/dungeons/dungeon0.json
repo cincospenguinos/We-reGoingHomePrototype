@@ -48,7 +48,17 @@
 			"player": {
 				"position": { "x": 550, "y": 1030 },
 				"dimensions": { "width": 128, "height": 128 }
-			}
+			},
+			"thoughts": [
+				{
+					"key": "tutorialMovement",
+					"position": { "x": 520, "y": 890 }
+				},
+				{
+					"key": "tutorialPanel",
+					"position": { "x": 820, "y": 0 }
+				}
+			]
 		}
 	}
 }
