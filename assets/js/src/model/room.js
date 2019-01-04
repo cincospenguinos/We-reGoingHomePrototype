@@ -13,9 +13,15 @@ export class Room {
 		this.mapName = opts.mapName;
 		this.puzzleKey = opts.puzzleKey;
 
+		this.puzzleItems = [];
+
 		if (!this.key) {
 			throw 'No key provided for this Room!';
 		}
+	}
+
+	addPuzzleItem(item) {
+		this.puzzleItems.push(item);
 	}
 
 	setPlayer(player) {

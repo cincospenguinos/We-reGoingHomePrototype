@@ -12,6 +12,8 @@ import { Target } from '../src/model/target.js';
 import { Exit } from '../src/model/exit.js';
 import { Player } from '../src/model/player.js';
 import { LaserColor } from '../src/model/laserColor.js';
+import { DungeonHelper } from '../src/helpers/dungeonHelper.js';
+import { PUZZLE_ROOM_SCALE } from '../lib/CONST.js';
 
 /*--- Direction tests */
 QUnit.test('rotatedDirectionTest', (assert) => {
@@ -506,4 +508,63 @@ QUnit.test('laserCannotHitPlayer', (assert) => {
 	puzzle.solve();
 
 	assert.ok(puzzle.valid);
+});
+
+/*--- Helper tests */
+QUnit.test('converterMethods', (assert) => {
+	let puzzle = new Puzzle({
+		dimensions: { width: 200, height: 200 },
+		key: 'somepuzzle',
+		roomKey: 'someroom'
+	});
+
+	let laser = new Laser({
+		key: 'laser',
+		color: LaserColor.RED,
+		direction: Direction.EAST,
+		position: { x: 10, y: 10 },
+		dimensions: { width: 0, height: 0 },
+		laserInteractable: true
+	});
+	puzzle.addLaser(laser);
+
+	let surface = new Surface({
+		type: Surface.REFLECTIVE,
+		direction: Direction.WEST,
+		position: { x: 100, y: 10 },
+		dimensions: { width: 20, height: 20 },
+		laserInteractable: true
+	});
+	puzzle.addSurface(surface);
+
+	let target = new Target({
+		key: 'target',
+		position: { x: 90, y: 100 },
+		dimensions: { width: 20, height: 20 },
+		laserInteractable: true
+	});
+	puzzle.addTarget(target);
+
+	let room = DungeonHelper.puzzleToRoom(puzzle);
+
+	assert.ok(room.puzzleItems.length === 3, 'Room has correct puzzle items.');
+	room.puzzleItems.forEach((item) => {
+		if (item instanceof Laser) {
+			assert.deepEqual({ x: laser.position.x * PUZZLE_ROOM_SCALE, y: laser.position.y * PUZZLE_ROOM_SCALE }, 
+				item.position, 'Laser is in correct position.');
+		} else if (item instanceof Target) {
+			assert.deepEqual({ x: target.position.x * PUZZLE_ROOM_SCALE, y: target.position.y * PUZZLE_ROOM_SCALE }, 
+				item.position, 'Target is in correct position.');
+		} else if (item instanceof Surface) {
+			assert.deepEqual({ x: surface.position.x * PUZZLE_ROOM_SCALE, y: surface.position.y * PUZZLE_ROOM_SCALE }, 
+				item.position, 'Mirror is in correct position.');
+		}
+	});
+
+	let newPuzzle = DungeonHelper.roomToPuzzle(room);
+	newPuzzle.getLasers().forEach((laser) => {
+		assert.ok(puzzle.lasers[laser.key], 'New puzzle has laser.');
+		assert.deepEqual(puzzle.lasers[laser.key].position, laser.position, 'Positions are correct');
+		assert.deepEqual(puzzle.lasers[laser.key].dimensions, laser.dimensions, 'Dimensions are correct.');
+	});
 });

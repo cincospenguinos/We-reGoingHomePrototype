@@ -15,6 +15,7 @@ export class Laser extends PuzzleItem {
 		this.key = opts.key;
 		this.color = opts.color;
 		this.terminatesLaser = true;
+		this.laserInteractable = true;
 
 		if (!this.key || !this.color || !(this.color instanceof LaserColor) || !Direction.validDirection(this.direction)) {
 			throw 'A laser color, key, and valid direction are necessary to instantiate a Laser!';

@@ -231,6 +231,8 @@ export class Puzzle {
 				}
 			}
 		});
+
+		return this.valid;
 	}
 
 	/** Helper method. Resets the various state variables so that they can be properly set by solve() */

@@ -195,4 +195,140 @@ export class DungeonHelper {
 
 		return layout;
 	}
+
+	/** Helper method. Converts puzzle to a room object with the dimensions established in Room. */
+	static puzzleToRoom(puzzle, mapName) {
+		if (!puzzle.solve()) {
+			throw 'Puzzle is not valid! Cannot convert to room!';
+		}
+
+		let room = new Room({
+			key: puzzle.roomKey,
+			puzzleKey: puzzle.key,
+			dimensions: { width: puzzle.dimensions.width * PUZZLE_ROOM_SCALE, height: puzzle.dimensions.height * PUZZLE_ROOM_SCALE },
+			mapName: mapName
+		});
+
+		puzzle.getLasers().forEach((laser) => {
+			room.addPuzzleItem(new Laser({
+				position: this.puzzlePosToRoomPos(laser.position),
+				dimensions: this.puzzleDimToRoomDim(laser.dimensions),
+				key: laser.key,
+				color: laser.color,
+				direction: laser.direction
+			}));
+		});
+
+		puzzle.getExits().forEach((exit) => {
+			room.addPuzzleItem(new Exit({
+				position: this.puzzlePosToRoomPos(exit.position),
+				dimensions: this.puzzleDimToRoomDim(exit.dimensions),
+				color: exit.color,
+				direction: exit.direction
+			}));
+		});
+
+		puzzle.panels.forEach((panel) => {
+			room.addPuzzleItem(new PuzzleItem({
+				position: this.puzzlePosToRoomPos(panel.position),
+				dimensions: this.puzzleDimToRoomDim(panel.dimensions),
+				direction: panel.direction
+			}));
+		});
+
+		puzzle.getTargets().forEach((target) => {
+			room.addPuzzleItem(new Target({
+				key: target.key,
+				position: this.puzzlePosToRoomPos(target.position),
+				dimensions: this.puzzleDimToRoomDim(target.dimensions),
+				color: target.color,
+				lasersStruck: target.lasersStruck
+			}));
+		});
+
+		puzzle.surfaces.forEach((surface) => {
+			room.addPuzzleItem(new Surface({
+				position: this.puzzlePosToRoomPos(surface.position),
+				dimensions: this.puzzleDimToRoomDim(surface.dimensions),
+				type: surface.type,
+				direction: surface.direction
+			}));
+		});
+
+		return room;
+	}
+
+	/** Helper method. Converts room to puzzle. */
+	static roomToPuzzle(room) {
+		let puzzle = new Puzzle({
+			key: room.puzzleKey,
+			roomKey: room.key
+		});
+
+		room.puzzleItems.forEach((item) => {
+			let position = this.roomPosToPuzzlePos(item.position);
+			let dimensions = this.roomDimToPuzzleDim(item.dimensions);
+
+			if (item instanceof Laser) {
+				puzzle.addLaser(new Laser({
+					position: position,
+					dimensions: dimensions,
+					color: item.color,
+					direction: item.direction,
+					key: item.key
+				}));
+			} else if (item instanceof Exit) {
+				puzzle.addExit(new Exit({
+					position: position,
+					dimensions: dimensions,
+					color: item.color,
+					direction: item.direction,
+					key: item.key
+				}));
+			} else if (item instanceof Surface) {
+				puzzle.addSurface(new Surface({
+					position: position,
+					dimensions: dimensions,
+					direction: item.direction,
+					type: item.type
+				}));
+			} else if (item instanceof Target) {
+				puzzle.addTarget(new Target({
+					key: item.key,
+					position: position,
+					dimensions: dimensions,
+					lasersStruck: item.lasersStruck,
+					color: item.color
+				}));
+			} else {
+				puzzle.addPanel(new PuzzleItem({
+					position: position,
+					dimensions: dimensions,
+					direction: direction
+				}))
+			}
+		});
+
+		return puzzle;
+	}
+
+	/** Helper method. Converts position provided in puzzle dimensions to dimension in room. */
+	static puzzlePosToRoomPos(puzzlePos) {
+		return { x: puzzlePos.x * PUZZLE_ROOM_SCALE, y: puzzlePos.y * PUZZLE_ROOM_SCALE };
+	}
+
+	/** Helper method. Converts the puzzle dimensions to the room dimensions. */
+	static puzzleDimToRoomDim(puzzleDim) {
+		return { width: puzzleDim.width * PUZZLE_ROOM_SCALE, height: puzzleDim.height * PUZZLE_ROOM_SCALE };
+	}
+
+	/** Helper method. Converts position provided in room dimensions to puzzle dimensions. */
+	static roomPosToPuzzlePos(roomPos) {
+		return { x: roomPos.x / PUZZLE_ROOM_SCALE, y: roomPos.y / PUZZLE_ROOM_SCALE };
+	}
+
+	/** Helper method. Converts room dimensions to puzzle dimensions. */
+	static roomDimToPuzzleDim(roomDim) { // TODO: Does it handle the padding on the edges?
+		return { width: roomDim.width / PUZZLE_ROOM_SCALE, height: roomDim.height / PUZZLE_ROOM_SCALE };
+	}
 }
