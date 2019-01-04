@@ -3,6 +3,9 @@
  *
  * Helper class to make things more readable.
  */
+import { DungeonHelper } from './dungeonHelper.js';
+import { KEYS } from '../../lib/CONST.js';
+
 export class SceneHelper {
 
 	/** Helper method. Loads an image up into the scene provided. */
@@ -21,5 +24,26 @@ export class SceneHelper {
 	/** Helper method. Loads json up into the scene provided. */
 	static loadJson(scene, jsonHash) {
 		return scene.load.json(jsonHash.key, jsonHash.location);
+	}
+
+	/** Helper method. Transitions to the puzzle scene, providing all of the necessary data and shit to do so. */
+	static transitionToPuzzleScene(currentScene, dungeon, room) {
+		let puzzle = DungeonHelper.roomToPuzzle(room);
+
+		currentScene.scene.start(KEYS.scene.puzzleScene, {
+			dungeon: dungeon,
+			puzzle: puzzle,
+			playerPosition: puzzle.player.getPosition()
+		});
+	}
+
+	static transitionToTopDownScene(currentScene, dungeon, puzzle) {
+		puzzle.solve();
+		let room = DungeonHelper.puzzleToRoom(puzzle, dungeon.getRoom(puzzle.roomKey).mapKey);
+
+		currentScene.scene.start(KEYS.scene.topDownScene, {
+			dungeon: dungeon,
+			room: room
+		});
 	}
 }

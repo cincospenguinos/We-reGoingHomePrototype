@@ -18,6 +18,7 @@ export class Puzzle {
 		this.dimensions = opts.dimensions;
 		this.key = opts.key;
 		this.roomKey = opts.roomKey;
+		this.mapName = opts.mapName;
 
 		this.targets = {};
 		this.surfaces = [];
@@ -26,8 +27,8 @@ export class Puzzle {
 		this.lasers = {};
 		this.valid = true;
 
-		if (!this.key || !this.roomKey) {
-			throw 'Every Puzzle requires a key and must belong to a room!'
+		if (!this.key || !this.roomKey || !this.mapName) {
+			throw 'Every Puzzle requires a key, a room key, and a map name!'
 		}
 	}
 

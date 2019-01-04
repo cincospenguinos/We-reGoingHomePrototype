@@ -50,7 +50,7 @@ export class DungeonHelper {
 	}
 
 	/** Helper method. Converts puzzle to a room object with the dimensions established in Room. */
-	static puzzleToRoom(puzzle, mapName) {
+	static puzzleToRoom(puzzle) {
 		if (!puzzle.solve()) {
 			throw 'Puzzle is not valid! Cannot convert to room!';
 		}
@@ -59,7 +59,7 @@ export class DungeonHelper {
 			key: puzzle.roomKey,
 			puzzleKey: puzzle.key,
 			dimensions: { width: puzzle.dimensions.width * PUZZLE_ROOM_SCALE, height: puzzle.dimensions.height * PUZZLE_ROOM_SCALE },
-			mapName: mapName
+			mapName: puzzle.mapName
 		});
 
 		puzzle.getLasers().forEach((laser) => {
@@ -124,7 +124,8 @@ export class DungeonHelper {
 		let puzzle = new Puzzle({
 			key: room.puzzleKey,
 			roomKey: room.key,
-			dimensions: { width: room.dimensions.width / PUZZLE_ROOM_SCALE, height: room.dimensions.height / PUZZLE_ROOM_SCALE }
+			dimensions: { width: room.dimensions.width / PUZZLE_ROOM_SCALE, height: room.dimensions.height / PUZZLE_ROOM_SCALE },
+			mapName: room.mapName
 		});
 
 		room.puzzleItems.forEach((item) => {

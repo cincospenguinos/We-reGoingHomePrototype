@@ -13,6 +13,11 @@
 
 ## Discoveries
 
+* [Javascript has a means of deleting objects!](https://stackoverflow.com/questions/864516/what-is-javascript-garbage-collection)
+	* Use the `delete` keyword to do it
+	* When optimizing the game to improve performance, this is something we will take advantage of
+
+
 ## To Improve
 
 * The doors look amazing, but they need to fit within the walls of a given room

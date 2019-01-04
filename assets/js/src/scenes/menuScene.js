@@ -30,12 +30,8 @@ export class MenuScene extends Phaser.Scene {
 
 			let puzzleText = this.add.text(32, i * 32 + 16, roomName, { fontSize: '16px', fill: '#FFFFFF'}).setInteractive();
 			puzzleText.on('pointerdown', (evt, objects) => {
-				let room = dungeon.getRoom(roomName);
-				this.scene.start(KEYS.scene.topDownScene, 
-					{ 
-						dungeon: dungeon,
-						room: dungeon.getRoom(roomName),
-					});
+				let puzzle = DungeonHelper.roomToPuzzle(dungeon.getRoom(roomName));
+				SceneHelper.transitionToTopDownScene(this, dungeon, puzzle);
 			});
 		}
 

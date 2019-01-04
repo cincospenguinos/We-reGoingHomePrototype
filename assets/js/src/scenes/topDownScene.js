@@ -23,20 +23,13 @@ export class TopDownScene extends Phaser.Scene {
 
 	init(data) {
 		this.dungeon = data.dungeon;
-		this.playerPosition = data.playerPosition;
-		this.mapKey = data.room.mapName;
-		this.laserGraphics = {};
 
 		if (!data.room) {
 			throw 'TopDownScene requires a room to function!';
 		}
 
-		let puzzle = DungeonHelper.roomToPuzzle(data.room);
-		if (!puzzle.solve()) {
-			throw 'Puzzle provided is invalid!';
-		}
-
-		this.room = DungeonHelper.puzzleToRoom(puzzle, data.room.mapName);
+		this.mapKey = data.room.mapName;
+		this.room = data.room;
 	}
 
 	preload() {
@@ -149,7 +142,7 @@ export class TopDownScene extends Phaser.Scene {
 			if (spriteKey === SPRITES.roomPanel.key) {
 				img.setInteractive();
 				img.on('pointerdown', (evt) => {
-					console.log('Show the puzzle view!');
+					SceneHelper.transitionToPuzzleScene(this, this.dungeon, this.room);
 				});
 			}
 		});
