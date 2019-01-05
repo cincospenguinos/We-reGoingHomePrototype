@@ -25,6 +25,8 @@ export class PuzzleScene extends Phaser.Scene {
 	init (data) {
 		this.dungeon = data.dungeon;
 		this.puzzle = data.puzzle;
+		this.thoughtsController = data.thoughtsController;
+		this.thoughtsController.setScene(this);
 
 		this.laserGraphics = {};
 
@@ -150,7 +152,7 @@ export class PuzzleScene extends Phaser.Scene {
 		// Check if we're quitting
 		if (Phaser.Input.Keyboard.JustDown(this.keyEsc)) {
 			this.removeTranslationFromPuzzleItems();
-			SceneHelper.transitionToTopDownScene(this, this.dungeon, this.puzzle);
+			SceneHelper.transitionToTopDownScene(this, { dungeon: this.dungeon, puzzle: this.puzzle, thoughtsController: this.thoughtsController });
 		}
 	}
 

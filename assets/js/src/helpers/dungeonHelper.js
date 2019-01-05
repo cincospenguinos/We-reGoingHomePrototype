@@ -15,6 +15,7 @@ import { Room } from '../model/room.js';
 import { KEYS, COLORS, PUZZLE_ROOM_SCALE } from '../../lib/CONST.js';
 import { Direction } from '../model/direction.js';
 import { LaserColor } from '../model/laserColor.js';
+import { Thought } from '../model/thought.js';
 
 export class DungeonHelper {
 
@@ -43,6 +44,13 @@ export class DungeonHelper {
 			roomData.puzzleItems = puzzleItems;
 			roomData.player = new Player(roomData.player);
 
+			let thoughts = [];
+			roomData.thoughts.forEach((thoughtData) => {
+				thoughtData.type = Thought.stringToType(thoughtData.type);
+				thoughts.push(new Thought(thoughtData));
+			});
+			roomData.thoughts = thoughts;
+
 			dungeon.addRoom(roomData.key, new Room(roomData));
 		});
 
@@ -59,7 +67,8 @@ export class DungeonHelper {
 			key: puzzle.roomKey,
 			puzzleKey: puzzle.key,
 			dimensions: { width: puzzle.dimensions.width * PUZZLE_ROOM_SCALE, height: puzzle.dimensions.height * PUZZLE_ROOM_SCALE },
-			mapName: puzzle.mapName
+			mapName: puzzle.mapName,
+			thoughts: puzzle.thoughts
 		});
 
 		puzzle.getLasers().forEach((laser) => {
@@ -129,7 +138,8 @@ export class DungeonHelper {
 			key: room.puzzleKey,
 			roomKey: room.key,
 			dimensions: { width: room.dimensions.width / PUZZLE_ROOM_SCALE, height: room.dimensions.height / PUZZLE_ROOM_SCALE },
-			mapName: room.mapName
+			mapName: room.mapName,
+			thoughts: room.thoughts
 		});
 
 		room.puzzleItems.forEach((item) => {

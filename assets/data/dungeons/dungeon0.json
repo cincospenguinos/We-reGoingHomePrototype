@@ -52,11 +52,15 @@
 			"thoughts": [
 				{
 					"key": "tutorialMovement",
-					"position": { "x": 520, "y": 890 }
+					"position": { "x": 520, "y": 890 },
+					"type": "ROOM",
+					"opts": {}
 				},
 				{
 					"key": "tutorialPanel",
-					"position": { "x": 820, "y": 0 }
+					"position": { "x": 600, "y": 60 },
+					"type": "ROOM",
+					"fontCfg": { "fontSize": "24px", "fill": "#EFEFEF", "backgroundColor": "#101010" }
 				}
 			]
 		}

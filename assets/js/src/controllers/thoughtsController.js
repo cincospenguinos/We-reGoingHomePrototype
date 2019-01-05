@@ -8,26 +8,33 @@
  * While I'm at it, here's something about the keys of the thought set:
  * - If the thought intends to convey something about play to the player, it starts with "tutorial"
  */
+import { Thought } from '../model/thought.js';
+
 export class ThoughtsController {
 
 	constructor(thoughtSet) {
 		this.thoughts = thoughtSet;
 
 		this.currentlyDisplayed = {};
-		this.fontCfg = { fontSize: '32px', fill: '#EFEFEF', backgroundColor: '#101010' };
 	}
 
 	/** Setter for the scene that this thoughts controller is maintained in. */
-	setScene(scene) {
-		this.dismissAll;
+	setScene(scene, thoughts=null) {
+		this.dismissAll();
 		this.scene = scene;
+
+		if (thoughts) {
+			thoughts.forEach((thought) => {
+				showThought(thought.key, thought.position);	
+			});
+		}
 	}
 
 	/** Shows a thought matching the key provided at the position provided.*/
-	showThought(key, position, opts = {}) {
-		let thought = this.thoughts[key];
+	showThought(thought) {
+		let text = this.thoughts[thought.key];
 
-		if (!thought) {
+		if (!text) {
 			throw 'Thought "' + key + '" not found!';
 		}
 
@@ -35,16 +42,9 @@ export class ThoughtsController {
 			throw 'No scene to show the thought in!'
 		}
 
-		let thoughtImg = this.scene.add.text(position.x, position.y, thought, this.fontCfg).setAlpha(0.8);
-		this.scene.tweens.add({
-			targets: thoughtImg,
-			x: position.x,
-			y: position.y,
-			ease: 'Power2',
-			duration: 5000,
-			delay: 1000
-		})
-		this.currentlyDisplayed[key] = thoughtImg;
+		thought.img = this.scene.add.text(thought.position.x, thought.position.y, text, thought.fontCfg).setAlpha(0.1);
+		this.setupInteractivity(thought.key, thought.img);
+		this.currentlyDisplayed[thought.key] = thought;
 
 		// TODO: Timer or something that causes it to disappear after some amount of time
 		// TODO: Setup overlay option vs. "in world" option
@@ -52,14 +52,32 @@ export class ThoughtsController {
 
 	/** Dismisses the thought matching the key provided. */
 	dismissThought(key) {
-		if (this.currentlyDisplayed[key]) {
-			this.currentlyDisplayed[key].destroy();
+		let thought = this.currentlyDisplayed[key];
+
+		if (thought) {
+			thought.img.destroy();
+			thought.dismissed = true;
 		}
 	}
 
 	/** Dismisses all thoughts that are currently displayed. */
 	dismissAll() {
 		Object.keys(this.currentlyDisplayed).forEach((key) => {
+			this.dismissThought(key);
+		});
+	}
+
+	setupInteractivity(key, img) {
+		// TODO: Use tweens to make the mouse over events fade in and out
+		img.setInteractive().on('pointerover', (evt) => {
+			img.setAlpha(0.8);
+		});
+
+		img.on('pointerout', (evt) => {
+			img.setAlpha(0.1);
+		});
+
+		img.on('pointerdown', (evt) => {
 			this.dismissThought(key);
 		});
 	}

@@ -149,7 +149,7 @@ export class TopDownScene extends Phaser.Scene {
 					// padding before we jump right into the puzzle scene
 					let newPlayerPos = { x: this.room.player.getPosition().x - (pad / 2), y: this.room.player.getPosition().y - pad };
 					this.room.player.setPosition(newPlayerPos);
-					SceneHelper.transitionToPuzzleScene(this, this.dungeon, this.room);
+					SceneHelper.transitionToPuzzleScene(this, { dungeon: this.dungeon, room: this.room, thoughtsController: this.thoughtsController });
 				});
 			}
 		});
@@ -166,8 +166,8 @@ export class TopDownScene extends Phaser.Scene {
 	 	this.keyboard = this.input.keyboard.addKeys('W, A, S, D');
 
 	 	// Add the various thoughts we have
-	 	this.room.thoughts.forEach((thoughtData) => {
-	 		this.thoughtsController.showThought(thoughtData.key, thoughtData.position);
+	 	this.room.getRoomThoughts().forEach((thought) => {
+	 		this.thoughtsController.showThought(thought);
 	 	});
 	}
 
@@ -190,7 +190,6 @@ export class TopDownScene extends Phaser.Scene {
 			if (north) {
 				playerImg.setVelocityY(-vel);
 				playerImg.setFrame(2);
-				this.thoughtsController.dismissThought('tutorialMovement');
 			}
 
 			if (south) {

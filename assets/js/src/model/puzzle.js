@@ -19,6 +19,7 @@ export class Puzzle {
 		this.key = opts.key;
 		this.roomKey = opts.roomKey;
 		this.mapName = opts.mapName;
+		this.thoughts = opts.thoughts || [];
 
 		this.targets = {};
 		this.surfaces = [];

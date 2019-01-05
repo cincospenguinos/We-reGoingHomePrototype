@@ -4,6 +4,7 @@
  * Rooms in a dungeon. This is to make things extra freaking simple.
  */
 import { Player } from './player.js';
+import { Thought } from './thought.js';
 
 export class Room {
 
@@ -31,5 +32,10 @@ export class Room {
 
 	setPlayer(player) {
 		player instanceof Player ? this.player = player : (() => { throw 'Player provided is not a player!' });
+	}
+
+	/** Returns thoughts specific to this room. */
+	getRoomThoughts() {
+		return this.thoughts.filter((t) => { return t.type === Thought.TYPE_ROOM && !t.dismissed });
 	}
 }
