@@ -8,11 +8,6 @@ These are important notes about the project that **MUST NEVER BE DELETED:**
 
 * Rooms in `TopDownScene` must always have a single tile of padding on the left, one on the right, and two on the top
 
-## TODO
-
-- [ ] Fix rotation on TopDownScene issue
-- [ ] Fix puzzle item collision issue
-
 ## The Story
 
 This is a bit of a sci-fi game, with some sci-fi elements. That said, the sci-fi parts of the story are kept to a minimum for the most part.
@@ -105,6 +100,7 @@ Since we are drawing a lot off of Zelda and D&D, we may want to explore combat e
 - [ ] We could have secret rooms or doors that open with specific targets to allow you to move from one dungeon to another
 - [ ] Lasers could be specific colors, and when a target is hit by a laser, it lights up that color, but if it's hit by more than one color, it mixes the colors together to make a new color and that new color opens a door specific to that color
 - [ ] What if only certain panels can modify certain puzzle pieces? This would give us even more to tinker with, but may cause frustration in the player
+- [ ] A beam splitter that allowed a beam to be split into two different directions
 
 ## Notes
 
