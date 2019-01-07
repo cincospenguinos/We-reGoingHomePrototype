@@ -74,9 +74,11 @@ export class LaserColor {
 	}
 }
 
-LaserColor.RED = new LaserColor('l-red', 0xFF1010);
-LaserColor.GREEN = new LaserColor('l-green', 0x10FF10);
-LaserColor.BLUE = new LaserColor('l-blue', 0x1010FF);
+LaserColor.RED = new LaserColor('l-red', 0xB66D6A);
+LaserColor.GREEN = new LaserColor('l-green', 0x7BB05E);
+LaserColor.BLUE = new LaserColor('l-blue', 0x6494B3);
+
+// TODO: What blends are these using the colors we've selected? Are these the right blends?
 LaserColor.ORANGE = new LaserColor('l-orange', 0xFF8000);
 LaserColor.PURPLE = new LaserColor('l-purple', 0xBB33FF);
 LaserColor.YELLOW = new LaserColor('l-yellow', 0xFFFF33);
