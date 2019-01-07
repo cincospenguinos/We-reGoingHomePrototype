@@ -135,10 +135,10 @@ export class Puzzle {
 					newPoint.y = this.dimensions.height + translation.y;
 					break;
 				case Direction.WEST:
-					newPoint.x = 0;
+					newPoint.x = translation.x;
 					break;
 				case Direction.NORTH:
-					newPoint.y = 0;
+					newPoint.y = translation.y;
 					break;
 				}
 				path.push(newPoint);
