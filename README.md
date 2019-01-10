@@ -71,6 +71,8 @@ There are basic needs that you and your kids will need to fill, and the main way
 
 Since we are drawing a lot off of Zelda and D&D, we may want to explore combat encounters in the game. It would add a decent amount of complexity, and may totally remove us from the experience we're trying to build, which is **FATHERHOOD**.
 
+Andre will need to talk to Stefano about this idea.
+
 * I'm imagining a day/season/year cycle with the tree. Perhaps the rooms should change accordingly. That's something to play around with
 
 ## Ideas
