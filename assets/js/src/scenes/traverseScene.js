@@ -29,6 +29,8 @@ export class TraverseScene extends Phaser.Scene {
 		SceneHelper.loadImage(this, SPRITES.mirror);
 		SceneHelper.loadImage(this, SPRITES.doorHorizontal);
 		SceneHelper.loadImage(this, SPRITES.doorVertical);
+
+		SceneHelper.loadSpritesheet(this, SPRITES.roomExit);
 		SceneHelper.loadSpritesheet(this, SPRITES.target)
 		SceneHelper.loadSpritesheet(this, SPRITES.panel);
 	}
@@ -99,15 +101,16 @@ export class TraverseScene extends Phaser.Scene {
 		// And the exits
 		this.puzzle.exits.forEach((exit) => {
 			let pos = exit.position;
-			let doorImage = exit.useHorizontalDoor() ? this.physics.add.image(pos.x, pos.y, SPRITES.doorHorizontal.key) : this.physics.add.image(pos.x, pos.y, SPRITES.doorVertical.key);
+			let doorImage = this.physics.add.sprite(pos.x, pos.y, SPRITES.roomExit.key);
 			this.physics.add.overlap(this.puzzle.player.img, doorImage, () => {
 				if (this.puzzle.solved) {
-					this.exit(exit.nextRoomKey);
+					// TODO: Fix this
+					throw 'This needs to be fixed';
+					// this.exit(exit.nextRoomKey);
 				}
 			}, null, this);
+			exit.setImg(doorImage);
 		});
-
-		// TODO: Create a set of zone objects that represent the lasers and put them in puzzleObjects so the player can't cross the laser
 
 		this.physics.add.collider(this.puzzle.player.img, puzzleObjects);
 

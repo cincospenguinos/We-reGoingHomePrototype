@@ -121,7 +121,7 @@ Andre will need to talk to Stefano about this idea.
 * [Here](https://www.youtube.com/watch?v=fJosaT1sCfs) is an interesting animation video
 * And [this video on player engagement](https://www.youtube.com/watch?v=hbzGO_Qonu0)
 * We may want to include sounds like this for the score. Good archaic vibe. I call it Gourdcore. (https://youtu.be/jRLfGwQ7Nsw?t=99)
-
+* Check [this out](https://www.codeandweb.com/texturepacker/tutorials/how-to-create-light-effects-in-phaser3) for lighting in Phaser 3
 
 ### Design Notes
 

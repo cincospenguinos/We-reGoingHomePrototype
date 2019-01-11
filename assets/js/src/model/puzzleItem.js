@@ -36,6 +36,16 @@ export class PuzzleItem {
 		return this.img ? { x: this.img.x, y: this.img.y } : this.position;
 	}
 
+	/** Sets the position of this puzzle item. */
+	setPosition(pos) {
+		if (this.img) {
+			this.img.x = pos.x;
+			this.img.y = pos.y;
+		} else {
+			this.position = pos;
+		}
+	}
+
 	/** Returns the dimensions of this puzzle item. */
 	getDimensions() {
 		return this.img ? { width: this.img.displayWidth, height: this.img.displayHeight } : this.dimensions;
@@ -108,6 +118,14 @@ export class PuzzleItem {
 		this.img = img;
 	}
 
+	/** Resets the img of this puzzle item. Fixes a weird bug I found. */
+	resetImg() {
+		if (this.img) {
+			this.position = this.getPosition();
+			this.img = null;
+		}
+	}
+
 	terminatesLaser() {
 		return this.terminatesLaser;
 	}
@@ -115,6 +133,7 @@ export class PuzzleItem {
 	/** Override toJSON(). Ensures that puzzle items have all their necessary components. */
 	toJSON() {
 		return {
+			key: this.key,
 			position: this.getPosition(),
 			dimensions: this.getDimensions(),
 			direction: this.direction,

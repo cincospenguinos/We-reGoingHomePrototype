@@ -15,18 +15,23 @@ export class Laser extends PuzzleItem {
 		this.key = opts.key;
 		this.color = opts.color;
 		this.terminatesLaser = true;
+		this.laserInteractable = true;
+		this.path = opts.path || [];
 
 		if (!this.key || !this.color || !(this.color instanceof LaserColor) || !Direction.validDirection(this.direction)) {
-			throw 'A laser color and valid direction are necessary to instantiate a Laser!';
+			throw 'A laser color, key, and valid direction are necessary to instantiate a Laser!';
 		}
 	}
 
 	/** Sets the img to the img provided. */
 	setImg(img) {
 		super.setImg(img);
+		this.setProperFrame();
+	}
 
-		let angle = Direction.angleFromDirection(this.direction);
-		this.img.setAngle(angle);
+	setColor(laserColor) {
+		this.color = laserColor;
+		this.setProperFrame();
 	}
 
 	/** Returns the point from which the light of this laser extends. */
@@ -46,5 +51,44 @@ export class Laser extends PuzzleItem {
 		default:
 			throw 'Direction "' + this.direction + '" is invalid';
 		}
+	}
+
+	/** Helper method. Returns the path of this laser as a set of "line" hashes. */
+	getPathAsLines() {
+		if (this.path) {
+			let newPath = [];
+
+			for (let i = 0; i < this.path.length - 1; i++) {
+				newPath.push({ 
+					x1: this.path[i].x, 
+					y1: this.path[i].y, 
+					x2: this.path[i + 1].x, 
+					y2: this.path[i + 1].y,
+					isHorizontal: this.path[i].y === this.path[i + 1].y
+				});
+			}
+
+			return newPath;
+		} else {
+			throw 'No path assigned!';
+		}
+	}
+
+	setProperFrame() {
+		let frame = 0;
+		if (this.movable) frame += 1;
+		if (this.rotatable) frame += 2;
+
+		this.img.setFrame(frame);
+		let angle = Direction.angleFromDirection(this.direction);
+		this.img.setAngle(angle);
+	}
+
+	/** Override toJSON(). Ensures that puzzle items have all their necessary components. */
+	toJSON() {
+		let obj = super.toJSON();
+		obj.key = this.key;
+		obj.color = this.color.key;
+		return obj;
 	}
 }

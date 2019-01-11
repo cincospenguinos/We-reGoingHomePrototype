@@ -12,6 +12,7 @@ import { Target } from '../model/target.js';
 import { Exit } from '../model/exit.js';
 import { PuzzleItem } from '../model/puzzleItem.js';
 import { Direction } from '../model/direction.js';
+import { LaserColor } from '../model/laserColor.js';
 
 export class LevelEditorScene extends Phaser.Scene {
 	constructor() {
@@ -33,8 +34,9 @@ export class LevelEditorScene extends Phaser.Scene {
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleLaser);
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleTarget);
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleMirror);
+		SceneHelper.loadSpritesheet(this, SPRITES.puzzleExit);
+
 		SceneHelper.loadImage(this, SPRITES.puzzlePanel);
-		SceneHelper.loadImage(this, SPRITES.puzzleExit);
 		SceneHelper.loadImage(this, SPRITES.puzzlePlayer);
 		SceneHelper.loadImage(this, SPRITES.closePanelButton);
 	}
@@ -65,7 +67,6 @@ export class LevelEditorScene extends Phaser.Scene {
 			}
 		});
 
-		// TODO: Draw the puzzle
 		this.boundariesGraphics = this.add.graphics({
 				add: true,
 				fillStyle: {
@@ -112,6 +113,7 @@ export class LevelEditorScene extends Phaser.Scene {
 			if (keyboard.JustDown(this.validKeys.addLaser)) {
 				let laser = new Laser({
 					key: this.newKey('laser'),
+					color: LaserColor.RED,
 					position: position,
 					dimensions: { width: 32, height: 32},
 					exitKeys: [],
@@ -149,7 +151,7 @@ export class LevelEditorScene extends Phaser.Scene {
 			} else if (keyboard.JustDown(this.validKeys.addExit)) {
 				let exit = new Exit({
 					key: this.newKey('exit'),
-					laserKeys: [],
+					color: LaserColor.RED,
 					position: position,
 					dimensions: { width: 8, height: 8 },
 					direction: Direction.EAST
@@ -278,16 +280,25 @@ export class LevelEditorScene extends Phaser.Scene {
 			}
 		}).append('<br/>');
 
+		pieceInfo.append('<div>Laser Color:<select id="laser-color-selector">' +
+				'<option value="l-red">Red</option><option value="l-green">Green</option><option value="l-blue">Blue</option>' +
+			'</select>');
+		$('#laser-color-selector').change((evt) => {
+			let color = LaserColor.colorFromKey($('#laser-color-selector').val());
+			this.selectedPiece.setColor(color);
+		});
+
 		$('#puzzle-piece-info').hide();
 
 		editorInfo.append('<button id="export-json">Export JSON</button>')
 		editorInfo.append('<br/>')
-		editorInfo.append('<div><pre id="json-space"></pre></div>');
+		editorInfo.append('<div id="json-space"></div>');
 
 		$('#export-json').click((evt) => {
 			console.log('Exporting puzzle to JSON...');
-			let json = JSON.stringify(this.puzzle);
-			$('#json-space').text(json);
+			$('#json-space').empty();
+			let json = JSON.stringify(this.puzzle, null, '\t');
+			$('#json-space').append('<pre>' + json + '</pre>');
 		});
 	}
 

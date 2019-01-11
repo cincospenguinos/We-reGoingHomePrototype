@@ -10,6 +10,7 @@ import { PuzzleItem } from './puzzleItem.js';
 import { Exit } from './exit.js';
 import { Direction } from './direction.js';
 import { Target } from './target.js';
+import { Player } from './player.js';
 
 export class Puzzle {
 
@@ -17,6 +18,8 @@ export class Puzzle {
 		this.dimensions = opts.dimensions;
 		this.key = opts.key;
 		this.roomKey = opts.roomKey;
+		this.mapName = opts.mapName;
+		this.thoughts = opts.thoughts || [];
 
 		this.targets = {};
 		this.surfaces = [];
@@ -25,8 +28,8 @@ export class Puzzle {
 		this.lasers = {};
 		this.valid = true;
 
-		if (!this.key || !this.roomKey) {
-			throw 'Every Puzzle requires a key and must belong to a room!'
+		if (!this.key || !this.roomKey || !this.mapName) {
+			throw 'Every Puzzle requires a key, a room key, and a map name!'
 		}
 	}
 
@@ -55,18 +58,28 @@ export class Puzzle {
 		panel instanceof PuzzleItem ? this.panels.push(panel) : (() => { throw 'panel must be an instance of Panel!'});
 	}
 
-	/** Solves the puzzle. Sets up the solution variables of the various pieces according to its current state. */
-	solve() {
+	setPlayer(player) {
+		if (!(player instanceof Player)) {
+			throw 'Player provided is not a Player object!';
+		}
+
+		this.player = player;
+	}
+
+	/** Solves the puzzle. Sets up the solution variables of the various pieces according to its current state. Optional
+		parameter for calculating laser paths in the puzzle scene included.*/
+	solve(translation = { x: 0, y: 0 }) {
 		this.resetSolution();
 
 		let interactable = this.getLaserInteractable();
 
-		// Since there is a path for each laser, we must generate a path and assign it to each laser
+		// 1) Calculate the full path of every laser and assign it to the laser itself
+		let targetLaserPairs = {}; // Pairs each target to the lasers that are striking it
 		this.getLasers().forEach((laser) => {
 			let currentPoint = laser.getLaserPoint(); // Current point we're looking at
 			let currentDirection = laser.direction; // Current direction the laser is facing
 			let path = [currentPoint]; // The path we will assign to our laser
-			let terminated = false; // Whether or not the laser's path terminated by hitting a surface
+			let terminated = false; // Whether or not the laser's path terminated by hitting a surface or other colored laser
 			let lastItem = null;
 
 			// Get the closest item
@@ -80,11 +93,13 @@ export class Puzzle {
 
 					// Now that we know that the laser hits this item, we can handle it as we need to
 					if (closestItem instanceof Target) {
-						closestItem.addStrikingLaser(laser.color);
+						// closestItem.addStrikingLaser(laser.color);
+						// Add this laser to the laser target pairs
+						if (!targetLaserPairs[closestItem.key]) {
+							targetLaserPairs[closestItem.key] = [];
+						}
 
-						// Since an exit is tied to a laser rather than a target, we find the exit
-						// that is tied to this laser and set it to be open.
-						this.exitsConnectedTo(laser).forEach((exit) => { exit.isOpen = true });
+						targetLaserPairs[closestItem.key].push(laser.key);
 					} 
 
 					// Now we check our cases. If what we have terminates the laser, then terminate it. If it
@@ -109,27 +124,94 @@ export class Puzzle {
 				}
 			}
 
+			// Handle final point of non-terminated laser
 			if (!terminated) {
 				let newPoint = { x: currentPoint.x, y: currentPoint.y };
 				switch(currentDirection) {
 				case Direction.EAST:
-					newPoint.x = this.dimensions.width;
+					newPoint.x = this.dimensions.width + translation.x;
 					break;
 				case Direction.SOUTH:
-					newPoint.y = this.dimensions.height;
+					newPoint.y = this.dimensions.height + translation.y;
 					break;
 				case Direction.WEST:
-					newPoint.x = 0;
+					newPoint.x = translation.x;
 					break;
 				case Direction.NORTH:
-					newPoint.y = 0;
+					newPoint.y = translation.y;
 					break;
 				}
 				path.push(newPoint);
 			}
 
-			// Now let's check if any of the points in the path hit the player
-			if (this.player) {
+			laser.path = path;
+		});
+
+		// 2) Calculate the trimmed paths of the lasers, using every other laser's path
+		this.getLasers().forEach((laser1) => {
+			this.getLasers().filter((l) => { return l !== laser1 && l.color !== laser1.color }).forEach((laser2) => {
+				let foundIntersection = false;
+
+				laser1.getPathAsLines().forEach((laser1Line) => {
+					laser2.getPathAsLines().forEach((laser2Line) => {
+						// Now that we have the cross-product from hell between laser 1 path and laser 2 path, let's
+						// see if any line intersects another line
+						let intersection = this.intersectionPointOf(laser1Line, laser2Line);
+
+						if (intersection) {
+							laser1.path = laser1.path.slice(laser1.getPathAsLines().indexOf(laser1Line));
+							laser2.path = laser2.path.slice(laser2.getPathAsLines().indexOf(laser2Line));
+							laser1.path.push(intersection);
+							laser2.path.push(intersection);
+
+							// Since we know that neither of these lasers are hitting a target, let's remove
+							// them from the set of targets we have
+							Object.keys(targetLaserPairs).forEach((tKey) => {
+								let idx = targetLaserPairs[tKey].indexOf(laser1.key);
+
+								if (idx > -1) {
+									targetLaserPairs[tKey].splice(idx, 1);
+								}
+
+								idx = targetLaserPairs[tKey].indexOf(laser2.key);
+
+								if (idx > -1) {
+									targetLaserPairs[tKey].splice(idx, 1);
+								}
+							});
+
+							foundIntersection = true;
+							return false; // NOTE: This is "break" since we are in a function
+						}
+					});
+
+					if (foundIntersection) {
+						return false; // NOTE: This is "break" since we are in a function
+					}
+				});
+			});
+		});
+
+		// 3) Figure out which targets are still struck by what lasers with the new paths
+		Object.keys(targetLaserPairs).forEach((tKey) => {
+			let laserColors = targetLaserPairs[tKey].map((lKey) => { return this.lasers[lKey].color });
+			laserColors.forEach((color) => { this.targets[tKey].addStrikingLaser(color) });
+		});
+
+		// Handle opening the exits if the proper color is hitting the target.
+		this.getTargets().forEach((t) => {
+			this.exitsConnectedTo(t.color).forEach((exit) => {
+				exit.setOpen(true);
+			});
+		});
+
+		// Make sure the proper frame is shown for an exit
+		this.getExits().forEach((exit) => { exit.setProperFrame(); });
+
+		// 4) Check each laser's new path and ensure that none of them strike the player
+		this.getLasers().forEach((laser) => {
+			if (this.player && this.valid) {
+				let path = laser.path;
 				let validity = true;
 				for (let i = 0; i < path.length - 1; i++) {
 					let line = { x1: path[i].x, y1: path[i].y, x2: path[i + 1].x, y2: path[i + 1].y };
@@ -150,17 +232,28 @@ export class Puzzle {
 					}
 				}
 
-				this.valid = validity;
+				if (!validity) {
+					this.valid = validity;
+				}
 			}
-
-			laser.path = path;
 		});
+
+		return this.valid;
 	}
 
 	/** Helper method. Resets the various state variables so that they can be properly set by solve() */
 	resetSolution() {
-		this.getExits().forEach((exit) => { exit.isOpen = false; });
+		this.getExits().forEach((exit) => { exit.reset(); });
 		this.getTargets().forEach((target) => { target.resetStrikingLasers(); });
+		this.valid = true;
+	}
+
+	/** Helper method. To ensure that no weird bugs with position occur switching between scenes, this will reset images of the various pieces. */
+	resetImgs() {
+		this.getExits().forEach((i) => { i.img = null; });
+		this.getLasers().forEach((i) => { i.resetImg(); });
+		this.getTargets().forEach((i) => { i.resetImg(); });
+		this.getLaserInteractable().forEach((i) => { i.resetImg(); });
 	}
 
 	/** Helper method. Returns the closest item in the list that the laser is intersecting, or null if none exists. */
@@ -200,8 +293,57 @@ export class Puzzle {
 		return Object.keys(this.exits).map((eKey) => { return this.exits[eKey] });
 	}
 
+	/** Helper method. Returns all items in the puzzle. */
+	getAllItems() {
+		return this.getLasers().concat(this.surfaces, this.getTargets(), this.getExits(), this.panels);
+	}
+
 	/** Helper method. Returns the exits that are connected to the laser provided. */
-	exitsConnectedTo(laser) {
-		return this.getExits().filter((exit) => { return laser.color === exit.color });
+	exitsConnectedTo(color) {
+		return this.getExits().filter((exit) => { return color === exit.color });
+	}
+
+	/** Helper method. Returns intersection point if two lines intersect, or null if they do not. */
+	intersectionPointOf(line1, line2) {
+		let line1Horizontal = (line1.y1 === line1.y2);
+		let line2Horizontal = (line2.y1 === line2.y2);
+
+		// First case: both lines face the same direction
+		if ((line1Horizontal && line2Horizontal) || (!line1Horizontal && !line2Horizontal)) {
+			if (line1Horizontal) {
+				if ((line1.x1 <= Math.max(line2.x1, line2.x2) && line1.x1 >= Math.min(line2.x1, line2.x2)) ||
+					(line1.x2 <= Math.max(line2.x1, line2.x2) && line1.x2 >= Math.min(line2.x1, line2.x2))) {
+					// This is just the mid-point of all of their mins/maxes
+					let x1 = Math.min(line1.x1, line1.x2, line2.x1, line2.x2);
+					let x2 = Math.max(line1.x1, line1.x2, line2.x1, line2.x2);
+
+					return { x: (x2 + x1) / 2, y: line1.y1 }
+				}
+			} else {
+				if ((line1.y1 <= Math.max(line2.y1, line2.y2) && line1.y1 >= Math.min(line2.y1, line2.y2)) ||
+					(line1.y2 <= Math.max(line2.y1, line2.y2) && line1.y2 >= Math.min(line2.y1, line2.y2))) {
+					let y1 = Math.min(line1.y1, line1.y2, line2.y1, line2.y2);
+					let y2 = Math.min(line1.y1, line1.y2, line2.y1, line2.y2);
+
+					return { x: line1.x1, y: (y1 + y2) / 2 };
+				}
+			}
+		} else { // Second case: both lines are opposite directions
+			if (line1Horizontal) {
+				let betweenLine = (line2.x1 <= Math.max(line1.x1, line1.x2) && line2.x1 >= Math.min(line1.x1, line1.x2));
+
+				if (Math.min(line2.y1, line2.y2) <= line1.y1 && Math.max(line2.y1, line2.y2) >= line1.y1) {
+					return { x: line2.x1, y: line1.y1 };
+				}
+			} else {
+				let betweenLine = (line1.x1 <= Math.max(line2.x1, line2.x2) && line1.x1 >= Math.min(line2.x1, line2.x2));
+
+				if (Math.min(line1.y1, line1.y2) <= line2.y1 && Math.max(line1.y1, line1.y2) >= line2.y1) {
+					return { x: line1.x1, y: line2.y1 };
+				}
+			}
+		}
+
+		return null;
 	}
 }
