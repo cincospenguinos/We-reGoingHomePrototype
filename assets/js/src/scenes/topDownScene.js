@@ -15,6 +15,7 @@ import { PuzzleItem } from '../model/puzzleItem.js';
 import { Exit } from '../model/exit.js';
 import { Player } from '../model/player.js';
 import { Direction } from '../model/direction.js';
+import { MouseOverController } from '../controllers/mouseOverController.js';
 
 export class TopDownScene extends Phaser.Scene {
 
@@ -33,6 +34,8 @@ export class TopDownScene extends Phaser.Scene {
 		this.room = data.room;
 		this.thoughtsController = data.thoughtsController;
 		this.thoughtsController.setScene(this);
+
+		this.mouseOverController = new MouseOverController(this);
 	}
 
 	preload() {
@@ -117,6 +120,8 @@ export class TopDownScene extends Phaser.Scene {
 				spriteKey = SPRITES.roomTarget.key;
 			} else { // It's a panel
 				spriteKey = SPRITES.roomPanel.key;
+
+				this.mouseOverController.addMouseOver(item);
 			}
 
 			// If we have an open door, we need an overlap, not a collision
@@ -144,6 +149,8 @@ export class TopDownScene extends Phaser.Scene {
 			// If we have a panel, we need to set things up to be able to click on it and shit
 			if (spriteKey === SPRITES.roomPanel.key) {
 				img.setInteractive();
+				img.on('pointerover', () => { this.mouseOverController.mouseOver(item.key) });
+				img.on('pointerout', () => { this.mouseOverController.mouseOut(item.key) });
 				img.on('pointerdown', (evt) => {
 					// Since we had the player move over according to padding, we will need to remove that
 					// padding before we jump right into the puzzle scene

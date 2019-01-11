@@ -14,6 +14,7 @@ import { PuzzleItem } from '../model/puzzleItem.js';
 import { Exit } from '../model/exit.js';
 import { Player } from '../model/player.js';
 import { Direction } from '../model/direction.js';
+import { MouseOverController } from '../controllers/mouseOverController.js';
 
 
 export class PuzzleScene extends Phaser.Scene {
@@ -27,6 +28,8 @@ export class PuzzleScene extends Phaser.Scene {
 		this.puzzle = data.puzzle;
 		this.thoughtsController = data.thoughtsController;
 		this.thoughtsController.setScene(this);
+
+		this.mouseOverController = new MouseOverController(this);
 
 		this.laserGraphics = {};
 
@@ -152,13 +155,20 @@ export class PuzzleScene extends Phaser.Scene {
 		// Check if we're quitting
 		if (Phaser.Input.Keyboard.JustDown(this.keyEsc)) {
 			this.removeTranslationFromPuzzleItems();
-			SceneHelper.transitionToTopDownScene(this, { dungeon: this.dungeon, puzzle: this.puzzle, thoughtsController: this.thoughtsController });
+			SceneHelper.transitionToTopDownScene(this, 
+				{ 
+					dungeon: this.dungeon, 
+					puzzle: this.puzzle, 
+					thoughtsController: this.thoughtsController 
+				});
 		}
 	}
 
 	/** Helper method. Handles interactivity for the model object and game object.*/
 	setupInteractivity(modelObj, gameObj) {
 		gameObj.setInteractive();
+
+		this.mouseOverController.addMouseOver(modelObj);
 		
 		if (modelObj.movable) {
 			this.input.setDraggable(gameObj);
@@ -167,12 +177,12 @@ export class PuzzleScene extends Phaser.Scene {
 
 		gameObj.on('pointerover', (evt, objects) => {
 			this.pointerOverObj = modelObj;
-			// modelObj.pointerOver();
+			this.mouseOverController.mouseOver(modelObj.key);
 		});
 
 		gameObj.on('pointerout', (evt, objects) => {
 			this.pointerOverObj = null;
-			// modelObj.pointerOut();
+			this.mouseOverController.mouseOut(modelObj.key);
 		});
 	}
 

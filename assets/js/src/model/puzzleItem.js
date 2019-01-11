@@ -71,7 +71,7 @@ export class PuzzleItem {
 	}
 
 	/** Helper method. To be used by children classes to modify their sprite when moused over in puzzle mode. */
-	pointerOver() {
+	mouseOver() {
 		if (this.img) {
 			if (this.movable && this.rotatable) {
 				this.img.setFrame(3);
@@ -84,7 +84,7 @@ export class PuzzleItem {
 	}
 
 	/** Helper method. To be used by children classes to modify their sprite when moused over in puzzle mode. */
-	pointerOut() {
+	mouseOut() {
 		if (this.img) {
 			this.img.setFrame(0);
 		}
