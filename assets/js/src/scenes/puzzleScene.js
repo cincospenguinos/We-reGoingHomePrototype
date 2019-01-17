@@ -95,7 +95,6 @@ export class PuzzleScene extends Phaser.Scene {
 			}
 
 			let img = this.physics.add.sprite(shiftedPosition.x, shiftedPosition.y, spriteKey);
-			img.setScale(2); // TODO: Sprites at this size
 			item.setImg(img);
 
 			if (item.movable || item.rotatable) {
@@ -107,7 +106,6 @@ export class PuzzleScene extends Phaser.Scene {
 		let playerPosition = { x: this.puzzle.player.getPosition().x + this.translation.x,
 			y: this.puzzle.player.getPosition().y + this.translation.y };
 		let playerImage = this.add.image(playerPosition.x, playerPosition.y, SPRITES.puzzlePlayer.key);
-		playerImage.setScale(2);
 		this.puzzle.player.setImg(playerImage);
 
 		// // Handle other input bits
