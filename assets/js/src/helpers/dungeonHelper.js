@@ -73,7 +73,7 @@ export class DungeonHelper {
 
 		puzzle.getLasers().forEach((laser) => {
 			room.addPuzzleItem(new Laser({
-				position: this.puzzlePosToRoomPos(laser.position),
+				position: this.puzzlePosToRoomPos(laser.getPosition()),
 				dimensions: this.puzzleDimToRoomDim(laser.dimensions),
 				key: laser.key,
 				color: laser.color,
@@ -87,7 +87,7 @@ export class DungeonHelper {
 		puzzle.getExits().forEach((exit) => {
 			room.addPuzzleItem(new Exit({
 				key: exit.key,
-				position: this.puzzlePosToRoomPos(exit.position),
+				position: this.puzzlePosToRoomPos(exit.getPosition()),
 				dimensions: this.puzzleDimToRoomDim(exit.dimensions),
 				color: exit.color,
 				direction: exit.direction,
@@ -97,7 +97,7 @@ export class DungeonHelper {
 
 		puzzle.panels.forEach((panel) => {
 			room.addPuzzleItem(new PuzzleItem({
-				position: this.puzzlePosToRoomPos(panel.position),
+				position: this.puzzlePosToRoomPos(panel.getPosition()),
 				dimensions: this.puzzleDimToRoomDim(panel.dimensions),
 				direction: panel.direction
 			}));
@@ -106,7 +106,7 @@ export class DungeonHelper {
 		puzzle.getTargets().forEach((target) => {
 			room.addPuzzleItem(new Target({
 				key: target.key,
-				position: this.puzzlePosToRoomPos(target.position),
+				position: this.puzzlePosToRoomPos(target.getPosition()),
 				dimensions: this.puzzleDimToRoomDim(target.dimensions),
 				color: target.color,
 				lasersStruck: target.lasersStruck
@@ -115,7 +115,7 @@ export class DungeonHelper {
 
 		puzzle.surfaces.forEach((surface) => {
 			room.addPuzzleItem(new Surface({
-				position: this.puzzlePosToRoomPos(surface.position),
+				position: this.puzzlePosToRoomPos(surface.getPosition()),
 				dimensions: this.puzzleDimToRoomDim(surface.dimensions),
 				type: surface.type,
 				direction: surface.direction,
@@ -125,7 +125,7 @@ export class DungeonHelper {
 		});
 
 		room.player = new Player({
-			position: this.puzzlePosToRoomPos(puzzle.player.position),
+			position: this.puzzlePosToRoomPos(puzzle.player.getPosition()),
 			dimensions: this.puzzleDimToRoomDim(puzzle.player.dimensions)
 		});
 

@@ -182,7 +182,8 @@ QUnit.test('sameColoredLasersMayCross', (assert) => {
 	let puzzle = new Puzzle({
 		dimensions: { width: 100, height: 100 },
 		key: 'somepuzzle',
-		roomKey: 'someroom'
+		roomKey: 'someroom',
+		mapName: 'name'
 	});
 
 	let l1 = new Laser({
@@ -211,7 +212,8 @@ QUnit.test('differentColoredLasersMayNotCross', (assert) => {
 	let puzzle = new Puzzle({
 		dimensions: { width: 100, height: 100 },
 		key: 'somepuzzle',
-		roomKey: 'someroom'
+		roomKey: 'someroom',
+		mapName: 'name'
 	});
 
 	let l1 = new Laser({
@@ -251,7 +253,8 @@ QUnit.test('targetBlendByLasers', (assert) => {
 	let puzzle = new Puzzle({
 		dimensions: { width: 200, height: 200 },
 		key: 'somepuzzle',
-		roomKey: 'someroom'
+		roomKey: 'someroom',
+		mapName: 'name'
 	});
 
 	puzzle.addLaser(new Laser({
@@ -293,7 +296,8 @@ QUnit.test('solvedPuzzle', (assert) => {
 	let puzzle = new Puzzle({
 		dimensions: { width: 200, height: 200 },
 		key: 'somepuzzle',
-		roomKey: 'someroom'
+		roomKey: 'someroom',
+		mapName: 'name'
 	});
 
 	puzzle.addLaser(new Laser({
@@ -341,7 +345,8 @@ QUnit.test('solvedPuzzleWithBlendedColor', (assert) => {
 	let puzzle = new Puzzle({
 		dimensions: { width: 200, height: 200 },
 		key: 'somepuzzle',
-		roomKey: 'someroom'
+		roomKey: 'someroom',
+		mapName: 'name'
 	});
 
 	puzzle.addLaser(new Laser({
@@ -391,7 +396,8 @@ QUnit.test('notSolvedButThenSolved', (assert) => {
 	let puzzle = new Puzzle({
 		dimensions: { width: 200, height: 200 },
 		key: 'somepuzzle',
-		roomKey: 'someroom'
+		roomKey: 'someroom',
+		mapName: 'name'
 	});
 
 	puzzle.addLaser(new Laser({
@@ -447,7 +453,8 @@ QUnit.test('weirdLaserBug', (assert) => {
 	let puzzle = new Puzzle({
 		dimensions: { width: 200, height: 200 },
 		key: 'somepuzzle',
-		roomKey: 'someroom'
+		roomKey: 'someroom',
+		mapName: 'name'
 	});
 
 	puzzle.addLaser(new Laser({
@@ -483,7 +490,8 @@ QUnit.test('laserCannotHitPlayer', (assert) => {
 	let puzzle = new Puzzle({
 		dimensions: { width: 200, height: 200 },
 		key: 'somepuzzle',
-		roomKey: 'someroom'
+		roomKey: 'someroom',
+		mapName: 'name'
 	});
 
 	puzzle.addLaser(new Laser({
@@ -515,7 +523,8 @@ QUnit.test('converterMethods', (assert) => {
 	let puzzle = new Puzzle({
 		dimensions: { width: 200, height: 200 },
 		key: 'somepuzzle',
-		roomKey: 'someroom'
+		roomKey: 'someroom',
+		mapName: 'name'
 	});
 
 	let laser = new Laser({

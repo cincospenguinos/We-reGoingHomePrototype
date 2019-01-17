@@ -9,10 +9,6 @@ import { Direction } from './direction.js';
 export class PuzzleItem {
 
 	constructor(opts) {
-		if (!opts.position || !opts.dimensions) {
-			throw 'PuzzleItem must have starting position and dimensions!';
-		}
-		
 		this.position = opts.position;
 		this.dimensions = opts.dimensions;
 		this.direction = opts.direction;
@@ -20,6 +16,10 @@ export class PuzzleItem {
 		this.rotatable = opts.rotatable || false;
 		this.laserInteractable = opts.laserInteractable || false;
 		this.terminatesLaser = opts.terminatesLaser || false;
+
+		if (!this.position || !this.dimensions) {
+			throw 'PuzzleItem must have starting position and dimensions!';
+		}
 	}
 
 	/** Rotates the puzzle item the number of degrees provided. Must either be 90 or -90. */
