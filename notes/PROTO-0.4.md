@@ -1,7 +1,7 @@
 # PROTO-0.4.md
 
 **Question:** How does modifying the puzzle so that color determines movement change the dungeon design?
-**Question:** How can we effectively communicate how to play to the player, using separate perspectives?
+**Question:** How can we effectively communicate how to play to the player, using separate perspectives or methods?
 
 ## Decisions
 
@@ -54,9 +54,22 @@
 	* Puzzles are considered valid even when pieces run into each other. That can't happen anymore
 * Definitely has promise (according to Zachie)
 
+### Notes from Tasha's Playtest 2
+
+* The current design is confusing and not helpful
+	* The laser is already hitting the target
+	* The target is in front of the door
+* Mouse pointers and changing those things makes things significantly better
+* Message system is a good addition
+* Maybe make it even more obvious what you can do in the puzzle scene?
+* The tilemap is broken
+
 ## What should we try to answer next?
 
 * What other elements/barriers should we incorporate to make more interesting dungeons?
 	* Keys for doors
 	* Hitting switches/panels/buttons in different rooms
 	* A big key for a main door
+	* Walls or other things that prevent movement
+	* Timer puzzles, with light hitting a different type of target
+	* Moving items into different places--onto switches, into corners, into lasers!
