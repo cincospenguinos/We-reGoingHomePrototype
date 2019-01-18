@@ -43,8 +43,8 @@ export class PuzzleScene extends Phaser.Scene {
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleTarget);
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleMirror);
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleExit);
-
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzlePanel);
+		
 		SceneHelper.loadImage(this, SPRITES.puzzlePlayer);
 		SceneHelper.loadImage(this, SPRITES.closePanelButton);
 	}
@@ -100,6 +100,8 @@ export class PuzzleScene extends Phaser.Scene {
 			if (item.movable || item.rotatable) {
 				this.setupInteractivity(item, img);
 			}
+
+			item.setProperFrame();
 		});
 
 		// And naturally, the player

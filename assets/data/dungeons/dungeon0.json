@@ -42,6 +42,7 @@
 					"position": { "x": 850, "y": 500 },
 					"direction": "WEST",
 					"dimensions": { "width": 128, "height": 128 },
+					"rotatable": true,
 					"type": "REFLECTIVE"
 				}
 			],

@@ -16,6 +16,7 @@ import { KEYS, COLORS, PUZZLE_ROOM_SCALE } from '../../lib/CONST.js';
 import { Direction } from '../model/direction.js';
 import { LaserColor } from '../model/laserColor.js';
 import { Thought } from '../model/thought.js';
+import { Panel } from '../model/panel.js';
 
 export class DungeonHelper {
 
@@ -96,7 +97,7 @@ export class DungeonHelper {
 		});
 
 		puzzle.panels.forEach((panel) => {
-			room.addPuzzleItem(new PuzzleItem({
+			room.addPuzzleItem(new Panel({
 				position: this.puzzlePosToRoomPos(panel.getPosition()),
 				dimensions: this.puzzleDimToRoomDim(panel.dimensions),
 				direction: panel.direction

@@ -15,6 +15,7 @@ import { PuzzleItem } from '../model/puzzleItem.js';
 import { Exit } from '../model/exit.js';
 import { Player } from '../model/player.js';
 import { Direction } from '../model/direction.js';
+import { Panel } from '../model/panel.js';
 import { MouseOverController } from '../controllers/mouseOverController.js';
 
 export class TopDownScene extends Phaser.Scene {
@@ -118,10 +119,11 @@ export class TopDownScene extends Phaser.Scene {
 				spriteKey = item.type === Surface.REFLECTIVE ? SPRITES.roomMirror.key : undefined; // TODO: Opaque surface?
 			} else if (item instanceof Target) {
 				spriteKey = SPRITES.roomTarget.key;
-			} else { // It's a panel
+			} else if (item instanceof Panel) {
 				spriteKey = SPRITES.roomPanel.key;
-
 				this.mouseOverController.addMouseOver(item);
+			} else {
+				throw 'No class for item "' + item.key + '"';
 			}
 
 			// If we have an open door, we need an overlap, not a collision
@@ -159,6 +161,8 @@ export class TopDownScene extends Phaser.Scene {
 					SceneHelper.transitionToPuzzleScene(this, { dungeon: this.dungeon, room: this.room, thoughtsController: this.thoughtsController });
 				});
 			}
+
+			item.setProperFrame(true);
 		});
 
 		// Tie up various odds and ends with collision

@@ -70,25 +70,14 @@ export class PuzzleItem {
 		return extrema;
 	}
 
-	/** Helper method. To be used by children classes to modify their sprite when moused over in puzzle mode. */
-	mouseOver() {
-		if (this.img) {
-			if (this.movable && this.rotatable) {
-				this.img.setFrame(3);
-			} else if (this.movable) {
-				this.img.setFrame(1);
-			} else if (this.rotatable) {
-				this.img.setFrame(2);
-			}
-		}
-	}
+	/** Sets the proper frame for the puzzle item. */
+	setProperFrame(isRoom = false) { throw 'Implement me!' }
 
 	/** Helper method. To be used by children classes to modify their sprite when moused over in puzzle mode. */
-	mouseOut() {
-		if (this.img) {
-			this.img.setFrame(0);
-		}
-	}
+	mouseOver() { throw 'Implement me in children!'; }
+
+	/** Helper method. To be used by children classes to modify their sprite when moused over in puzzle mode. */
+	mouseOut() { throw 'Implement me in children!'; }
 
 	/** Returns the collision point of this puzzle item. Returns null if this item does not interact with a laser, or if the laser does not hit this item. 
 		Note that the direction provided is the direction the item at the point provided is facing. */
@@ -112,6 +101,8 @@ export class PuzzleItem {
 			return null;
 		}
 	}
+
+	setProperFrame() {} // Unused, and not required
 
 	/** Sets the image to the image provided. */
 	setImg(img) {
