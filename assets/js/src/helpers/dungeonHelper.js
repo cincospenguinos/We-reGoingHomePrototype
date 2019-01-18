@@ -144,8 +144,12 @@ export class DungeonHelper {
 		});
 
 		room.puzzleItems.forEach((item) => {
-			let position = this.roomPosToPuzzlePos(item.position);
-			let dimensions = this.roomDimToPuzzleDim(item.dimensions);
+			let position, dimensions = null;
+
+			if (!(item instanceof Exit)) {
+				position = this.roomPosToPuzzlePos(item.position);
+				dimensions = this.roomDimToPuzzleDim(item.dimensions);
+			}
 
 			if (item instanceof Laser) {
 				puzzle.addLaser(new Laser({
@@ -158,13 +162,14 @@ export class DungeonHelper {
 					rotatable: item.rotatable
 				}));
 			} else if (item instanceof Exit) {
+				// NOTE: This information will be filled in by the DoorLayer
 				puzzle.addExit(new Exit({
-					position: position,
-					dimensions: dimensions,
-					color: item.color,
-					direction: item.direction,
+					position: null,
+					dimensions: null,
+					color: null,
+					direction: null,
 					key: item.key,
-					isOpen: item.isOpen
+					isOpen: null,
 				}));
 			} else if (item instanceof Surface) {
 				puzzle.addSurface(new Surface({
@@ -202,12 +207,12 @@ export class DungeonHelper {
 
 	/** Helper method. Converts position provided in puzzle dimensions to dimension in room. */
 	static puzzlePosToRoomPos(puzzlePos) {
-		return { x: puzzlePos.x * PUZZLE_ROOM_SCALE, y: puzzlePos.y * PUZZLE_ROOM_SCALE };
+		return puzzlePos ? { x: puzzlePos.x * PUZZLE_ROOM_SCALE, y: puzzlePos.y * PUZZLE_ROOM_SCALE } : null;
 	}
 
 	/** Helper method. Converts the puzzle dimensions to the room dimensions. */
 	static puzzleDimToRoomDim(puzzleDim) {
-		return { width: puzzleDim.width * PUZZLE_ROOM_SCALE, height: puzzleDim.height * PUZZLE_ROOM_SCALE };
+		return puzzleDim ? { width: puzzleDim.width * PUZZLE_ROOM_SCALE, height: puzzleDim.height * PUZZLE_ROOM_SCALE } : null;
 	}
 
 	/** Helper method. Converts position provided in room dimensions to puzzle dimensions. */

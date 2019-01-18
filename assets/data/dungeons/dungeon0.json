@@ -25,11 +25,7 @@
 				},
 				{
 					"class": "Exit",
-					"key": "exit1",
-					"position": { "x": 544, "y": 0 },
-					"dimensions": { "width": 256, "height": 256 },
-					"color": "l-red",
-					"direction": "NORTH"
+					"key": "exit1"
 				},
 				{
 					"class": "Panel",
