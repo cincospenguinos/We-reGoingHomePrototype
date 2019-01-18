@@ -18,7 +18,7 @@ export class PuzzleItem {
 		this.terminatesLaser = opts.terminatesLaser || false;
 
 		if (!this.position || !this.dimensions) {
-			throw 'PuzzleItem must have starting position and dimensions!';
+			console.warn('PuzzleItem must have starting position and dimensions!');
 		}
 	}
 

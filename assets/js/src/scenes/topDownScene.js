@@ -65,6 +65,13 @@ export class TopDownScene extends Phaser.Scene {
 		const wallLayer = sandboxMap.createDynamicLayer('WallLayer', tileset, 0, 0);
 		const doorLayer = sandboxMap.createDynamicLayer('DoorLayer', tileset, 0, 0);
 
+		debugger;
+
+		// We can grab all of the door tiles with this simple call:
+		// doorLayer.getTilesWithin(0, 0, 100, 100).filter((tile) => tile.properties.isDoor);
+
+		// Then we can group them by their key property:
+
 		// So here's the deal: we want to be able to combine data from two different places at once:
 		// 1. Position, color, facingDirection, and dimensions should be determined solely by Tiled
 		// 2. isOpen and nextRoomKey should be determined by the data in the JSON file
@@ -75,7 +82,8 @@ export class TopDownScene extends Phaser.Scene {
 		// zones impact player experience.
 
 		// Doors need to be attached to exits in the Room object
-		// 
+		// We need to attach position to an exit, and include it in the exit object here so that
+		// when we transition to the PuzzleScene we can 
 
 		wallLayer.setCollisionByProperty({ collides: true });
 
@@ -101,6 +109,8 @@ export class TopDownScene extends Phaser.Scene {
 		this.room.player.setImg(playerImg);
 
 		this.room.puzzleItems.forEach((item) => {
+			if (item instanceof Exit) return;
+
 			let pos = { x: item.position.x + pad / 2, y: item.position.y + pad };
 			let spriteKey, img;
 
@@ -127,9 +137,6 @@ export class TopDownScene extends Phaser.Scene {
 
 					this.drawLaserLine(adjustedLine, laserGraphics, puzzleItemGroup);
 				});
-			} else if (item instanceof Exit) {
-				return; // TODO: Drawing the doors
-				// spriteKey = SPRITES.roomExit.key;
 			} else if (item instanceof Surface) {
 				spriteKey = item.type === Surface.REFLECTIVE ? SPRITES.roomMirror.key : undefined; // TODO: Opaque surface?
 			} else if (item instanceof Target) {
