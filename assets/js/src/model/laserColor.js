@@ -9,6 +9,14 @@ export class LaserColor {
 		this.val = colorVal;
 	}
 
+	equals(obj) {
+		if (obj instanceof LaserColor) {
+			return obj.key === this.key;
+		}
+
+		return false;
+	}
+
 	/** Returns color given the key of a color. This helps us ensure that there is one and only one laser color per color. */
 	static colorFromKey(key) {
 		switch(key) {

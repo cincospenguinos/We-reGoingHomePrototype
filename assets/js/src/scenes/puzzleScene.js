@@ -152,13 +152,15 @@ export class PuzzleScene extends Phaser.Scene {
 
 		// Check if we're quitting
 		if (Phaser.Input.Keyboard.JustDown(this.keyEsc)) {
-			this.removeTranslationFromPuzzleItems();
-			SceneHelper.transitionToTopDownScene(this, 
-				{ 
-					dungeon: this.dungeon, 
-					puzzle: this.puzzle, 
-					thoughtsController: this.thoughtsController 
-				});
+			if (this.puzzle.valid) {
+				this.removeTranslationFromPuzzleItems();
+				SceneHelper.transitionToTopDownScene(this, 
+					{ 
+						dungeon: this.dungeon, 
+						puzzle: this.puzzle, 
+						thoughtsController: this.thoughtsController 
+					});
+			}
 		}
 	}
 

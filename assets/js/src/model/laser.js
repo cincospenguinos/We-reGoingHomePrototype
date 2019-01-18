@@ -17,10 +17,21 @@ export class Laser extends PuzzleItem {
 		this.terminatesLaser = true;
 		this.laserInteractable = true;
 		this.path = opts.path || [];
+		this.hasMouse = false;
 
 		if (!this.key || !this.color || !(this.color instanceof LaserColor) || !Direction.validDirection(this.direction)) {
 			throw 'A laser color, key, and valid direction are necessary to instantiate a Laser!';
 		}
+	}
+
+	mouseOver() {
+		this.hasMouse = true;
+		this.setProperFrame();
+	}
+
+	mouseOut() {
+		this.hasMouse = false;
+		this.setProperFrame();
 	}
 
 	/** Sets the img to the img provided. */
@@ -76,8 +87,14 @@ export class Laser extends PuzzleItem {
 
 	setProperFrame() {
 		let frame = 0;
-		if (this.movable) frame += 1;
-		if (this.rotatable) frame += 2;
+
+		if (this.hasMouse) frame += 12;
+
+		if (this.movable) frame += 3;
+		if (this.rotatable) frame += 6;
+
+		if (this.color.equals(LaserColor.GREEN)) frame += 1;
+		else if (this.color.equals(LaserColor.BLUE)) frame += 2;
 
 		this.img.setFrame(frame);
 		let angle = Direction.angleFromDirection(this.direction);
