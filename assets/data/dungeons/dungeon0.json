@@ -1,11 +1,11 @@
 {
 	"key": "dungeon0",
 	"rooms": {
-		"room0": {
-			"key": "room0",
+		"debugRoom": {
+			"key": "debugRoom",
 			"puzzleKey": "puzzle0",
 			"dimensions": { "width": 1088, "height": 1088 },
-			"mapName": "room0",
+			"mapName": "debugRoom",
 			"puzzleItems": [
 				{
 					"class": "Laser",

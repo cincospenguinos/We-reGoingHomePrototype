@@ -3,7 +3,7 @@
  *
  * Scene to manage a top-down scrolling view. Mostly for experimentation.
  */
-import { KEYS, SPRITES, COLORS, PUZZLE_ROOM_SCALE } from '../../lib/CONST.js';
+import { KEYS, SPRITES, COLORS, PUZZLE_ROOM_SCALE, PADDING } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
 import { DungeonHelper } from '../helpers/dungeonHelper.js';
 
@@ -63,6 +63,19 @@ export class TopDownScene extends Phaser.Scene {
 
 		const floorLayer = sandboxMap.createStaticLayer('FloorLayer', tileset, 0, 0);
 		const wallLayer = sandboxMap.createDynamicLayer('WallLayer', tileset, 0, 0);
+		const doorLayer = sandboxMap.createDynamicLayer('DoorLayer', tileset, 0, 0);
+
+		// So here's the deal: we want to be able to combine data from two different places at once:
+		// 1. Position, color, facingDirection, and dimensions should be determined solely by Tiled
+		// 2. isOpen and nextRoomKey should be determined by the data in the JSON file
+
+		// We will also want a way for the player to go into the door. I'm leaning towards just drawing
+		// a zone in front of an open door, and the player can walk into that zone to go inside. I think
+		// that would be the simplest method, but we may want to do something different, depending on how
+		// zones impact player experience.
+
+		// Doors need to be attached to exits in the Room object
+		// 
 
 		wallLayer.setCollisionByProperty({ collides: true });
 
@@ -70,12 +83,13 @@ export class TopDownScene extends Phaser.Scene {
 		let roomDimensions = {
 			width: sandboxMap.widthInPixels, 
 			height: sandboxMap.heightInPixels,
-			paddingLeft: 64,
-			paddingRight: 64,
-			paddingTop: 128,
-			paddingBottom: 0
+			paddingLeft: 64 * PADDING.room.left,
+			paddingRight: 64 * PADDING.room.right,
+			paddingTop: 64 * PADDING.room.top,
+			paddingBottom: 0 * PADDING.room.bottom
 		};
 
+		// TODO: Adjust this pad variable to take advantage of how everything is supposed to fit together
 		let pad = 128; // Since we are dropping everything according to some amount of padding, we need to accomodate
 
 		let puzzleItemGroup = this.physics.add.staticGroup();
@@ -114,7 +128,8 @@ export class TopDownScene extends Phaser.Scene {
 					this.drawLaserLine(adjustedLine, laserGraphics, puzzleItemGroup);
 				});
 			} else if (item instanceof Exit) {
-				spriteKey = SPRITES.roomExit.key;
+				return; // TODO: Drawing the doors
+				// spriteKey = SPRITES.roomExit.key;
 			} else if (item instanceof Surface) {
 				spriteKey = item.type === Surface.REFLECTIVE ? SPRITES.roomMirror.key : undefined; // TODO: Opaque surface?
 			} else if (item instanceof Target) {
@@ -126,27 +141,27 @@ export class TopDownScene extends Phaser.Scene {
 				throw 'No class for item "' + item.key + '"';
 			}
 
+			img = puzzleItemGroup.create(pos.x, pos.y, spriteKey);
+			item.setImg(img);
+
 			// If we have an open door, we need an overlap, not a collision
-			if (spriteKey === SPRITES.roomExit.key && item.isOpen) {
-				switch(item.direction) {
-				case Direction.SOUTH:
-					pos.y += pad / 2;
-					break;
-				case Direction.NORTH:
-					pos.y -= pad / 2;
-					break;
-				}
+			// if (spriteKey === SPRITES.roomExit.key && item.isOpen) {
+			// 	switch(item.direction) {
+			// 	case Direction.SOUTH:
+			// 		pos.y += pad / 2;
+			// 		break;
+			// 	case Direction.NORTH:
+			// 		pos.y -= pad / 2;
+			// 		break;
+			// 	}
 
-				img = this.physics.add.image(pos.x, pos.y, SPRITES.roomExit.key);
-				item.setImg(img);
+			// 	img = this.physics.add.image(pos.x, pos.y, SPRITES.roomExit.key);
+			// 	item.setImg(img);
 
-				this.physics.add.overlap(this.room.player.img, img, (evt) => {
-					throw 'Implement moving rooms!';
-				});
-			} else { 
-				img = puzzleItemGroup.create(pos.x, pos.y, spriteKey);
-				item.setImg(img);
-			}
+			// 	this.physics.add.overlap(this.room.player.img, img, (evt) => {
+			// 		throw 'Implement moving rooms!';
+			// 	});
+			// } else {}
 
 			// If we have a panel, we need to set things up to be able to click on it and shit
 			if (spriteKey === SPRITES.roomPanel.key) {
@@ -158,7 +173,11 @@ export class TopDownScene extends Phaser.Scene {
 					// padding before we jump right into the puzzle scene
 					let newPlayerPos = { x: this.room.player.getPosition().x - (pad / 2), y: this.room.player.getPosition().y - pad };
 					this.room.player.setPosition(newPlayerPos);
-					SceneHelper.transitionToPuzzleScene(this, { dungeon: this.dungeon, room: this.room, thoughtsController: this.thoughtsController });
+					SceneHelper.transitionToPuzzleScene(this, { 
+						dungeon: this.dungeon, 
+						room: this.room, 
+						thoughtsController: this.thoughtsController 
+					});
 				});
 			}
 
