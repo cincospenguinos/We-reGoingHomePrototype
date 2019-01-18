@@ -24,6 +24,16 @@ export class Surface extends PuzzleItem {
 		this.terminatesLaser = this.type === Surface.REFLECTIVE ? false : true;
 	}
 
+	setProperFrame() {
+		if (this.img) {
+			let frame = 0;
+			if (this.movable) frame += 2;
+			if (this.rotatable) frame += 4;
+
+			this.img.setFrame(frame);
+		}
+	}
+
 	/** Returns the reflective direction of this surface given the direction the laser is approaching, or null if it does not reflect.*/
 	reflectiveDirection(approachingDirection) {// NOTE: approachingDirection means "the laser is going in that direction"
 		if (this.type === Surface.REFLECTIVE) {
