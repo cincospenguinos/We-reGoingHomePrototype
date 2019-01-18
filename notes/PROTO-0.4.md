@@ -63,6 +63,8 @@
 * Message system is a good addition
 * Maybe make it even more obvious what you can do in the puzzle scene?
 * The tilemap is broken
+* Tasha spent a lot more time looking at the different pieces and things in the TopDownScene
+	* This means that the art made the game much more engaging
 
 ## What should we try to answer next?
 
