@@ -216,7 +216,7 @@ export class DungeonHelper {
 	}
 
 	/** Helper method. Converts room dimensions to puzzle dimensions. */
-	static roomDimToPuzzleDim(roomDim) { // TODO: Does it handle the padding on the edges?
+	static roomDimToPuzzleDim(roomDim) {
 		return { width: roomDim.width / PUZZLE_ROOM_SCALE, height: roomDim.height / PUZZLE_ROOM_SCALE };
 	}
 
