@@ -43,7 +43,9 @@ export class TopDownScene extends Phaser.Scene {
 
 	preload() {
 		SceneHelper.loadImage(this, SPRITES.malkhutTilesheet);
-		this.load.tilemapTiledJSON(this.mapKey, 'assets/data/maps/' + this.mapKey + '.json');
+		SceneHelper.loadImage(this, SPRITES.doorTilesheet);
+
+		this.load.tilemapTiledJSON(this.mapKey, `assets/data/maps/${this.mapKey}.json`);
 		
 		SceneHelper.loadImage(this, SPRITES.mainCharacter);
 		
@@ -62,12 +64,13 @@ export class TopDownScene extends Phaser.Scene {
 		let sandboxMap = this.make.tilemap({ key: this.mapKey, tileWidth: 64, tileHeight: 64 });
 
 		const tileset = sandboxMap.addTilesetImage(SPRITES.malkhutTilesheet.key, SPRITES.malkhutTilesheet.key);
+		// TODO: Separate tilesheet for panels and doors
 
 		const floorLayer = sandboxMap.createStaticLayer('FloorLayer', tileset, 0, 0);
 		const wallLayer = sandboxMap.createDynamicLayer('WallLayer', tileset, 0, 0);
 		const doorLayer = sandboxMap.createDynamicLayer('DoorLayer', tileset, 0, 0);
 		
-		this.doorsController.generateExitsFrom(doorLayer, this.room);
+		this.doorsController.generateExitsFrom(doorLayer, this.room, tileset);
 
 		// We can grab all of the door tiles with this simple call:
 		// doorLayer.getTilesWithin(0, 0, 100, 100).filter((tile) => tile.properties.isDoor);

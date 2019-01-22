@@ -7,6 +7,7 @@
  * At least I think it should. We'll find out how well this pans out.
  */
 import { Exit } from '../model/exit.js';
+import { Direction } from '../model/direction.js';
 
 export class DoorsController {
 	constructor(scene) {
@@ -14,7 +15,7 @@ export class DoorsController {
 	}
 
 	/** Returns array of exits given the door layer provided. */
-	generateExitsFrom(doorLayer, room) {
+	generateExitsFrom(doorLayer, room, tilesheet) {
 		// TODO: We want a whole bunch of exit objects from which we can attach other pieces of information.
 		
 		// Okay, so the plan is this:
@@ -38,6 +39,10 @@ export class DoorsController {
 
 			// At this point, we have the proper tiles associated with the data we need. We will now make the tiles
 			// match the room's data. So let's handle that:
+			// NOTE: We're going to find the index of the top left tile, and then use that information to set the other
+			// NOTE: tiles. This will change when we have a different tilesheet.
+
+			let topLeftTile = 0;
 
 			// TODO: Determine if it's open or not
 			if (exit.isOpen) {

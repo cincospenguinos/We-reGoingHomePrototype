@@ -40,7 +40,8 @@ export const SPRITES = {
 	mainCharacter: { key: 'mainCharacter', location: spriteDir + 'mainCharacter.png' },
 
 	// Tilesheet shit
-	malkhutTilesheet: { key: 'malkhut_winter_outlined', location: spriteDir + 'tilesheets/malkhut_winter_outlined.png' },
+	malkhutTilesheet: { key: 'malkhut_winter_tilesheet', location: `${spriteDir}tilesheets/malkhut_winter_tilesheet.png` },
+	doorTilesheet: { key: 'door_tilesheet', location: `${spriteDir}tilesheets/door_tilesheet.png`},
 };
 
 export const PADDING = {
