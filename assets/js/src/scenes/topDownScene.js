@@ -66,7 +66,7 @@ export class TopDownScene extends Phaser.Scene {
 		const floorLayer = sandboxMap.createStaticLayer('FloorLayer', tileset, 0, 0);
 		const wallLayer = sandboxMap.createDynamicLayer('WallLayer', tileset, 0, 0);
 		const doorLayer = sandboxMap.createDynamicLayer('DoorLayer', tileset, 0, 0);
-
+		
 		this.doorsController.generateExitsFrom(doorLayer, this.room);
 
 		// We can grab all of the door tiles with this simple call:
