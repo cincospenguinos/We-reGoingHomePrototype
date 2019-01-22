@@ -144,12 +144,8 @@ export class DungeonHelper {
 		});
 
 		room.puzzleItems.forEach((item) => {
-			let position, dimensions = null;
-
-			if (!(item instanceof Exit)) {
-				position = this.roomPosToPuzzlePos(item.position);
-				dimensions = this.roomDimToPuzzleDim(item.dimensions);
-			}
+			let position = this.roomPosToPuzzlePos(item.position);
+			let dimensions = this.roomDimToPuzzleDim(item.dimensions);
 
 			if (item instanceof Laser) {
 				puzzle.addLaser(new Laser({
@@ -162,14 +158,13 @@ export class DungeonHelper {
 					rotatable: item.rotatable
 				}));
 			} else if (item instanceof Exit) {
-				// NOTE: This information will be filled in by the DoorLayer
 				puzzle.addExit(new Exit({
-					position: null,
-					dimensions: null,
-					color: null,
-					direction: null,
+					position: position,
+					dimensions: dimensions,
+					color: item.color,
+					direction: item.direction,
 					key: item.key,
-					isOpen: null,
+					isOpen: item.isOpen,
 				}));
 			} else if (item instanceof Surface) {
 				puzzle.addSurface(new Surface({

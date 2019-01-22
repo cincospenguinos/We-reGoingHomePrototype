@@ -5,6 +5,7 @@
  */
 import { Player } from './player.js';
 import { Thought } from './thought.js';
+import { Exit } from './exit.js';
 
 export class Room {
 
@@ -37,5 +38,9 @@ export class Room {
 	/** Returns thoughts specific to this room. */
 	getRoomThoughts() {
 		return this.thoughts.filter((t) => { return t.type === Thought.TYPE_ROOM && !t.dismissed });
+	}
+
+	getExits() {
+		return this.puzzleItems.filter(item => item instanceof Exit);
 	}
 }

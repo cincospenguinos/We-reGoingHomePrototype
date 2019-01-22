@@ -17,6 +17,7 @@ import { Player } from '../model/player.js';
 import { Direction } from '../model/direction.js';
 import { Panel } from '../model/panel.js';
 import { MouseOverController } from '../controllers/mouseOverController.js';
+import { DoorsController } from '../controllers/doorsController.js';
 
 export class TopDownScene extends Phaser.Scene {
 
@@ -37,6 +38,7 @@ export class TopDownScene extends Phaser.Scene {
 		this.thoughtsController.setScene(this);
 
 		this.mouseOverController = new MouseOverController(this);
+		this.doorsController = new DoorsController(this);
 	}
 
 	preload() {
@@ -65,7 +67,7 @@ export class TopDownScene extends Phaser.Scene {
 		const wallLayer = sandboxMap.createDynamicLayer('WallLayer', tileset, 0, 0);
 		const doorLayer = sandboxMap.createDynamicLayer('DoorLayer', tileset, 0, 0);
 
-		debugger;
+		this.doorsController.generateExitsFrom(doorLayer, this.room);
 
 		// We can grab all of the door tiles with this simple call:
 		// doorLayer.getTilesWithin(0, 0, 100, 100).filter((tile) => tile.properties.isDoor);

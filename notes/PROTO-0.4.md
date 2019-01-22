@@ -18,6 +18,8 @@
 	* This also removes issues of the puzzle pieces being under or over the exit button
 * Only lasers and mirrors are movable and rotatable right now
 	* I want things to be easy on the player, and this is one way of ensuring that that's the case
+* The DoorController determines everything according to the data that it gets handed from the room
+	* This greatly simplifies things, not needing data to be tied between Tiled and the JSON file
 
 ## Discoveries
 
