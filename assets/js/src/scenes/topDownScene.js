@@ -63,34 +63,17 @@ export class TopDownScene extends Phaser.Scene {
 		// First generate the map
 		let sandboxMap = this.make.tilemap({ key: this.mapKey, tileWidth: 64, tileHeight: 64 });
 
-		const tileset = sandboxMap.addTilesetImage(SPRITES.malkhutTilesheet.key, SPRITES.malkhutTilesheet.key);
+		const malkuthTileset = sandboxMap.addTilesetImage(SPRITES.malkhutTilesheet.key, SPRITES.malkhutTilesheet.key);
+		const doorTileset = sandboxMap.addTilesetImage(SPRITES.doorTilesheet.key, SPRITES.doorTilesheet.key);
 		// TODO: Separate tilesheet for panels and doors
 
-		const floorLayer = sandboxMap.createStaticLayer('FloorLayer', tileset, 0, 0);
-		const wallLayer = sandboxMap.createDynamicLayer('WallLayer', tileset, 0, 0);
-		const doorLayer = sandboxMap.createDynamicLayer('DoorLayer', tileset, 0, 0);
+		const floorLayer = sandboxMap.createStaticLayer('FloorLayer', malkuthTileset, 0, 0);
+		const wallLayer = sandboxMap.createDynamicLayer('WallLayer', malkuthTileset, 0, 0);
+		const doorLayer = sandboxMap.createDynamicLayer('DoorLayer', doorTileset, 0, 0);
 		
-		this.doorsController.generateExitsFrom(doorLayer, this.room, tileset);
+		this.doorsController.presentProperExits(doorLayer, this.room, doorTileset);
 
-		// We can grab all of the door tiles with this simple call:
-		// doorLayer.getTilesWithin(0, 0, 100, 100).filter((tile) => tile.properties.isDoor);
-
-		// Then we can group them by their key property:
-
-		// So here's the deal: we want to be able to combine data from two different places at once:
-		// 1. Position, color, facingDirection, and dimensions should be determined solely by Tiled
-		// 2. isOpen and nextRoomKey should be determined by the data in the JSON file
-
-		// We will also want a way for the player to go into the door. I'm leaning towards just drawing
-		// a zone in front of an open door, and the player can walk into that zone to go inside. I think
-		// that would be the simplest method, but we may want to do something different, depending on how
-		// zones impact player experience.
-
-		// Doors need to be attached to exits in the Room object
-		// We need to attach position to an exit, and include it in the exit object here so that
-		// when we transition to the PuzzleScene we can 
-
-		wallLayer.setCollisionByProperty({ collides: true });
+		wallLayer.setCollisionByExclusion(-1);
 
 		// Draw the layout
 		let roomDimensions = {
@@ -155,25 +138,6 @@ export class TopDownScene extends Phaser.Scene {
 
 			img = puzzleItemGroup.create(pos.x, pos.y, spriteKey);
 			item.setImg(img);
-
-			// If we have an open door, we need an overlap, not a collision
-			// if (spriteKey === SPRITES.roomExit.key && item.isOpen) {
-			// 	switch(item.direction) {
-			// 	case Direction.SOUTH:
-			// 		pos.y += pad / 2;
-			// 		break;
-			// 	case Direction.NORTH:
-			// 		pos.y -= pad / 2;
-			// 		break;
-			// 	}
-
-			// 	img = this.physics.add.image(pos.x, pos.y, SPRITES.roomExit.key);
-			// 	item.setImg(img);
-
-			// 	this.physics.add.overlap(this.room.player.img, img, (evt) => {
-			// 		throw 'Implement moving rooms!';
-			// 	});
-			// } else {}
 
 			// If we have a panel, we need to set things up to be able to click on it and shit
 			if (spriteKey === SPRITES.roomPanel.key) {

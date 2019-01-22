@@ -26,7 +26,7 @@
 				{
 					"class": "Exit",
 					"key": "exit1",
-					"position": { "x": 576, "y": 64 },
+					"position": { "x": 512, "y": 64 },
 					"dimensions": { "width": 128, "height": 128 },
 					"color": "l-red",
 					"direction": "SOUTH"

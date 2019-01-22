@@ -15,57 +15,63 @@ export class DoorsController {
 	}
 
 	/** Returns array of exits given the door layer provided. */
-	generateExitsFrom(doorLayer, room, tilesheet) {
-		// TODO: We want a whole bunch of exit objects from which we can attach other pieces of information.
-		
-		// Okay, so the plan is this:
-		// 1) We will take a position from the dungeon data info and use it to expect where a door should be
-		// 2) We will use that position to extract all of the tiles associated with the exit (there's a function that does this)
-		// 3) We will then take those tiles and update them according to the Exit object found in room
-
-		// The only other thing we may need to worry about is transitioning from one room to another. I think this
-		// class should handle that logic, since it handles all of the exit information. It should have the ability
-		// to draw zones though, which really falls inside the pervue of TopDownScene. That's something we should explore.
-
+	presentProperExits(doorLayer, room, tileset) {
 		room.getExits().forEach((exit) => {
 			let worldPos = exit.getPosition();
 			let worldDim = exit.getDimensions();
-			let doorTiles = doorLayer.getTilesWithinWorldXY(worldPos.x, worldPos.y, worldDim.width, worldDim.height)
-				.filter((tile) => tile.properties.isDoor);
+			let doorTiles = doorLayer.getTilesWithinWorldXY(worldPos.x, worldPos.y, 
+				worldDim.width, worldDim.height);
 
-			if (doorTiles.length !== 4) {
+			if (!this._validDoorTiles(doorTiles, exit)) {
 				throw 'Incorrect number of door tiles for exit!';
 			}
 
-			// At this point, we have the proper tiles associated with the data we need. We will now make the tiles
-			// match the room's data. So let's handle that:
-			// NOTE: We're going to find the index of the top left tile, and then use that information to set the other
-			// NOTE: tiles. This will change when we have a different tilesheet.
-
-			let topLeftTile = 0;
-
-			// TODO: Determine if it's open or not
-			if (exit.isOpen) {
-
-			} else {
-
-			}
-
-			// TODO: Get the proper direction
-			switch(exit.direction) {
-			case Direction.EAST:
-				break;
-			case Direction.SOUTH:
-				break;
-			case Direction.WEST:
-				break;
-			case Direction.NORTH:
-				break;
-			}
-
-			// TODO: Get the proper color
+			// Now that we have the exit and door tiles as needed, we can go ahead and update the tiles accordingly
+			doorTiles.forEach((tile) => {
+				let newTileIndex = this._tileIndexMatching(exit, tile.properties.quadrant, tileset);
+				debugger;
+				doorLayer.putTileAt(newTileIndex, tile.x, tile.y);
+			});
 		});
 
 		return [];
+	}
+
+	/*-- PRIVATE METHODS */
+
+	/** Helper method. Ensures that the door tiles collected match the exit associated. */
+	_validDoorTiles(tiles, exit) {
+		switch(exit.direction) {
+		case Direction.NORTH:
+		case Direction.SOUTH:
+			return tiles.length === 4;
+		case Direction.EAST:
+		case Direction.WEST:
+			return tiles.length === 2;
+		}
+	}
+
+	/** Helper method. Returns the proper tile in the tilesheet given the exit, what quadrant, and the tilesheet. */
+	_tileIndexMatching(exit, quadrant, tileset) {
+		let props = { quadrant: quadrant };
+		props.direction = Direction.stringFromDirection(exit.direction);
+		props.color = exit.color.toString();
+		props.isOpen = exit.isOpen;
+		return this._getTileIndexFor(props, tileset);
+	}
+
+	/** Helper method. Returns the tile in the tileset matching the properties provided. */
+	_getTileIndexFor(props, tileset) {
+		let tiles = Object.keys(tileset.tileProperties).map((idx) => { 
+			return { index: parseInt(idx), props: tileset.tileProperties[idx] }
+		})
+		.filter(obj => obj.props.quadrant === props.quadrant)
+		.filter(obj => obj.props.color === props.color)
+		.filter(obj => obj.props.isOpen === props.isOpen)
+		.filter(obj => obj.props.direction === props.direction);
+
+		if (tiles.length !== 1) { throw 'No tile found for props!'; }
+
+		return tiles[0].index;
 	}
 }
