@@ -73,6 +73,7 @@
 * What other elements/barriers should we incorporate to make more interesting dungeons?
 	* Keys for doors
 	* Hitting switches/panels/buttons in different rooms
+	* Light "repeaters" that operate like targets, but project the mixture of lights together
 	* A big key for a main door
 	* Walls or other things that prevent movement
 	* Timer puzzles, with light hitting a different type of target

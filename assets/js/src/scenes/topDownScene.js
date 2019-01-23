@@ -34,11 +34,14 @@ export class TopDownScene extends Phaser.Scene {
 
 		this.mapKey = data.room.mapName;
 		this.room = data.room;
+
 		this.thoughtsController = data.thoughtsController;
 		this.thoughtsController.setScene(this);
 
 		this.mouseOverController = new MouseOverController(this);
 		this.doorsController = new DoorsController(this);
+
+		this.mapLayers = {};
 	}
 
 	preload() {
@@ -61,37 +64,17 @@ export class TopDownScene extends Phaser.Scene {
 
 	create() {
 		// First generate the map
-		let sandboxMap = this.make.tilemap({ key: this.mapKey, tileWidth: 64, tileHeight: 64 });
-
-		const malkuthTileset = sandboxMap.addTilesetImage(SPRITES.malkhutTilesheet.key, SPRITES.malkhutTilesheet.key);
-		const doorTileset = sandboxMap.addTilesetImage(SPRITES.doorTilesheet.key, SPRITES.doorTilesheet.key);
-
-		const floorLayer = sandboxMap.createStaticLayer('FloorLayer', malkuthTileset, 0, 0);
-		const wallLayer = sandboxMap.createDynamicLayer('WallLayer', malkuthTileset, 0, 0);
-		const doorLayer = sandboxMap.createDynamicLayer('DoorLayer', doorTileset, 0, 0);
+		this._generateMap();
 
 		const exitZones = this.physics.add.staticGroup();
-		this.doorsController.presentProperExits(doorLayer, this.room).forEach(zone => exitZones.add(zone));
+		this.doorsController.presentProperExits(this.mapLayers['DoorLayer'], this.room).forEach(zone => exitZones.add(zone));
 
-		wallLayer.setCollisionByExclusion(-1);
-
-		// Draw the layout
-		let roomDimensions = {
-			width: sandboxMap.widthInPixels, 
-			height: sandboxMap.heightInPixels,
-			paddingLeft: 64 * PADDING.room.left,
-			paddingRight: 64 * PADDING.room.right,
-			paddingTop: 64 * PADDING.room.top,
-			paddingBottom: 0 * PADDING.room.bottom
-		};
-
-		// TODO: Adjust this pad variable to take advantage of how everything is supposed to fit together
 		let pad = 128; // Since we are dropping everything according to some amount of padding, we need to accomodate
 
 		let puzzleItemGroup = this.physics.add.staticGroup();
 
 		// We are using the room provided to help us get everything down
-		let playerImg = this.physics.add.image(this.room.player.position.x + (pad / 2), 
+		let playerImg = this.physics.add.image(this.room.player.position.x + (pad / 2),
 			this.room.player.position.y + pad, SPRITES.roomPlayer.key);
 		playerImg.setCollideWorldBounds(true);
 		this.room.player.setImg(playerImg);
@@ -127,7 +110,7 @@ export class TopDownScene extends Phaser.Scene {
 						isHorizontal: line.isHorizontal
 					};
 
-					this.drawLaserLine(adjustedLine, laserGraphics, puzzleItemGroup);
+					this._drawLaserLine(adjustedLine, laserGraphics, puzzleItemGroup);
 				});
 			} else if (item instanceof Surface) {
 				spriteKey = item.type === Surface.REFLECTIVE ? SPRITES.roomMirror.key : undefined; // TODO: Opaque surface?
@@ -165,12 +148,15 @@ export class TopDownScene extends Phaser.Scene {
 		});
 
 		// Tie up various odds and ends with collision
-		this.physics.world.setBounds(0, 0, sandboxMap.widthInPixels, sandboxMap.heightInPixels, true, true, true, true);
+		const wallLayer = this.mapLayers['WallLayer'];
+		wallLayer.setCollisionByExclusion(-1);
+
+		this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels, true, true, true, true);
 		this.physics.add.collider(playerImg, puzzleItemGroup);
 		this.physics.add.collider(playerImg, wallLayer);
 
 		// And now the camera
-		this.cameras.main.setBounds(0, 0, sandboxMap.widthInPixels, sandboxMap.heightInPixels);
+		this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 		this.cameras.main.startFollow(playerImg);
 
 	 	this.keyboard = this.input.keyboard.addKeys('W, A, S, D');
@@ -182,11 +168,26 @@ export class TopDownScene extends Phaser.Scene {
 	}
 
 	update(time, delta) {
-		this.handleInputs();
+		this._handleInputs();
+	}
+
+	/*--PRIVATE */
+
+	_generateMap() {
+		const map = this.make.tilemap({ key: this.mapKey, tileWidth: 64, tileHeight: 64 });
+
+		const malkuthTileset = map.addTilesetImage(SPRITES.malkhutTilesheet.key, SPRITES.malkhutTilesheet.key);
+		const doorTileset = map.addTilesetImage(SPRITES.doorTilesheet.key, SPRITES.doorTilesheet.key);
+
+		this.mapLayers['FloorLayer'] = map.createStaticLayer('FloorLayer', malkuthTileset, 0, 0);
+		this.mapLayers['WallLayer'] = map.createDynamicLayer('WallLayer', malkuthTileset, 0, 0);
+		this.mapLayers['DoorLayer'] = map.createDynamicLayer('DoorLayer', doorTileset, 0, 0);
+
+		this.map = map;
 	}
 
 	/** Handles inputs on the player. */
-	handleInputs() {
+	_handleInputs() {
 		let playerImg = this.room.player.img;
 
 		if (playerImg.active) {
@@ -227,19 +228,18 @@ export class TopDownScene extends Phaser.Scene {
 		}
 	}
 
-	/*--PRIVATE */
 	_moveRooms(nextRoomKey) {
 		throw 'TODO: Move rooms';
 	}
 
 	/** Helper method. Returns the midpoint of the line provided. */
-	midpointOfLine(line) {
+	_midpointOfLine(line) {
 		return { x: (line.x2 + line.x1) / 2, y: (line.y2 + line.y1) / 2 }
 	}
 
 	/** Helper method. Draws a laser line using the graphics provided.*/
-	drawLaserLine(line, graphics, group) {
-		let midpoint = this.midpointOfLine(line);
+	_drawLaserLine(line, graphics, group) {
+		let midpoint = this._midpointOfLine(line);
 		let zone;
 
 		if (line.isHorizontal) {
