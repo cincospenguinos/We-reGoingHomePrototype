@@ -50,8 +50,7 @@ export class PuzzleScene extends Phaser.Scene {
 	}
 
 	create() {
-
-		// TODO: What if we had nicer backgrounds to show on each thing?
+		// TODO: Better backgrounds
 		this.add.graphics({
 				add: true,
 				fillStyle: {
@@ -68,28 +67,20 @@ export class PuzzleScene extends Phaser.Scene {
 		const itemGroup = this.physics.add.staticGroup();
 		const itemFactory = new ItemFactory(this, this.translation);
 		this.puzzle.getAllItems().forEach((item) => {
-			let group = (item.movable || item.rotatable) ? itemGroup : null;
+			let group = (item.interactable()) ? itemGroup : null;
 			let img = itemFactory.instantiateItem(item, group, false);
 
 			if (item instanceof Laser) {
-				this.laserGraphics[item.key] = this.add.graphics({
-					add: true,
-					lineStyle: {
-						width: 2,
-						color: item.color.val,
-						alpha: 1
-					}
-				});
+				this._addLaserGraphicsFor(item);
 			}
 
 			if (item.movable || item.rotatable) {
-				this.setupInteractivity(item, img);
+				this._setupInteractivity(item, img);
 			}
 
 			item.setProperFrame();
 		});
 
-		// And naturally, the player
 		let playerPosition = { x: this.puzzle.player.getPosition().x + this.translation.x,
 			y: this.puzzle.player.getPosition().y + this.translation.y };
 		let playerImage = this.add.image(playerPosition.x, playerPosition.y, SPRITES.puzzlePlayer.key);
@@ -109,26 +100,11 @@ export class PuzzleScene extends Phaser.Scene {
 	update() {
 		this.handleInput();
 		this.puzzle.solve(this.translation);
-
-		Object.keys(this.puzzle.lasers).forEach((laserKey) => {
-			let laserGraphics = this.laserGraphics[laserKey];
-			let points = this.puzzle.lasers[laserKey].path;
-
-			laserGraphics.clear();
-			for (let i = 0; i < points.length - 1; i++) {
-				laserGraphics.strokeLineShape({
-					x1: points[i].x,
-					y1: points[i].y,
-					x2: points[i + 1].x,
-					y2: points[i + 1].y
-				});
-			}
-		});
+		this.puzzle.getLasers().forEach(laser => this._drawLaserPath(this.laserGraphics[laser.key], laser.path));
 	}
 
 	/** Checks for rotation buttons and handles the rotation on the game object in question. */
 	handleInput() {
-		// Manage rotation
 		if (this.pointerOverObj && this.pointerOverObj.rotatable) {
 			if (Phaser.Input.Keyboard.JustDown(this.keyA)) {
 				this.pointerOverObj.rotate(-90);
@@ -147,12 +123,14 @@ export class PuzzleScene extends Phaser.Scene {
 						puzzle: this.puzzle, 
 						thoughtsController: this.thoughtsController 
 					});
+			} else {
+				// TODO: Inform the player why the puzzle currently isn't valid
 			}
 		}
 	}
 
 	/** Helper method. Handles interactivity for the model object and game object.*/
-	setupInteractivity(modelObj, gameObj) {
+	_setupInteractivity(modelObj, gameObj) {
 		gameObj.setInteractive();
 
 		this.mouseOverController.addMouseOver(modelObj);
@@ -184,10 +162,34 @@ export class PuzzleScene extends Phaser.Scene {
 		return { x: (canvasDim.width - puzzleDim.width) / 2, y: (canvasDim.height - puzzleDim.height) / 2 };
 	}
 
+	/** Helper method. Removes translation from all puzzle items. */
 	removeTranslationFromPuzzleItems() {
 		this.puzzle.getAllItems().concat([this.puzzle.player]).forEach((item) => {
 			let newPos = { x: item.getPosition().x - this.translation.x, y: item.getPosition().y - this.translation.y };
 			item.setPosition(newPos);
+		});
+	}
+
+	_drawLaserPath(laserGraphics, points) {
+		laserGraphics.clear();
+		for (let i = 0; i < points.length - 1; i++) {
+			laserGraphics.strokeLineShape({
+				x1: points[i].x,
+				y1: points[i].y,
+				x2: points[i + 1].x,
+				y2: points[i + 1].y
+			});
+		}
+	}
+
+	_addLaserGraphicsFor(laser) {
+		this.laserGraphics[laser.key] = this.add.graphics({
+			add: true,
+			lineStyle: {
+				width: 2,
+				color: laser.color.val,
+				alpha: 1
+			}
 		});
 	}
 }

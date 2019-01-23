@@ -104,6 +104,8 @@ export class PuzzleItem {
 
 	setProperFrame() {} // Unused, and not required
 
+	interactable() { return this.movable || this.rotatable; }
+
 	/** Sets the image to the image provided. */
 	setImg(img) {
 		this.img = img;
