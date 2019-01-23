@@ -1,17 +1,17 @@
 {
 	"key": "dungeon0",
 	"rooms": {
-		"room0": {
-			"key": "room0",
+		"debugRoom": {
+			"key": "debugRoom",
 			"puzzleKey": "puzzle0",
 			"dimensions": { "width": 1088, "height": 1088 },
-			"mapName": "room0",
+			"mapName": "debugRoom",
 			"puzzleItems": [
 				{
 					"class": "Laser",
 					"key": "laser1",
 					"color": "l-red",
-					"position": { "x": 150, "y": 150 },
+					"position": { "x": 128, "y": 500 },
 					"dimensions": { "width": 256, "height": 256 },
 					"direction": "EAST",
 					"movable": true,
@@ -20,16 +20,16 @@
 				{
 					"class": "Target",
 					"key": "target1",
-					"position": { "x": 450, "y": 150 },
+					"position": { "x": 800, "y": 800 },
 					"dimensions": { "width": 256, "height": 256 }
 				},
 				{
 					"class": "Exit",
 					"key": "exit1",
-					"position": { "x": 544, "y": 0 },
-					"dimensions": { "width": 256, "height": 256 },
+					"position": { "x": 512, "y": 64 },
+					"dimensions": { "width": 128, "height": 128 },
 					"color": "l-red",
-					"direction": "NORTH"
+					"direction": "SOUTH"
 				},
 				{
 					"class": "Panel",

@@ -17,6 +17,27 @@ export class LaserColor {
 		return false;
 	}
 
+	toString() {
+		switch(this.key) {
+		case 'l-red':
+			return 'RED';
+		case 'l-green':
+			return 'GREEN';
+		case 'l-blue':
+			return 'BLUE';
+		case 'l-orange':
+			return 'ORANGE';
+		case 'l-purple':
+			return 'PURPLE';
+		case 'l-yellow':
+			return 'YELLOW';
+		case 'l-white':
+			return 'WHITE';
+		default:
+			throw 'Invalid color key "' + key + '"!';
+		}
+	}
+
 	/** Returns color given the key of a color. This helps us ensure that there is one and only one laser color per color. */
 	static colorFromKey(key) {
 		switch(key) {

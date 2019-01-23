@@ -164,7 +164,7 @@ export class DungeonHelper {
 					color: item.color,
 					direction: item.direction,
 					key: item.key,
-					isOpen: item.isOpen
+					isOpen: item.isOpen,
 				}));
 			} else if (item instanceof Surface) {
 				puzzle.addSurface(new Surface({
@@ -202,12 +202,12 @@ export class DungeonHelper {
 
 	/** Helper method. Converts position provided in puzzle dimensions to dimension in room. */
 	static puzzlePosToRoomPos(puzzlePos) {
-		return { x: puzzlePos.x * PUZZLE_ROOM_SCALE, y: puzzlePos.y * PUZZLE_ROOM_SCALE };
+		return puzzlePos ? { x: puzzlePos.x * PUZZLE_ROOM_SCALE, y: puzzlePos.y * PUZZLE_ROOM_SCALE } : null;
 	}
 
 	/** Helper method. Converts the puzzle dimensions to the room dimensions. */
 	static puzzleDimToRoomDim(puzzleDim) {
-		return { width: puzzleDim.width * PUZZLE_ROOM_SCALE, height: puzzleDim.height * PUZZLE_ROOM_SCALE };
+		return puzzleDim ? { width: puzzleDim.width * PUZZLE_ROOM_SCALE, height: puzzleDim.height * PUZZLE_ROOM_SCALE } : null;
 	}
 
 	/** Helper method. Converts position provided in room dimensions to puzzle dimensions. */
@@ -216,7 +216,7 @@ export class DungeonHelper {
 	}
 
 	/** Helper method. Converts room dimensions to puzzle dimensions. */
-	static roomDimToPuzzleDim(roomDim) { // TODO: Does it handle the padding on the edges?
+	static roomDimToPuzzleDim(roomDim) {
 		return { width: roomDim.width / PUZZLE_ROOM_SCALE, height: roomDim.height / PUZZLE_ROOM_SCALE };
 	}
 

@@ -22,7 +22,8 @@ export class Exit extends PuzzleItem {
 		this.isOpen = opts.isOpen || false;
 
 		if (!this.key || !this.color || !(this.color instanceof LaserColor) || !Direction.validDirection(this.direction)) {
-			throw 'A key, laser color, and valid direction are necessary to instantiate an Exit!';
+			// throw 'A key, laser color, and valid direction are necessary to instantiate an Exit!';
+			console.warn('A key, laser color, and valid direction are necessary to instantiate an Exit!');
 		}
 	}
 
@@ -67,15 +68,15 @@ export class Exit extends PuzzleItem {
 
 			switch(this.direction) {
 			case Direction.EAST:
-				frame += 1;
-				break;
-			case Direction.SOUTH:
-				frame += 3;
-				break;
-			case Direction.WEST:
 				frame += 2;
 				break;
+			case Direction.SOUTH:
+				break;
+			case Direction.WEST:
+				frame += 1;
+				break;
 			case Direction.NORTH:
+				frame += 3;
 				break;
 			default:
 				throw 'No direction found for exit!';
