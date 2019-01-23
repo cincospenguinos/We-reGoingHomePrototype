@@ -34,7 +34,6 @@ export const SPRITES = {
 	roomTarget: { key: 'roomTarget', location: spriteDir + 'room/target.png', frameWidth: 256, frameHeight: 256 },
 	roomMirror: { key: 'roomMirror', location: spriteDir + 'room/mirror.png', frameWidth: 128, frameHeight: 128 },
 	roomPanel: { key: 'roomPanel', location: spriteDir + 'room/panel.png', frameWidth: 64, frameHeight: 64 },
-	roomExit: { key: 'roomExit', location: spriteDir + 'room/exit.png', frameWidth: 128, frameHeight: 128 },
 	roomPlayer: { key: 'roomPlayer', location: spriteDir + 'room/player.png', frameWidth: 64, frameHeight: 64 },
 
 	mainCharacter: { key: 'mainCharacter', location: spriteDir + 'mainCharacter.png' },

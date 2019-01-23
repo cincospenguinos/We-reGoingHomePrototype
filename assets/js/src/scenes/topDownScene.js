@@ -3,6 +3,7 @@
  *
  * Scene to manage a top-down scrolling view. Mostly for experimentation.
  */
+import { RoomItemFactory } from '../helpers/roomItemFactory.js';
 import { KEYS, SPRITES, COLORS, PUZZLE_ROOM_SCALE, PADDING } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
 import { DungeonHelper } from '../helpers/dungeonHelper.js';
@@ -42,6 +43,7 @@ export class TopDownScene extends Phaser.Scene {
 		this.doorsController = new DoorsController(this);
 
 		this.mapLayers = {};
+		this.padding = { x: 64, y: 128 };
 	}
 
 	preload() {
@@ -52,7 +54,6 @@ export class TopDownScene extends Phaser.Scene {
 		
 		SceneHelper.loadImage(this, SPRITES.mainCharacter);
 		
-		SceneHelper.loadSpritesheet(this, SPRITES.roomExit);
 		SceneHelper.loadSpritesheet(this, SPRITES.roomPlayer);
 		SceneHelper.loadSpritesheet(this, SPRITES.roomPanel);
 		SceneHelper.loadSpritesheet(this, SPRITES.roomLaser);
@@ -66,75 +67,28 @@ export class TopDownScene extends Phaser.Scene {
 		// First generate the map
 		this._generateMap();
 
-		const exitZones = this.physics.add.staticGroup();
-		this.doorsController.presentProperExits(this.mapLayers['DoorLayer'], this.room).forEach(zone => exitZones.add(zone));
-
-		let pad = 128; // Since we are dropping everything according to some amount of padding, we need to accomodate
-
+		const itemFactory = new RoomItemFactory(this.padding);
 		let puzzleItemGroup = this.physics.add.staticGroup();
 
-		// We are using the room provided to help us get everything down
-		let playerImg = this.physics.add.image(this.room.player.position.x + (pad / 2),
-			this.room.player.position.y + pad, SPRITES.roomPlayer.key);
-		playerImg.setCollideWorldBounds(true);
-		this.room.player.setImg(playerImg);
-
-		this.physics.add.overlap(playerImg, exitZones, (playerImg, exitZone) => {
-			this._moveRooms(exitZone.data.list.nextRoom);
-		});
-
 		this.room.puzzleItems.forEach((item) => {
-			if (item instanceof Exit) return;
-
-			let pos = { x: item.position.x + pad / 2, y: item.position.y + pad };
-			let spriteKey, img;
+			let img = itemFactory.instantiateItem(item, puzzleItemGroup);
+			if (!img) return;
 
 			if (item instanceof Laser) {
-				spriteKey = SPRITES.roomLaser.key;
-
-				let laserGraphics = this.add.graphics({
-					add: true,
-					lineStyle: {
-						width: 8,
-						color: item.color.val,
-						alpha: 1
-					}
-				});
-				
-				item.getPathAsLines().forEach((line) => {
-					let adjustedLine = {
-						x1: line.x1 + pad / 2,
-						y1: line.y1 + pad,
-						x2: line.x2 + pad / 2,
-						y2: line.y2 + pad,
-						isHorizontal: line.isHorizontal
-					};
-
-					this._drawLaserLine(adjustedLine, laserGraphics, puzzleItemGroup);
-				});
-			} else if (item instanceof Surface) {
-				spriteKey = item.type === Surface.REFLECTIVE ? SPRITES.roomMirror.key : undefined; // TODO: Opaque surface?
-			} else if (item instanceof Target) {
-				spriteKey = SPRITES.roomTarget.key;
+				this._drawLaserPath(item, puzzleItemGroup);
 			} else if (item instanceof Panel) {
-				spriteKey = SPRITES.roomPanel.key;
 				this.mouseOverController.addMouseOver(item);
-			} else {
-				throw 'No class for item "' + item.key + '"';
-			}
 
-			img = puzzleItemGroup.create(pos.x, pos.y, spriteKey);
-			item.setImg(img);
-
-			// If we have a panel, we need to set things up to be able to click on it and shit
-			if (spriteKey === SPRITES.roomPanel.key) {
 				img.setInteractive();
 				img.on('pointerover', () => { this.mouseOverController.mouseOver(item.key) });
 				img.on('pointerout', () => { this.mouseOverController.mouseOut(item.key) });
 				img.on('pointerdown', (evt) => {
 					// Since we had the player move over according to padding, we will need to remove that
 					// padding before we jump right into the puzzle scene
-					let newPlayerPos = { x: this.room.player.getPosition().x - (pad / 2), y: this.room.player.getPosition().y - pad };
+					let newPlayerPos = { 
+						x: this.room.player.getPosition().x - (this.padding.x), 
+						y: this.room.player.getPosition().y - this.padding.y 
+					};
 					this.room.player.setPosition(newPlayerPos);
 					SceneHelper.transitionToPuzzleScene(this, { 
 						dungeon: this.dungeon, 
@@ -147,7 +101,19 @@ export class TopDownScene extends Phaser.Scene {
 			item.setProperFrame(true);
 		});
 
-		// Tie up various odds and ends with collision
+		// Tie up various odds and ends with collision and overlap
+		const exitZones = this.physics.add.staticGroup();
+		this.doorsController.presentProperExits(this.mapLayers['DoorLayer'], this.room).forEach(zone => exitZones.add(zone));
+
+		let playerImg = this.physics.add.image(this.room.player.position.x + this.padding.x,
+			this.room.player.position.y + this.padding.y, SPRITES.roomPlayer.key);
+		playerImg.setCollideWorldBounds(true);
+		this.room.player.setImg(playerImg);
+
+		this.physics.add.overlap(playerImg, exitZones, (playerImg, exitZone) => {
+			this._moveRooms(exitZone.data.list.nextRoom);
+		});
+
 		const wallLayer = this.mapLayers['WallLayer'];
 		wallLayer.setCollisionByExclusion(-1);
 
@@ -235,6 +201,30 @@ export class TopDownScene extends Phaser.Scene {
 	/** Helper method. Returns the midpoint of the line provided. */
 	_midpointOfLine(line) {
 		return { x: (line.x2 + line.x1) / 2, y: (line.y2 + line.y1) / 2 }
+	}
+
+	/** Helper method. Draws the path of the laser, attaching each piece to the group provided. */
+	_drawLaserPath(laser, group) {
+		let laserGraphics = this.add.graphics({
+			add: true,
+			lineStyle: {
+				width: 8,
+				color: laser.color.val,
+				alpha: 1
+			}
+		});
+		
+		laser.getPathAsLines().forEach((line) => {
+			let adjustedLine = {
+				x1: line.x1 + this.padding.x,
+				y1: line.y1 + this.padding.y,
+				x2: line.x2 + this.padding.x,
+				y2: line.y2 + this.padding.y,
+				isHorizontal: line.isHorizontal
+			};
+
+			this._drawLaserLine(adjustedLine, laserGraphics, group);
+		});
 	}
 
 	/** Helper method. Draws a laser line using the graphics provided.*/
