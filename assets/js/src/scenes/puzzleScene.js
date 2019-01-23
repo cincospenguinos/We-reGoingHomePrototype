@@ -5,7 +5,17 @@
  */
 import { KEYS, SPRITES } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
+
 import { Surface } from '../model/surface.js';
+import { Laser } from '../model/laser.js';
+import { Target } from '../model/target.js';
+import { Puzzle } from '../model/puzzle.js';
+import { PuzzleItem } from '../model/puzzleItem.js';
+import { Exit } from '../model/exit.js';
+import { Player } from '../model/player.js';
+import { Direction } from '../model/direction.js';
+import { MouseOverController } from '../controllers/mouseOverController.js';
+
 
 export class PuzzleScene extends Phaser.Scene {
 
@@ -16,113 +26,94 @@ export class PuzzleScene extends Phaser.Scene {
 	init (data) {
 		this.dungeon = data.dungeon;
 		this.puzzle = data.puzzle;
-		this.playerPosition = data.playerPosition;
+		this.thoughtsController = data.thoughtsController;
+		this.thoughtsController.setScene(this);
+
+		this.mouseOverController = new MouseOverController(this);
 
 		this.laserGraphics = {};
+
+		// Since we want to have the puzzle scene appear in the center of the screen, we need to do the math to figure out where
+		// exactly things go
+		this.translation = this.getPuzzleTranslation(this.puzzle.dimensions);
 	}
 
 	preload() {
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleLaser);
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleTarget);
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleMirror);
-		SceneHelper.loadImage(this, SPRITES.puzzlePanel);
-		SceneHelper.loadImage(this, SPRITES.puzzleExit);
+		SceneHelper.loadSpritesheet(this, SPRITES.puzzleExit);
+		SceneHelper.loadSpritesheet(this, SPRITES.puzzlePanel);
+		
 		SceneHelper.loadImage(this, SPRITES.puzzlePlayer);
 		SceneHelper.loadImage(this, SPRITES.closePanelButton);
 	}
 
 	create() {
+
+		// TODO: What if we had nicer backgrounds to show on each thing?
 		this.add.graphics({
 				add: true,
 				fillStyle: {
 					color: 0X989898,
 					alpha: 1
 				}
-			}).fillRect(0, 0, this.puzzle.dimensions.width, this.puzzle.dimensions.height);
+			}).fillRect(this.translation.x, this.translation.y, 
+				this.puzzle.dimensions.width, 
+				this.puzzle.dimensions.height);
 
-		// Since the size of the puzzles change, we need to change the size of the world to accomodate. We need to figure out
-		// the width and height of the puzzle, find the difference between the size of the canvas and and the puzzle, and
-		// then use that to determine the padding in various ways
-		this.physics.world.setBounds(0, 0, this.puzzle.dimensions.width, this.puzzle.dimensions.height);
+		// Since everything is getting centered into the scene, we need to shift everything to the center. We'll start with the physics
+		// and then we'll continue with drawing everything
+		this.physics.world.setBounds(this.translation.x, this.translation.y, 
+			this.puzzle.dimensions.width, this.puzzle.dimensions.height);
 
-		// Create the lasers
-		this.puzzle.getLasers().forEach((laser) => {
-			let laserPosition = laser.getPosition();
-			let laserImage = this.physics.add.sprite(laserPosition.x, laserPosition.y, SPRITES.puzzleLaser.key);
+		this.puzzle.getAllItems().forEach((item) => {
+			let shiftedPosition = { x: item.getPosition().x + this.translation.x, 
+				y: item.getPosition().y + this.translation.y };
 
-			if (laser.movable || laser.rotatable) {
-				this.setupInteractivity(laser, laserImage);
+			let spriteKey;
+
+			if (item instanceof Laser) {
+				spriteKey = SPRITES.puzzleLaser.key;
+
+				this.laserGraphics[item.key] = this.add.graphics({
+					add: true,
+					lineStyle: {
+						width: 2,
+						color: item.color.val,
+						alpha: 1
+					}
+				});
+			} else if (item instanceof Exit) {
+				spriteKey = SPRITES.puzzleExit.key;
+			} else if (item instanceof Surface) {
+				spriteKey = item.type === Surface.REFLECTIVE ? SPRITES.puzzleMirror.key : undefined; // TODO: Opaque surface?
+			} else if (item instanceof Target) {
+				spriteKey = SPRITES.puzzleTarget.key;
+			} else { // It's a panel
+				spriteKey = SPRITES.puzzlePanel.key;
 			}
 
-			laser.setImg(laserImage);
-		});
+			let img = this.physics.add.sprite(shiftedPosition.x, shiftedPosition.y, spriteKey);
+			item.setImg(img);
 
-		this.puzzle.getTargets().forEach((target) => {
-			let targetPosition = target.getPosition();
-			let targetImage = this.physics.add.sprite(targetPosition.x, targetPosition.y, SPRITES.puzzleTarget.key);
-
-			if (target.movable || target.rotatable) {
-				this.setupInteractivity(target, targetImage);
+			if (item.movable || item.rotatable) {
+				this.setupInteractivity(item, img);
 			}
 
-			target.setImg(targetImage);
+			item.setProperFrame();
 		});
 
-		this.puzzle.surfaces.forEach((surface) => {
-			let surfacePosition = surface.getPosition();
-			let surfaceImage = null;
+		// And naturally, the player
+		let playerPosition = { x: this.puzzle.player.getPosition().x + this.translation.x,
+			y: this.puzzle.player.getPosition().y + this.translation.y };
+		let playerImage = this.add.image(playerPosition.x, playerPosition.y, SPRITES.puzzlePlayer.key);
+		this.puzzle.player.setImg(playerImage);
 
-			if (surface.type === Surface.REFLECTIVE) {
-				surfaceImage = this.physics.add.sprite(surfacePosition.x, surfacePosition.y, SPRITES.puzzleMirror.key);
-			} else {
-				throw 'Need an opaque surface!';
-			}
-
-			if (surface.movable || surface.rotatable) {
-				this.setupInteractivity(surface, surfaceImage);
-			}
-
-			surface.setImg(surfaceImage);
-		});
-
-		this.puzzle.panels.forEach((panel) => {
-			let panelPosition = panel.getPosition();
-			let panelImage = this.add.image(panelPosition.x, panelPosition.y, SPRITES.puzzlePanel.key);
-		});
-
-		this.puzzle.getExits().forEach((exit) => {
-			let exitPosition = exit.getPosition();
-			let exitImage = this.add.image(exitPosition.x, exitPosition.y, SPRITES.puzzleExit.key);
-		});
-
-		// Since we want the laser on top of everything else, we should draw the laser on top of everything:
-		this.puzzle.getLasers().forEach((laser) => {
-			this.laserGraphics[laser.key] = this.add.graphics({
-				add: true,
-				lineStyle: {
-					width: 1,
-					color: laser.color.val,
-					alpha: 1
-				}
-			});
-		});
-
-		// If there is a player position, we need to respect that
-		let playerPosition = this.playerPosition ? this.playerPosition : this.puzzle.player.getPosition();
-		this.add.image(playerPosition.x, playerPosition.y, SPRITES.puzzlePlayer.key);
-
-		let exitButton = this.add.image(this.puzzle.dimensions.width - 8, 8, SPRITES.closePanelButton.key);
-		exitButton.setInteractive();
-		exitButton.on('pointerdown', (a, b) => {
-			if (this.puzzle.valid) {
-				this.puzzle.player.position = playerPosition;
-				this.scene.start(KEYS.scene.topDownScene, { puzzle: this.puzzle, dungeon: this.dungeon, roomKey: this.puzzle.roomKey })
-			}
-		});
-
-		// Handle other input bits
+		// // Handle other input bits
 		this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
 		this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+		this.keyEsc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
 		this.input.on('drag', (pointer, gameObject, dragX, dragY) => {
 			gameObject.x = dragX;
@@ -131,8 +122,8 @@ export class PuzzleScene extends Phaser.Scene {
 	}
 
 	update() {
-		this.handleRotation();
-		this.puzzle.solve();
+		this.handleInput();
+		this.puzzle.solve(this.translation);
 
 		Object.keys(this.puzzle.lasers).forEach((laserKey) => {
 			let laserGraphics = this.laserGraphics[laserKey];
@@ -151,7 +142,8 @@ export class PuzzleScene extends Phaser.Scene {
 	}
 
 	/** Checks for rotation buttons and handles the rotation on the game object in question. */
-	handleRotation() {
+	handleInput() {
+		// Manage rotation
 		if (this.pointerOverObj && this.pointerOverObj.rotatable) {
 			if (Phaser.Input.Keyboard.JustDown(this.keyA)) {
 				this.pointerOverObj.rotate(-90);
@@ -159,11 +151,26 @@ export class PuzzleScene extends Phaser.Scene {
 				this.pointerOverObj.rotate(90);
 			}
 		}
+
+		// Check if we're quitting
+		if (Phaser.Input.Keyboard.JustDown(this.keyEsc)) {
+			if (this.puzzle.valid) {
+				this.removeTranslationFromPuzzleItems();
+				SceneHelper.transitionToTopDownScene(this, 
+					{ 
+						dungeon: this.dungeon, 
+						puzzle: this.puzzle, 
+						thoughtsController: this.thoughtsController 
+					});
+			}
+		}
 	}
 
 	/** Helper method. Handles interactivity for the model object and game object.*/
 	setupInteractivity(modelObj, gameObj) {
 		gameObj.setInteractive();
+
+		this.mouseOverController.addMouseOver(modelObj);
 		
 		if (modelObj.movable) {
 			this.input.setDraggable(gameObj);
@@ -172,12 +179,30 @@ export class PuzzleScene extends Phaser.Scene {
 
 		gameObj.on('pointerover', (evt, objects) => {
 			this.pointerOverObj = modelObj;
-			modelObj.pointerOver();
+			this.mouseOverController.mouseOver(modelObj.key);
 		});
 
 		gameObj.on('pointerout', (evt, objects) => {
 			this.pointerOverObj = null;
-			modelObj.pointerOut();
+			this.mouseOverController.mouseOut(modelObj.key);
+		});
+	}
+
+	/** Helper method. Returns hash indicating how far over and down everything needs to move. */
+	getPuzzleTranslation(puzzleDim) {
+		let canvasDim = { width: this.sys.canvas.width, height: this.sys.canvas.height };
+
+		if (puzzleDim.width > canvasDim.width || puzzleDim.height > canvasDim.height) {
+			throw 'Puzzle size invalid for this canvas! Canvas must be larger to accomodate!';
+		}
+
+		return { x: (canvasDim.width - puzzleDim.width) / 2, y: (canvasDim.height - puzzleDim.height) / 2 };
+	}
+
+	removeTranslationFromPuzzleItems() {
+		this.puzzle.getAllItems().concat([this.puzzle.player]).forEach((item) => {
+			let newPos = { x: item.getPosition().x - this.translation.x, y: item.getPosition().y - this.translation.y };
+			item.setPosition(newPos);
 		});
 	}
 }

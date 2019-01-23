@@ -12,6 +12,8 @@ import { Target } from '../src/model/target.js';
 import { Exit } from '../src/model/exit.js';
 import { Player } from '../src/model/player.js';
 import { LaserColor } from '../src/model/laserColor.js';
+import { DungeonHelper } from '../src/helpers/dungeonHelper.js';
+import { PUZZLE_ROOM_SCALE } from '../lib/CONST.js';
 
 /*--- Direction tests */
 QUnit.test('rotatedDirectionTest', (assert) => {
@@ -175,12 +177,127 @@ QUnit.test('reflectiveSurface', (assert) => {
 	assert.notOk(surface.reflectiveDirection(Direction.NORTH), 'The mirror should not reflect in this case');
 });
 
+/*--- Laser tests */
+QUnit.test('sameColoredLasersMayCross', (assert) => {
+	let puzzle = new Puzzle({
+		dimensions: { width: 100, height: 100 },
+		key: 'somepuzzle',
+		roomKey: 'someroom',
+		mapName: 'name'
+	});
+
+	let l1 = new Laser({
+		key: 'l1',
+		position: { x: 10, y: 10 },
+		direction: Direction.EAST,
+		color: LaserColor.RED,
+		dimensions: { width: 0, height: 0 },
+	});
+	puzzle.addLaser(l1);
+
+	let l2 = new Laser({
+		key: 'l2',
+		position: { x: 75, y: 5 },
+		direction: Direction.SOUTH,
+		color: LaserColor.RED,
+		dimensions: { width: 0, height: 0 },
+	});
+	puzzle.addLaser(l2);
+
+	puzzle.solve();
+	assert.notEqual(l1.path[1], l2.path[2], 'Same colored lasers should be allowed to cross');
+});
+
+QUnit.test('differentColoredLasersMayNotCross', (assert) => {
+	let puzzle = new Puzzle({
+		dimensions: { width: 100, height: 100 },
+		key: 'somepuzzle',
+		roomKey: 'someroom',
+		mapName: 'name'
+	});
+
+	let l1 = new Laser({
+		key: 'l1',
+		position: { x: 10, y: 10 },
+		direction: Direction.EAST,
+		color: LaserColor.RED,
+		dimensions: { width: 0, height: 0 },
+	});
+	puzzle.addLaser(l1);
+
+	let l2 = new Laser({
+		key: 'l2',
+		position: { x: 75, y: 5 },
+		direction: Direction.SOUTH,
+		color: LaserColor.GREEN,
+		dimensions: { width: 0, height: 0 },
+	});
+	puzzle.addLaser(l2);
+
+	puzzle.solve();
+	assert.equal(l1.path[1], l2.path[1], 'Different colored lasers may not cross');
+});
+
+/*--- LaserColor tests */
+QUnit.test('laserColorBlends', (assert) => {
+	assert.equal(LaserColor.blend([LaserColor.RED, LaserColor.GREEN]), LaserColor.ORANGE, 'RED + GREEN = ORANGE');
+	assert.equal(LaserColor.blend([LaserColor.RED, LaserColor.BLUE]), LaserColor.PURPLE, 'RED + BLUE = PURPLE');
+	assert.equal(LaserColor.blend([LaserColor.GREEN, LaserColor.BLUE]), LaserColor.YELLOW, 'GREEN + BLUE = YELLOW');
+	assert.equal(LaserColor.blend([LaserColor.RED, LaserColor.RED]), LaserColor.RED, 'Blending the same color returns the same color');
+	assert.equal(LaserColor.blend([LaserColor.RED, LaserColor.GREEN, LaserColor.BLUE]), LaserColor.WHITE, 'Blending all the colors yields white');
+	assert.equal(LaserColor.blend([LaserColor.RED, LaserColor.GREEN, LaserColor.RED]), LaserColor.ORANGE, 'Multiples of a color make no difference.')
+});
+
+/*--- Target tests */
+QUnit.test('targetBlendByLasers', (assert) => {
+	let puzzle = new Puzzle({
+		dimensions: { width: 200, height: 200 },
+		key: 'somepuzzle',
+		roomKey: 'someroom',
+		mapName: 'name'
+	});
+
+	puzzle.addLaser(new Laser({
+		key: 'laser',
+		color: LaserColor.RED,
+		direction: Direction.EAST,
+		position: { x: 10, y: 10 },
+		dimensions: { width: 0, height: 0 },
+		laserInteractable: true
+	}));
+
+	puzzle.addLaser(new Laser({
+		key: 'otherLaser',
+		color: LaserColor.GREEN,
+		direction: Direction.WEST,
+		position: { x: 150, y: 10 },
+		dimensions: { width: 0, height: 0 },
+		laserInteractable: true
+	}));
+
+	puzzle.addTarget(new Target({
+		key: 'target',
+		position: { x: 50, y: 10 },
+		dimensions: { width: 20, height: 20 },
+		laserInteractable: true
+	}));
+
+	puzzle.solve();
+
+	let target = puzzle.targets['target'];
+	assert.ok(target.isLit(), 'Target should be lit');
+	assert.ok(target.isStruckBy(LaserColor.RED), 'Target should be hit by red laser');
+	assert.ok(target.isStruckBy(LaserColor.GREEN), 'Target should be hit by blue laser');
+	assert.equal(target.color, LaserColor.ORANGE, 'Target should be lit orange.');
+});
+
 /*--- Puzzle tests */
 QUnit.test('solvedPuzzle', (assert) => {
 	let puzzle = new Puzzle({
 		dimensions: { width: 200, height: 200 },
 		key: 'somepuzzle',
-		roomKey: 'someroom'
+		roomKey: 'someroom',
+		mapName: 'name'
 	});
 
 	puzzle.addLaser(new Laser({
@@ -224,11 +341,63 @@ QUnit.test('solvedPuzzle', (assert) => {
 	assert.ok(puzzle.exits['exit'].isOpen, 'Exit should be open');
 });
 
+QUnit.test('solvedPuzzleWithBlendedColor', (assert) => {
+	let puzzle = new Puzzle({
+		dimensions: { width: 200, height: 200 },
+		key: 'somepuzzle',
+		roomKey: 'someroom',
+		mapName: 'name'
+	});
+
+	puzzle.addLaser(new Laser({
+		key: 'laser',
+		color: LaserColor.RED,
+		direction: Direction.EAST,
+		position: { x: 10, y: 10 },
+		dimensions: { width: 0, height: 0 },
+		laserInteractable: true
+	}));
+
+	puzzle.addLaser(new Laser({
+		key: 'otherLaser',
+		color: LaserColor.GREEN,
+		direction: Direction.WEST,
+		position: { x: 150, y: 10 },
+		dimensions: { width: 0, height: 0 },
+		laserInteractable: true
+	}));
+
+	puzzle.addTarget(new Target({
+		key: 'target',
+		position: { x: 50, y: 10 },
+		dimensions: { width: 20, height: 20 },
+		laserInteractable: true
+	}));
+
+	puzzle.addExit(new Exit({
+		key: 'exit',
+		position: { x: 200, y: 200 },
+		dimensions: { width: 0, height: 0 },
+		direction: Direction.EAST,
+		color: LaserColor.ORANGE
+	}))
+
+	puzzle.solve();
+
+	let target = puzzle.targets['target'];
+	assert.ok(target.isLit(), 'Target should be lit');
+	assert.ok(target.isStruckBy(LaserColor.RED), 'Target should be hit by red laser');
+	assert.ok(target.isStruckBy(LaserColor.GREEN), 'Target should be hit by blue laser');
+	assert.equal(target.color, LaserColor.ORANGE, 'Target should be lit orange.');
+	assert.ok(puzzle.exits['exit'].isOpen, 'Exit should be open.');
+});
+
 QUnit.test('notSolvedButThenSolved', (assert) => {
 	let puzzle = new Puzzle({
 		dimensions: { width: 200, height: 200 },
 		key: 'somepuzzle',
-		roomKey: 'someroom'
+		roomKey: 'someroom',
+		mapName: 'name'
 	});
 
 	puzzle.addLaser(new Laser({
@@ -284,7 +453,8 @@ QUnit.test('weirdLaserBug', (assert) => {
 	let puzzle = new Puzzle({
 		dimensions: { width: 200, height: 200 },
 		key: 'somepuzzle',
-		roomKey: 'someroom'
+		roomKey: 'someroom',
+		mapName: 'name'
 	});
 
 	puzzle.addLaser(new Laser({
@@ -320,7 +490,8 @@ QUnit.test('laserCannotHitPlayer', (assert) => {
 	let puzzle = new Puzzle({
 		dimensions: { width: 200, height: 200 },
 		key: 'somepuzzle',
-		roomKey: 'someroom'
+		roomKey: 'someroom',
+		mapName: 'name'
 	});
 
 	puzzle.addLaser(new Laser({
@@ -345,4 +516,71 @@ QUnit.test('laserCannotHitPlayer', (assert) => {
 	puzzle.solve();
 
 	assert.ok(puzzle.valid);
+});
+
+/*--- Helper tests */
+QUnit.test('converterMethods', (assert) => {
+	let puzzle = new Puzzle({
+		dimensions: { width: 200, height: 200 },
+		key: 'somepuzzle',
+		roomKey: 'someroom',
+		mapName: 'name'
+	});
+
+	let laser = new Laser({
+		key: 'laser',
+		color: LaserColor.RED,
+		direction: Direction.EAST,
+		position: { x: 10, y: 10 },
+		dimensions: { width: 0, height: 0 },
+		laserInteractable: true
+	});
+	puzzle.addLaser(laser);
+
+	let surface = new Surface({
+		type: Surface.REFLECTIVE,
+		direction: Direction.WEST,
+		position: { x: 100, y: 10 },
+		dimensions: { width: 20, height: 20 },
+		laserInteractable: true
+	});
+	puzzle.addSurface(surface);
+
+	let target = new Target({
+		key: 'target',
+		position: { x: 90, y: 100 },
+		dimensions: { width: 20, height: 20 },
+		laserInteractable: true
+	});
+	puzzle.addTarget(target);
+
+	let player = new Player({
+		position: { x: 50, y: 50 },
+		dimensions: { width: 0, height: 0 }
+	});
+	puzzle.setPlayer(player);
+
+	let room = DungeonHelper.puzzleToRoom(puzzle);
+
+	assert.ok(room.puzzleItems.length === 3, 'Room has correct puzzle items.');
+	room.puzzleItems.forEach((item) => {
+		if (item instanceof Laser) {
+			assert.deepEqual({ x: laser.position.x * PUZZLE_ROOM_SCALE, y: laser.position.y * PUZZLE_ROOM_SCALE }, 
+				item.position, 'Laser is in correct position.');
+		} else if (item instanceof Target) {
+			assert.deepEqual({ x: target.position.x * PUZZLE_ROOM_SCALE, y: target.position.y * PUZZLE_ROOM_SCALE }, 
+				item.position, 'Target is in correct position.');
+		} else if (item instanceof Surface) {
+			assert.deepEqual({ x: surface.position.x * PUZZLE_ROOM_SCALE, y: surface.position.y * PUZZLE_ROOM_SCALE }, 
+				item.position, 'Mirror is in correct position.');
+		}
+	});
+	assert.deepEqual(room.player.position, { x: 200, y: 200 }, 'Room should have a player');
+
+	let newPuzzle = DungeonHelper.roomToPuzzle(room);
+	newPuzzle.getLasers().forEach((laser) => {
+		assert.ok(puzzle.lasers[laser.key], 'New puzzle has laser.');
+		assert.deepEqual(puzzle.lasers[laser.key].position, laser.position, 'Positions are correct');
+		assert.deepEqual(puzzle.lasers[laser.key].dimensions, laser.dimensions, 'Dimensions are correct.');
+	});
 });

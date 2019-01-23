@@ -15,6 +15,8 @@ import { Room } from '../model/room.js';
 import { KEYS, COLORS, PUZZLE_ROOM_SCALE } from '../../lib/CONST.js';
 import { Direction } from '../model/direction.js';
 import { LaserColor } from '../model/laserColor.js';
+import { Thought } from '../model/thought.js';
+import { Panel } from '../model/panel.js';
 
 export class DungeonHelper {
 
@@ -36,157 +38,209 @@ export class DungeonHelper {
 
 		let dungeon = new Dungeon();
 		Object.keys(dungeonData.rooms).map((k) => { return dungeonData.rooms[k] }).forEach((roomData) => {
+			let puzzleItems = []
+			roomData.puzzleItems.forEach((itemData) => {
+				puzzleItems.push(this.instantiatePuzzleItem(itemData));
+			});
+			roomData.puzzleItems = puzzleItems;
+			roomData.player = new Player(roomData.player);
+
+			let thoughts = [];
+			roomData.thoughts.forEach((thoughtData) => {
+				thoughtData.type = Thought.stringToType(thoughtData.type);
+				thoughts.push(new Thought(thoughtData));
+			});
+			roomData.thoughts = thoughts;
+
 			dungeon.addRoom(roomData.key, new Room(roomData));
 		});
 
 		return dungeon;
 	}
 
-	/** Helper method. Returns a puzzle object with all of the data outlined in the data hash provided. */
-	static generatePuzzle(scene, puzzleKey) {
-		let puzzleData = scene.cache.json.get('dungeon0')['puzzles'][puzzleKey];
+	/** Helper method. Converts puzzle to a room object with the dimensions established in Room. */
+	static puzzleToRoom(puzzle) {
+		if (!puzzle.solve()) {
+			throw 'Puzzle is not valid! Cannot convert to room!';
+		}
 
+		let room = new Room({
+			key: puzzle.roomKey,
+			puzzleKey: puzzle.key,
+			dimensions: { width: puzzle.dimensions.width * PUZZLE_ROOM_SCALE, height: puzzle.dimensions.height * PUZZLE_ROOM_SCALE },
+			mapName: puzzle.mapName,
+			thoughts: puzzle.thoughts
+		});
+
+		puzzle.getLasers().forEach((laser) => {
+			room.addPuzzleItem(new Laser({
+				position: this.puzzlePosToRoomPos(laser.getPosition()),
+				dimensions: this.puzzleDimToRoomDim(laser.dimensions),
+				key: laser.key,
+				color: laser.color,
+				direction: laser.direction,
+				path: laser.path.map((pnt) => { return { x: pnt.x * PUZZLE_ROOM_SCALE, y: pnt.y * PUZZLE_ROOM_SCALE }}),
+				movable: laser.movable,
+				rotatable: laser.rotatable
+			}));
+		});
+
+		puzzle.getExits().forEach((exit) => {
+			room.addPuzzleItem(new Exit({
+				key: exit.key,
+				position: this.puzzlePosToRoomPos(exit.getPosition()),
+				dimensions: this.puzzleDimToRoomDim(exit.dimensions),
+				color: exit.color,
+				direction: exit.direction,
+				isOpen: exit.isOpen
+			}));
+		});
+
+		puzzle.panels.forEach((panel) => {
+			room.addPuzzleItem(new Panel({
+				position: this.puzzlePosToRoomPos(panel.getPosition()),
+				dimensions: this.puzzleDimToRoomDim(panel.dimensions),
+				direction: panel.direction
+			}));
+		});
+
+		puzzle.getTargets().forEach((target) => {
+			room.addPuzzleItem(new Target({
+				key: target.key,
+				position: this.puzzlePosToRoomPos(target.getPosition()),
+				dimensions: this.puzzleDimToRoomDim(target.dimensions),
+				color: target.color,
+				lasersStruck: target.lasersStruck
+			}));
+		});
+
+		puzzle.surfaces.forEach((surface) => {
+			room.addPuzzleItem(new Surface({
+				position: this.puzzlePosToRoomPos(surface.getPosition()),
+				dimensions: this.puzzleDimToRoomDim(surface.dimensions),
+				type: surface.type,
+				direction: surface.direction,
+				movable: surface.movable,
+				rotatable: surface.rotatable
+			}));
+		});
+
+		room.player = new Player({
+			position: this.puzzlePosToRoomPos(puzzle.player.getPosition()),
+			dimensions: this.puzzleDimToRoomDim(puzzle.player.dimensions)
+		});
+
+		return room;
+	}
+
+	/** Helper method. Converts room to puzzle. */
+	static roomToPuzzle(room) {
 		let puzzle = new Puzzle({
-			key: puzzleData.key,
-			dimensions: { width: puzzleData.dimensions.width, height: puzzleData.dimensions.height },
-			roomKey: puzzleData.roomKey,
+			key: room.puzzleKey,
+			roomKey: room.key,
+			dimensions: { width: room.dimensions.width / PUZZLE_ROOM_SCALE, height: room.dimensions.height / PUZZLE_ROOM_SCALE },
+			mapName: room.mapName,
+			thoughts: room.thoughts
 		});
 
-		puzzleData.lasers.forEach((laserData) => {
-			if (typeof laserData.direction === 'string') laserData.direction = Direction.directionFromString(laserData.direction);
-			if (typeof laserData.color === 'string') laserData.color = LaserColor.colorFromKey(laserData.color);
-			puzzle.addLaser(new Laser(laserData));
+		room.puzzleItems.forEach((item) => {
+			let position = this.roomPosToPuzzlePos(item.position);
+			let dimensions = this.roomDimToPuzzleDim(item.dimensions);
+
+			if (item instanceof Laser) {
+				puzzle.addLaser(new Laser({
+					position: position,
+					dimensions: dimensions,
+					color: item.color,
+					direction: item.direction,
+					key: item.key,
+					movable: item.movable,
+					rotatable: item.rotatable
+				}));
+			} else if (item instanceof Exit) {
+				puzzle.addExit(new Exit({
+					position: position,
+					dimensions: dimensions,
+					color: item.color,
+					direction: item.direction,
+					key: item.key,
+					isOpen: item.isOpen,
+				}));
+			} else if (item instanceof Surface) {
+				puzzle.addSurface(new Surface({
+					position: position,
+					dimensions: dimensions,
+					direction: item.direction,
+					type: item.type,
+					movable: item.movable,
+					rotatable: item.rotatable
+				}));
+			} else if (item instanceof Target) {
+				puzzle.addTarget(new Target({
+					key: item.key,
+					position: position,
+					dimensions: dimensions,
+					lasersStruck: item.lasersStruck,
+					color: item.color
+				}));
+			} else {
+				puzzle.addPanel(new PuzzleItem({
+					position: position,
+					dimensions: dimensions,
+					direction: item.direction
+				}))
+			}
 		});
 
-		puzzleData.targets.forEach((targetData) => {
-			if (typeof targetData.direction === 'string') targetData.direction = Direction.directionFromString(targetData.direction);
-			puzzle.addTarget(new Target(targetData));
-		});
-
-		puzzleData.surfaces.forEach((surfaceData) => {
-			if (typeof surfaceData.type === 'string' && !Surface.validType(surfaceData.type)) surfaceData.type = Surface.typeFromString(surfaceData.type);
-			if (typeof surfaceData.direction === 'string') surfaceData.direction = Direction.directionFromString(surfaceData.direction);
-			puzzle.addSurface(new Surface(surfaceData));
-		});
-
-		puzzleData.panels.forEach((panelData) => { // NOTE: The panel's direction is used to determine where in the room it is
-			if (typeof panelData.direction === 'string') panelData.direction = Direction.directionFromString(panelData.direction);
-			puzzle.addPanel(new PuzzleItem(panelData));
-		});
-
-		puzzleData.exits.forEach((exitData) => {
-			if (typeof exitData.direction === 'string') exitData.direction = Direction.directionFromString(exitData.direction);
-			if (typeof exitData.color === 'string') exitData.color = LaserColor.colorFromKey(exitData.color);
-			puzzle.addExit(new Exit(exitData));
-		});
-
-		puzzle.player = new Player({
-			position: { x: puzzleData.playerPosition.x, y: puzzleData.playerPosition.y },
-			dimensions: { width: 8, height: 8 }
-		});
+		puzzle.setPlayer(new Player({
+			position: this.roomPosToPuzzlePos(room.player.getPosition()),
+			dimensions: this.roomDimToPuzzleDim(room.player.dimensions)
+		}));
 
 		return puzzle;
 	}
 
-	/** Helper method. Note that room dimensions and puzzle dimensions must differ by a specific factor. */
-	static generateTopDownLayout(puzzle, roomDimensions) {
-		// First check if the given room's dimensions are valid in relation to the puzzle.
-		roomDimensions.width -= (roomDimensions.paddingLeft + roomDimensions.paddingRight);
-		roomDimensions.height -= (roomDimensions.paddingTop + roomDimensions.paddingBottom);
+	/** Helper method. Converts position provided in puzzle dimensions to dimension in room. */
+	static puzzlePosToRoomPos(puzzlePos) {
+		return puzzlePos ? { x: puzzlePos.x * PUZZLE_ROOM_SCALE, y: puzzlePos.y * PUZZLE_ROOM_SCALE } : null;
+	}
 
-		if (puzzle.dimensions.width * PUZZLE_ROOM_SCALE !== roomDimensions.width
-			|| puzzle.dimensions.height * PUZZLE_ROOM_SCALE !== roomDimensions.height) {
-			throw 'Puzzle dimensions do not match with the room provided!';
+	/** Helper method. Converts the puzzle dimensions to the room dimensions. */
+	static puzzleDimToRoomDim(puzzleDim) {
+		return puzzleDim ? { width: puzzleDim.width * PUZZLE_ROOM_SCALE, height: puzzleDim.height * PUZZLE_ROOM_SCALE } : null;
+	}
+
+	/** Helper method. Converts position provided in room dimensions to puzzle dimensions. */
+	static roomPosToPuzzlePos(roomPos) {
+		return { x: roomPos.x / PUZZLE_ROOM_SCALE, y: roomPos.y / PUZZLE_ROOM_SCALE };
+	}
+
+	/** Helper method. Converts room dimensions to puzzle dimensions. */
+	static roomDimToPuzzleDim(roomDim) {
+		return { width: roomDim.width / PUZZLE_ROOM_SCALE, height: roomDim.height / PUZZLE_ROOM_SCALE };
+	}
+
+	/** Helper method. Instantiates a puzzle item given some item data. Determines type.*/
+	static instantiatePuzzleItem(itemData) {
+		if (!itemData.class) {
+			throw 'No class associated with itemData. Key was "' + itemData.key + '".'
 		}
 
-		// We need the laser paths, so we're calling solve() on the puzzle to get all the various flags in
-		// the states they need to be.
-		puzzle.solve();
+		if (itemData.color) itemData.color = LaserColor.colorFromKey(itemData.color);
+		if (itemData.direction) itemData.direction = Direction.directionFromString(itemData.direction);
+		if (itemData.type) itemData.type = Surface.typeFromString(itemData.type);
 
-		let layout = {
-			lasers: [],
-			laserPaths: [],
-			exits: [],
-			panels: [],
-			surfaces: [],
-			targets: [],
-			playerPosition: {}
-		};
-
-		let padX = roomDimensions.paddingLeft + roomDimensions.paddingRight;
-		let padY = roomDimensions.paddingTop + roomDimensions.paddingBottom;
-
-		puzzle.getLasers().forEach((laser) => {
-			layout.lasers.push({
-				x: laser.getPosition().x * PUZZLE_ROOM_SCALE + padX, 
-				y: laser.getPosition().y * PUZZLE_ROOM_SCALE + padY,
-				width: 256,
-				height: 256,
-				direction: laser.direction
-			});
-
-			let path = [];
-			for (let i = 0; i < laser.path.length - 1; i++) {
-				path.push({
-					x1: laser.path[i].x * PUZZLE_ROOM_SCALE + padX,
-					y1: laser.path[i].y * PUZZLE_ROOM_SCALE + padY,
-					x2: laser.path[i + 1].x * PUZZLE_ROOM_SCALE + padX,
-					y2: laser.path[i + 1].y * PUZZLE_ROOM_SCALE + padY,
-					isHorizontal: laser.path[i].y === laser.path[i + 1].y
-				})
-			}
-			layout.laserPaths.push(path);
-		});
-
-		puzzle.getExits().forEach((exit) => {
-			let exitData = {
-				x: exit.getPosition().x * PUZZLE_ROOM_SCALE + padX,
-				y: exit.getPosition().y * PUZZLE_ROOM_SCALE + padY,
-				direction: exit.direction,
-				nextRoomKey: exit.nextRoomKey,
-				isOpen: exit.isOpen
-			};
-
-			if (exit.nextRoomPlayerPosition) {
-				exitData.nextRoomPlayerPosition = {
-					x: exit.nextRoomPlayerPosition.x * PUZZLE_ROOM_SCALE + padX,
-					y: exit.nextRoomPlayerPosition.y * PUZZLE_ROOM_SCALE + padY
-				}
-			}
-
-			layout.exits.push(exitData);
-		});
-
-		puzzle.surfaces.forEach((surface) => {
-			layout.surfaces.push({
-				x: surface.getPosition().x * PUZZLE_ROOM_SCALE + padX,
-				y: surface.getPosition().y * PUZZLE_ROOM_SCALE + padY,
-				direction: surface.direction,
-				type: surface.type
-			});
-		});
-
-		puzzle.getTargets().forEach((target) => {
-			layout.targets.push({
-				x: target.getPosition().x * PUZZLE_ROOM_SCALE + padX,
-				y: target.getPosition().y * PUZZLE_ROOM_SCALE + padY,
-				direction: target.direction,
-				isLit: target.isLit()
-			})
-		});
-
-		puzzle.panels.forEach((panel) => {
-			layout.panels.push({
-				x: panel.getPosition().x * PUZZLE_ROOM_SCALE + padX, 
-				y: panel.getPosition().y * PUZZLE_ROOM_SCALE + padY
-			})
-		});
-
-		layout.playerPosition = { 
-			x: puzzle.player.getPosition().x * PUZZLE_ROOM_SCALE + padX, 
-			y: puzzle.player.getPosition().y * PUZZLE_ROOM_SCALE + padY
-		};
-
-		return layout;
+		switch(itemData.class) {
+			case 'Exit':
+				return new Exit(itemData);
+			case 'Laser':
+				return new Laser(itemData);
+			case 'Surface':
+				return new Surface(itemData);
+			case 'Target':
+				return new Target(itemData);
+			default:
+				return new PuzzleItem(itemData);
+		}
 	}
 }

@@ -9,10 +9,6 @@ import { Direction } from './direction.js';
 export class PuzzleItem {
 
 	constructor(opts) {
-		if (!opts.position || !opts.dimensions) {
-			throw 'PuzzleItem must have starting position and dimensions!';
-		}
-		
 		this.position = opts.position;
 		this.dimensions = opts.dimensions;
 		this.direction = opts.direction;
@@ -20,6 +16,10 @@ export class PuzzleItem {
 		this.rotatable = opts.rotatable || false;
 		this.laserInteractable = opts.laserInteractable || false;
 		this.terminatesLaser = opts.terminatesLaser || false;
+
+		if (!this.position || !this.dimensions) {
+			console.warn('PuzzleItem must have starting position and dimensions!');
+		}
 	}
 
 	/** Rotates the puzzle item the number of degrees provided. Must either be 90 or -90. */
@@ -34,6 +34,16 @@ export class PuzzleItem {
 	/** Returns the position of this puzzle item. */
 	getPosition() {
 		return this.img ? { x: this.img.x, y: this.img.y } : this.position;
+	}
+
+	/** Sets the position of this puzzle item. */
+	setPosition(pos) {
+		if (this.img) {
+			this.img.x = pos.x;
+			this.img.y = pos.y;
+		} else {
+			this.position = pos;
+		}
 	}
 
 	/** Returns the dimensions of this puzzle item. */
@@ -60,25 +70,14 @@ export class PuzzleItem {
 		return extrema;
 	}
 
-	/** Helper method. To be used by children classes to modify their sprite when moused over in puzzle mode. */
-	pointerOver() {
-		if (this.img) {
-			if (this.movable && this.rotatable) {
-				this.img.setFrame(3);
-			} else if (this.movable) {
-				this.img.setFrame(1);
-			} else if (this.rotatable) {
-				this.img.setFrame(2);
-			}
-		}
-	}
+	/** Sets the proper frame for the puzzle item. */
+	setProperFrame(isRoom = false) { throw 'Implement me!' }
 
 	/** Helper method. To be used by children classes to modify their sprite when moused over in puzzle mode. */
-	pointerOut() {
-		if (this.img) {
-			this.img.setFrame(0);
-		}
-	}
+	mouseOver() { throw 'Implement me in children!'; }
+
+	/** Helper method. To be used by children classes to modify their sprite when moused over in puzzle mode. */
+	mouseOut() { throw 'Implement me in children!'; }
 
 	/** Returns the collision point of this puzzle item. Returns null if this item does not interact with a laser, or if the laser does not hit this item. 
 		Note that the direction provided is the direction the item at the point provided is facing. */
@@ -103,9 +102,19 @@ export class PuzzleItem {
 		}
 	}
 
+	setProperFrame() {} // Unused, and not required
+
 	/** Sets the image to the image provided. */
 	setImg(img) {
 		this.img = img;
+	}
+
+	/** Resets the img of this puzzle item. Fixes a weird bug I found. */
+	resetImg() {
+		if (this.img) {
+			this.position = this.getPosition();
+			this.img = null;
+		}
 	}
 
 	terminatesLaser() {
@@ -115,6 +124,7 @@ export class PuzzleItem {
 	/** Override toJSON(). Ensures that puzzle items have all their necessary components. */
 	toJSON() {
 		return {
+			key: this.key,
 			position: this.getPosition(),
 			dimensions: this.getDimensions(),
 			direction: this.direction,
