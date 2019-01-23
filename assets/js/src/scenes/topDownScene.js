@@ -65,13 +65,13 @@ export class TopDownScene extends Phaser.Scene {
 
 		const malkuthTileset = sandboxMap.addTilesetImage(SPRITES.malkhutTilesheet.key, SPRITES.malkhutTilesheet.key);
 		const doorTileset = sandboxMap.addTilesetImage(SPRITES.doorTilesheet.key, SPRITES.doorTilesheet.key);
-		// TODO: Separate tilesheet for panels and doors
 
 		const floorLayer = sandboxMap.createStaticLayer('FloorLayer', malkuthTileset, 0, 0);
 		const wallLayer = sandboxMap.createDynamicLayer('WallLayer', malkuthTileset, 0, 0);
 		const doorLayer = sandboxMap.createDynamicLayer('DoorLayer', doorTileset, 0, 0);
-		
-		this.doorsController.presentProperExits(doorLayer, this.room);
+
+		const exitZones = this.physics.add.staticGroup();
+		this.doorsController.presentProperExits(doorLayer, this.room).forEach(zone => exitZones.add(zone));
 
 		wallLayer.setCollisionByExclusion(-1);
 
@@ -95,6 +95,10 @@ export class TopDownScene extends Phaser.Scene {
 			this.room.player.position.y + pad, SPRITES.roomPlayer.key);
 		playerImg.setCollideWorldBounds(true);
 		this.room.player.setImg(playerImg);
+
+		this.physics.add.overlap(playerImg, exitZones, (playerImg, exitZone) => {
+			this._moveRooms(exitZone.data.list.nextRoom);
+		});
 
 		this.room.puzzleItems.forEach((item) => {
 			if (item instanceof Exit) return;
@@ -221,6 +225,11 @@ export class TopDownScene extends Phaser.Scene {
 				playerImg.setVelocityY(0);
 			}
 		}
+	}
+
+	/*--PRIVATE */
+	_moveRooms(nextRoomKey) {
+		throw 'TODO: Move rooms';
 	}
 
 	/** Helper method. Returns the midpoint of the line provided. */

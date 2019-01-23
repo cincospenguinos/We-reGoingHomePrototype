@@ -11,7 +11,7 @@
 					"class": "Laser",
 					"key": "laser1",
 					"color": "l-red",
-					"position": { "x": 150, "y": 150 },
+					"position": { "x": 128, "y": 500 },
 					"dimensions": { "width": 256, "height": 256 },
 					"direction": "EAST",
 					"movable": true,
@@ -20,7 +20,7 @@
 				{
 					"class": "Target",
 					"key": "target1",
-					"position": { "x": 450, "y": 150 },
+					"position": { "x": 800, "y": 800 },
 					"dimensions": { "width": 256, "height": 256 }
 				},
 				{
