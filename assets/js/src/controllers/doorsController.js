@@ -29,7 +29,6 @@ export class DoorsController {
 			// Now that we have the exit and door tiles as needed, we can go ahead and update the tiles accordingly
 			doorTiles.forEach((tile) => {
 				let newTileIndex = this._tileIndexMatching(exit, tile.properties.quadrant, doorLayer.tileset[0]);
-				debugger;
 				doorLayer.putTileAt(newTileIndex, tile.x, tile.y);
 			});
 		});
@@ -72,6 +71,6 @@ export class DoorsController {
 
 		if (tiles.length !== 1) { throw 'No tile found for props!'; }
 
-		return tiles[0].index;
+		return tileset.firstgid + tiles[0].index;
 	}
 }
