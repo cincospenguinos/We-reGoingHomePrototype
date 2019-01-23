@@ -184,7 +184,7 @@ export class DungeonHelper {
 					color: item.color
 				}));
 			} else {
-				puzzle.addPanel(new PuzzleItem({
+				puzzle.addPanel(new Panel({
 					position: position,
 					dimensions: dimensions,
 					direction: item.direction

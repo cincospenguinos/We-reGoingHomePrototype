@@ -5,6 +5,7 @@
  */
 import { KEYS, SPRITES } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
+import { ItemFactory } from '../helpers/itemFactory.js';
 
 import { Surface } from '../model/surface.js';
 import { Laser } from '../model/laser.js';
@@ -46,7 +47,6 @@ export class PuzzleScene extends Phaser.Scene {
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzlePanel);
 		
 		SceneHelper.loadImage(this, SPRITES.puzzlePlayer);
-		SceneHelper.loadImage(this, SPRITES.closePanelButton);
 	}
 
 	create() {
@@ -62,20 +62,16 @@ export class PuzzleScene extends Phaser.Scene {
 				this.puzzle.dimensions.width, 
 				this.puzzle.dimensions.height);
 
-		// Since everything is getting centered into the scene, we need to shift everything to the center. We'll start with the physics
-		// and then we'll continue with drawing everything
 		this.physics.world.setBounds(this.translation.x, this.translation.y, 
 			this.puzzle.dimensions.width, this.puzzle.dimensions.height);
 
+		const itemGroup = this.physics.add.staticGroup();
+		const itemFactory = new ItemFactory(this, this.translation);
 		this.puzzle.getAllItems().forEach((item) => {
-			let shiftedPosition = { x: item.getPosition().x + this.translation.x, 
-				y: item.getPosition().y + this.translation.y };
-
-			let spriteKey;
+			let group = (item.movable || item.rotatable) ? itemGroup : null;
+			let img = itemFactory.instantiateItem(item, group, false);
 
 			if (item instanceof Laser) {
-				spriteKey = SPRITES.puzzleLaser.key;
-
 				this.laserGraphics[item.key] = this.add.graphics({
 					add: true,
 					lineStyle: {
@@ -84,18 +80,7 @@ export class PuzzleScene extends Phaser.Scene {
 						alpha: 1
 					}
 				});
-			} else if (item instanceof Exit) {
-				spriteKey = SPRITES.puzzleExit.key;
-			} else if (item instanceof Surface) {
-				spriteKey = item.type === Surface.REFLECTIVE ? SPRITES.puzzleMirror.key : undefined; // TODO: Opaque surface?
-			} else if (item instanceof Target) {
-				spriteKey = SPRITES.puzzleTarget.key;
-			} else { // It's a panel
-				spriteKey = SPRITES.puzzlePanel.key;
 			}
-
-			let img = this.physics.add.sprite(shiftedPosition.x, shiftedPosition.y, spriteKey);
-			item.setImg(img);
 
 			if (item.movable || item.rotatable) {
 				this.setupInteractivity(item, img);

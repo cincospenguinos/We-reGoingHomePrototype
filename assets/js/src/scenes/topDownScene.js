@@ -3,7 +3,7 @@
  *
  * Scene to manage a top-down scrolling view. Mostly for experimentation.
  */
-import { RoomItemFactory } from '../helpers/roomItemFactory.js';
+import { ItemFactory } from '../helpers/itemFactory.js';
 import { KEYS, SPRITES, COLORS, PUZZLE_ROOM_SCALE, PADDING } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
 import { DungeonHelper } from '../helpers/dungeonHelper.js';
@@ -66,7 +66,7 @@ export class TopDownScene extends Phaser.Scene {
 	create() {
 		this._generateMap();
 
-		const itemFactory = new RoomItemFactory(this.padding);
+		const itemFactory = new ItemFactory(this, this.padding);
 		let puzzleItemGroup = this.physics.add.staticGroup();
 
 		this.room.puzzleItems.forEach((item) => {
@@ -87,7 +87,9 @@ export class TopDownScene extends Phaser.Scene {
 		const exitZones = this.physics.add.staticGroup();
 		let exits = this.doorsController.presentProperExits(this.mapLayers['DoorLayer'], this.room);
 		exitZones.addMultiple(exits);
-		this.physics.add.overlap(playerImg, exitZones, (playerImg, exitZone) => { this._moveRooms(exitZone.data.list.nextRoom) });
+		this.physics.add.overlap(playerImg, exitZones, (playerImg, exitZone) => { 
+			this._moveRooms(exitZone.data.list.nextRoom) 
+		});
 
 		this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels, true, true, true, true);
 		this.physics.add.collider(playerImg, puzzleItemGroup);
