@@ -15,7 +15,7 @@ export class DoorsController {
 	}
 
 	/** Returns array of exits given the door layer provided. */
-	presentProperExits(doorLayer, room, tileset) {
+	presentProperExits(doorLayer, room) {
 		room.getExits().forEach((exit) => {
 			let worldPos = exit.getPosition();
 			let worldDim = exit.getDimensions();
@@ -28,7 +28,7 @@ export class DoorsController {
 
 			// Now that we have the exit and door tiles as needed, we can go ahead and update the tiles accordingly
 			doorTiles.forEach((tile) => {
-				let newTileIndex = this._tileIndexMatching(exit, tile.properties.quadrant, tileset);
+				let newTileIndex = this._tileIndexMatching(exit, tile.properties.quadrant, doorLayer.tileset[0]);
 				debugger;
 				doorLayer.putTileAt(newTileIndex, tile.x, tile.y);
 			});

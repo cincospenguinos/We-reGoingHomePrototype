@@ -71,7 +71,7 @@ export class TopDownScene extends Phaser.Scene {
 		const wallLayer = sandboxMap.createDynamicLayer('WallLayer', malkuthTileset, 0, 0);
 		const doorLayer = sandboxMap.createDynamicLayer('DoorLayer', doorTileset, 0, 0);
 		
-		this.doorsController.presentProperExits(doorLayer, this.room, doorTileset);
+		this.doorsController.presentProperExits(doorLayer, this.room);
 
 		wallLayer.setCollisionByExclusion(-1);
 
