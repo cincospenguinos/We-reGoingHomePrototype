@@ -64,7 +64,6 @@ export class TopDownScene extends Phaser.Scene {
 	}
 
 	create() {
-		// First generate the map
 		this._generateMap();
 
 		const itemFactory = new RoomItemFactory(this.padding);
@@ -77,49 +76,23 @@ export class TopDownScene extends Phaser.Scene {
 			if (item instanceof Laser) {
 				this._drawLaserPath(item, puzzleItemGroup);
 			} else if (item instanceof Panel) {
-				this.mouseOverController.addMouseOver(item);
-
-				img.setInteractive();
-				img.on('pointerover', () => { this.mouseOverController.mouseOver(item.key) });
-				img.on('pointerout', () => { this.mouseOverController.mouseOut(item.key) });
-				img.on('pointerdown', (evt) => {
-					// Since we had the player move over according to padding, we will need to remove that
-					// padding before we jump right into the puzzle scene
-					let newPlayerPos = { 
-						x: this.room.player.getPosition().x - (this.padding.x), 
-						y: this.room.player.getPosition().y - this.padding.y 
-					};
-					this.room.player.setPosition(newPlayerPos);
-					SceneHelper.transitionToPuzzleScene(this, { 
-						dungeon: this.dungeon, 
-						room: this.room, 
-						thoughtsController: this.thoughtsController 
-					});
-				});
+				this._setupPanel(item);
 			}
 
 			item.setProperFrame(true);
 		});
 
-		// Tie up various odds and ends with collision and overlap
+		let playerImg = this._createPlayer();
+
 		const exitZones = this.physics.add.staticGroup();
-		this.doorsController.presentProperExits(this.mapLayers['DoorLayer'], this.room).forEach(zone => exitZones.add(zone));
-
-		let playerImg = this.physics.add.image(this.room.player.position.x + this.padding.x,
-			this.room.player.position.y + this.padding.y, SPRITES.roomPlayer.key);
-		playerImg.setCollideWorldBounds(true);
-		this.room.player.setImg(playerImg);
-
-		this.physics.add.overlap(playerImg, exitZones, (playerImg, exitZone) => {
-			this._moveRooms(exitZone.data.list.nextRoom);
-		});
-
-		const wallLayer = this.mapLayers['WallLayer'];
-		wallLayer.setCollisionByExclusion(-1);
+		let exits = this.doorsController.presentProperExits(this.mapLayers['DoorLayer'], this.room);
+		exitZones.addMultiple(exits);
+		this.physics.add.overlap(playerImg, exitZones, (playerImg, exitZone) => { this._moveRooms(exitZone.data.list.nextRoom) });
 
 		this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels, true, true, true, true);
 		this.physics.add.collider(playerImg, puzzleItemGroup);
-		this.physics.add.collider(playerImg, wallLayer);
+		this.physics.add.collider(playerImg, this.mapLayers['WallLayer']);
+		this.mapLayers['WallLayer'].setCollisionByExclusion(-1);
 
 		// And now the camera
 		this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -194,6 +167,7 @@ export class TopDownScene extends Phaser.Scene {
 		}
 	}
 
+	/** Helper method. Handles moving to the next room. */
 	_moveRooms(nextRoomKey) {
 		throw 'TODO: Move rooms';
 	}
@@ -245,5 +219,37 @@ export class TopDownScene extends Phaser.Scene {
 			x2: line.x2,
 			y2: line.y2
 		});
+	}
+
+	/** Helper method. Sets up a panel to operate the way we intend. */
+	_setupPanel(panel) {
+		this.mouseOverController.addMouseOver(panel);
+
+		panel.img.setInteractive();
+		panel.img.on('pointerover', () => { this.mouseOverController.mouseOver(panel.key) });
+		panel.img.on('pointerout', () => { this.mouseOverController.mouseOut(panel.key) });
+		panel.img.on('pointerdown', (evt) => {
+			// Since we had the player move over according to padding, we will need to remove that
+			// padding before we jump right into the puzzle scene
+			let newPlayerPos = { 
+				x: this.room.player.getPosition().x - (this.padding.x), 
+				y: this.room.player.getPosition().y - this.padding.y 
+			};
+			this.room.player.setPosition(newPlayerPos);
+			SceneHelper.transitionToPuzzleScene(this, { 
+				dungeon: this.dungeon, 
+				room: this.room, 
+				thoughtsController: this.thoughtsController 
+			});
+		});
+	}
+
+	/** Helper method. Creates the player and handles world bounds collision. */
+	_createPlayer() {
+		let playerImg = this.physics.add.image(this.room.player.position.x + this.padding.x,
+				this.room.player.position.y + this.padding.y, SPRITES.roomPlayer.key);
+		playerImg.setCollideWorldBounds(true);
+		this.room.player.setImg(playerImg);
+		return playerImg;
 	}
 }
