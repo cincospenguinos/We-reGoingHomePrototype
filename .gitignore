@@ -1,5 +1,3 @@
 _site
 .sass-cache
 .jekyll-metadata
-.*
-assets/js/lib/phaser.js

@@ -3,21 +3,10 @@
  *
  * Scene to manage a top-down scrolling view. Mostly for experimentation.
  */
-import { KEYS, SPRITES, COLORS, PUZZLE_ROOM_SCALE, PADDING } from '../../lib/CONST.js';
+import { KEYS, SPRITES, COLORS, PUZZLE_ROOM_SCALE } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
 import { DungeonHelper } from '../helpers/dungeonHelper.js';
-
 import { Surface } from '../model/surface.js';
-import { Laser } from '../model/laser.js';
-import { Target } from '../model/target.js';
-import { Puzzle } from '../model/puzzle.js';
-import { PuzzleItem } from '../model/puzzleItem.js';
-import { Exit } from '../model/exit.js';
-import { Player } from '../model/player.js';
-import { Direction } from '../model/direction.js';
-import { Panel } from '../model/panel.js';
-import { MouseOverController } from '../controllers/mouseOverController.js';
-import { DoorsController } from '../controllers/doorsController.js';
 
 export class TopDownScene extends Phaser.Scene {
 
@@ -26,35 +15,25 @@ export class TopDownScene extends Phaser.Scene {
 	}
 
 	init(data) {
+		this.puzzle = data.puzzle;
 		this.dungeon = data.dungeon;
+		this.roomKey = data.roomKey;
+		this.playerPosition = data.playerPosition;
 
-		if (!data.room) {
-			throw 'TopDownScene requires a room to function!';
-		}
-
-		this.mapKey = data.room.mapName;
-		this.room = data.room;
-		this.thoughtsController = data.thoughtsController;
-		this.thoughtsController.setScene(this);
-
-		this.mouseOverController = new MouseOverController(this);
-		this.doorsController = new DoorsController(this);
+		this.mapKey = this.dungeon.getRoom(this.roomKey).mapName;
 	}
 
 	preload() {
-		SceneHelper.loadImage(this, SPRITES.malkhutTilesheet);
-		SceneHelper.loadImage(this, SPRITES.doorTilesheet);
-
-		this.load.tilemapTiledJSON(this.mapKey, `assets/data/maps/${this.mapKey}.json`);
+		SceneHelper.loadImage(this, SPRITES.shittyTilesheet);
+		this.load.tilemapTiledJSON(this.mapKey, 'assets/data/maps/' + this.mapKey + '.json');
 		
 		SceneHelper.loadImage(this, SPRITES.mainCharacter);
-		
-		SceneHelper.loadSpritesheet(this, SPRITES.roomExit);
-		SceneHelper.loadSpritesheet(this, SPRITES.roomPlayer);
 		SceneHelper.loadSpritesheet(this, SPRITES.roomPanel);
 		SceneHelper.loadSpritesheet(this, SPRITES.roomLaser);
 		SceneHelper.loadSpritesheet(this, SPRITES.roomMirror);
 		SceneHelper.loadSpritesheet(this, SPRITES.roomTarget);
+		SceneHelper.loadImage(this, SPRITES.roomExit);
+		SceneHelper.loadImage(this, SPRITES.roomPlayer);
 
 		this.load.json('dungeon0', 'assets/data/dungeons/dungeon0.json');
 	}
@@ -63,122 +42,135 @@ export class TopDownScene extends Phaser.Scene {
 		// First generate the map
 		let sandboxMap = this.make.tilemap({ key: this.mapKey, tileWidth: 64, tileHeight: 64 });
 
-		const malkuthTileset = sandboxMap.addTilesetImage(SPRITES.malkhutTilesheet.key, SPRITES.malkhutTilesheet.key);
-		const doorTileset = sandboxMap.addTilesetImage(SPRITES.doorTilesheet.key, SPRITES.doorTilesheet.key);
+		const tileset = sandboxMap.addTilesetImage(SPRITES.shittyTilesheet.key, SPRITES.shittyTilesheet.key);
 
-		const floorLayer = sandboxMap.createStaticLayer('FloorLayer', malkuthTileset, 0, 0);
-		const wallLayer = sandboxMap.createDynamicLayer('WallLayer', malkuthTileset, 0, 0);
-		const doorLayer = sandboxMap.createDynamicLayer('DoorLayer', doorTileset, 0, 0);
+		const floorLayer = sandboxMap.createStaticLayer('FloorLayer', tileset, 0, 0);
+		const wallLayer = sandboxMap.createDynamicLayer('WallLayer', tileset, 0, 0);
 
-		const exitZones = this.physics.add.staticGroup();
-		this.doorsController.presentProperExits(doorLayer, this.room).forEach(zone => exitZones.add(zone));
-
-		wallLayer.setCollisionByExclusion(-1);
+		wallLayer.setCollisionByProperty({ collides: true });
 
 		// Draw the layout
 		let roomDimensions = {
 			width: sandboxMap.widthInPixels, 
 			height: sandboxMap.heightInPixels,
-			paddingLeft: 64 * PADDING.room.left,
-			paddingRight: 64 * PADDING.room.right,
-			paddingTop: 64 * PADDING.room.top,
-			paddingBottom: 0 * PADDING.room.bottom
+			paddingLeft: 64,
+			paddingRight: 64,
+			paddingTop: 128,
+			paddingBottom: 0
 		};
 
-		// TODO: Adjust this pad variable to take advantage of how everything is supposed to fit together
-		let pad = 128; // Since we are dropping everything according to some amount of padding, we need to accomodate
+		this.layout = DungeonHelper.generateTopDownLayout(this.puzzle, roomDimensions);
 
 		let puzzleItemGroup = this.physics.add.staticGroup();
 
-		// We are using the room provided to help us get everything down
-		let playerImg = this.physics.add.image(this.room.player.position.x + (pad / 2), 
-			this.room.player.position.y + pad, SPRITES.roomPlayer.key);
-		playerImg.setCollideWorldBounds(true);
-		this.room.player.setImg(playerImg);
-
-		this.physics.add.overlap(playerImg, exitZones, (playerImg, exitZone) => {
-			this._moveRooms(exitZone.data.list.nextRoom);
+		this.layout.lasers.forEach((laser) => {
+			puzzleItemGroup.create(laser.x, laser.y, SPRITES.roomLaser.key);
 		});
 
-		this.room.puzzleItems.forEach((item) => {
-			if (item instanceof Exit) return;
-
-			let pos = { x: item.position.x + pad / 2, y: item.position.y + pad };
-			let spriteKey, img;
-
-			if (item instanceof Laser) {
-				spriteKey = SPRITES.roomLaser.key;
-
-				let laserGraphics = this.add.graphics({
-					add: true,
-					lineStyle: {
-						width: 8,
-						color: item.color.val,
-						alpha: 1
-					}
-				});
-				
-				item.getPathAsLines().forEach((line) => {
-					let adjustedLine = {
-						x1: line.x1 + pad / 2,
-						y1: line.y1 + pad,
-						x2: line.x2 + pad / 2,
-						y2: line.y2 + pad,
-						isHorizontal: line.isHorizontal
-					};
-
-					this.drawLaserLine(adjustedLine, laserGraphics, puzzleItemGroup);
-				});
-			} else if (item instanceof Surface) {
-				spriteKey = item.type === Surface.REFLECTIVE ? SPRITES.roomMirror.key : undefined; // TODO: Opaque surface?
-			} else if (item instanceof Target) {
-				spriteKey = SPRITES.roomTarget.key;
-			} else if (item instanceof Panel) {
-				spriteKey = SPRITES.roomPanel.key;
-				this.mouseOverController.addMouseOver(item);
+		// Setup the surfaces
+		this.layout.surfaces.forEach((surface) => {
+			if (surface.type === Surface.REFLECTIVE) {
+				puzzleItemGroup.create(surface.x, surface.y, SPRITES.roomMirror.key);
 			} else {
-				throw 'No class for item "' + item.key + '"';
+				throw 'I do not have an opaque suraface sprite!';
 			}
-
-			img = puzzleItemGroup.create(pos.x, pos.y, spriteKey);
-			item.setImg(img);
-
-			// If we have a panel, we need to set things up to be able to click on it and shit
-			if (spriteKey === SPRITES.roomPanel.key) {
-				img.setInteractive();
-				img.on('pointerover', () => { this.mouseOverController.mouseOver(item.key) });
-				img.on('pointerout', () => { this.mouseOverController.mouseOut(item.key) });
-				img.on('pointerdown', (evt) => {
-					// Since we had the player move over according to padding, we will need to remove that
-					// padding before we jump right into the puzzle scene
-					let newPlayerPos = { x: this.room.player.getPosition().x - (pad / 2), y: this.room.player.getPosition().y - pad };
-					this.room.player.setPosition(newPlayerPos);
-					SceneHelper.transitionToPuzzleScene(this, { 
-						dungeon: this.dungeon, 
-						room: this.room, 
-						thoughtsController: this.thoughtsController 
-					});
-				});
-			}
-
-			item.setProperFrame(true);
 		});
 
-		// Tie up various odds and ends with collision
+		// Setup the targets
+		this.layout.targets.forEach((target) => {
+			let targetImg = puzzleItemGroup.create(target.x, target.y, SPRITES.roomTarget.key);
+
+			if (target.isLit) {
+				targetImg.setFrame(1);
+			}
+		})
+
+		// Setup the player
+		let playerPos = this.playerPosition ? this.playerPosition : this.layout.playerPosition;
+		this.playerImg = this.physics.add.image(playerPos.x, playerPos.y, SPRITES.roomPlayer.key);
+
+		// Setup the exits
+		this.layout.exits.forEach((exit) => {
+			let exitImg = this.physics.add.image(exit.x, exit.y, SPRITES.roomExit.key);
+			this.physics.add.overlap(this.playerImg, exitImg, (evt) => {
+				if (exit.isOpen) {
+					let room = this.dungeon.getRoom(exit.nextRoomKey);
+					let puzzle = DungeonHelper.generatePuzzle(this, room.puzzleKey);
+					this.scene.start(KEYS.scene.topDownScene, 
+						{ 
+							puzzle: puzzle,
+							dungeon: this.dungeon, 
+							roomKey: room.key,
+							playerPosition: exit.nextRoomPlayerPosition
+						});
+				}
+			});
+		});
+
+		// Setup the panels
+		this.layout.panels.forEach((panel) => {
+			let panelImage = puzzleItemGroup.create(panel.x, panel.y, SPRITES.roomPanel.key).setInteractive();
+			panelImage.on('pointerover', (evt) => { panelImage.setFrame(1) });
+			panelImage.on('pointerout', (evt) => { panelImage.setFrame(0) });
+			panelImage.on('pointerdown', (evt) => {
+				// If the player is close enough to the panel, we'll let them modify the puzzle
+				let distance = Math.sqrt(Math.pow(this.playerImg.x - panel.x, 2) + Math.pow(this.playerImg.y - panel.y, 2))
+				if (distance <= 150) {
+					this.scene.start(KEYS.scene.puzzleScene, 
+						{ 
+							puzzle: this.puzzle, 
+							dungeon: this.dungeon, 
+							playerPosition: { 
+								x: (this.playerImg.x - (roomDimensions.paddingLeft + roomDimensions.paddingRight)) / PUZZLE_ROOM_SCALE, 
+								y: (this.playerImg.y - (roomDimensions.paddingTop + roomDimensions.paddingBottom)) / PUZZLE_ROOM_SCALE 
+							}
+					});
+				}
+			});
+		});
+
+		// Setup the laser paths
+		// TODO: lasers of other colors?
+		let laserGraphics = this.add.graphics({
+			add: true,
+			lineStyle: {
+				width: 8,
+				color: COLORS.RED,
+				alpha: 1
+			}
+		});
+
+		this.layout.laserPaths.forEach((path) => {
+			path.forEach((line) => {
+				let midpoint = this.midpointOfLine(line);
+				let zone;
+
+				if (line.isHorizontal) {
+					zone = this.add.zone(midpoint.x, midpoint.y, Math.abs(line.x2 - line.x1), 8);
+				} else {
+					zone = this.add.zone(midpoint.x, midpoint.y, 8, Math.abs(line.y2 - line.y1));
+				}
+
+				puzzleItemGroup.add(zone);
+				laserGraphics.strokeLineShape({
+					x1: line.x1,
+					y1: line.y1,
+					x2: line.x2,
+					y2: line.y2
+				});
+			});
+		});
+
 		this.physics.world.setBounds(0, 0, sandboxMap.widthInPixels, sandboxMap.heightInPixels, true, true, true, true);
-		this.physics.add.collider(playerImg, puzzleItemGroup);
-		this.physics.add.collider(playerImg, wallLayer);
+		this.playerImg.setCollideWorldBounds(true);
+		this.physics.add.collider(this.playerImg, puzzleItemGroup);
+		this.physics.add.collider(this.playerImg, wallLayer);
 
 		// And now the camera
 		this.cameras.main.setBounds(0, 0, sandboxMap.widthInPixels, sandboxMap.heightInPixels);
-		this.cameras.main.startFollow(playerImg);
+		this.cameras.main.startFollow(this.playerImg);
 
 	 	this.keyboard = this.input.keyboard.addKeys('W, A, S, D');
-
-	 	// Add the various thoughts we have
-	 	this.room.getRoomThoughts().forEach((thought) => {
-	 		this.thoughtsController.showThought(thought);
-	 	});
 	}
 
 	update(time, delta) {
@@ -187,73 +179,103 @@ export class TopDownScene extends Phaser.Scene {
 
 	/** Handles inputs on the player. */
 	handleInputs() {
-		let playerImg = this.room.player.img;
-
-		if (playerImg.active) {
+		if (this.playerImg.active) {
 			let north = this.keyboard.W.isDown;
 			let east = this.keyboard.D.isDown;
 			let south = this.keyboard.S.isDown;
 			let west = this.keyboard.A.isDown;
 
-			let vel = 300;
-
 			if (north) {
-				playerImg.setVelocityY(-vel);
-				playerImg.setFrame(2);
-			}
-
-			if (south) {
-				playerImg.setVelocityY(vel);
-				playerImg.setFrame(0);
+				this.playerImg.setVelocityY(-512);
 			}
 
 			if (east) {
-				playerImg.setVelocityX(vel);
-				playerImg.setFrame(1);
+				this.playerImg.setVelocityX(512);
+			}
+
+			if (south) {
+				this.playerImg.setVelocityY(512);
 			}
 
 			if (west) {
-				playerImg.setVelocityX(-vel);
-				playerImg.setFrame(3);
+				this.playerImg.setVelocityX(-512);
 			}
 
 			if (!east && !west) {
-				playerImg.setVelocityX(0);
+				this.playerImg.setVelocityX(0);
 			}
 
 			if (!north && !south) {
-				playerImg.setVelocityY(0);
+				this.playerImg.setVelocityY(0);
 			}
 		}
 	}
 
-	/*--PRIVATE */
-	_moveRooms(nextRoomKey) {
-		throw 'TODO: Move rooms';
+	/** Helper method. Setup the interactive things for the panel. */
+	setupPanelInteractive(panel, panelSprite) {
+		// TODO: Add the check to see if the player is close enough to the panel
+		switch(panel.direction) {
+		case DIRECTION.EAST:
+			panelSprite.setFrame(2);
+			break;
+		case DIRECTION.SOUTH:
+			panelSprite.setFrame(0);
+			break;
+		case DIRECTION.WEST:
+			panelSprite.setFrame(2);
+			break;
+		case DIRECTION.NORTH:
+			panelSprite.setFrame(4);
+			break;
+		}
+
+
+		panelSprite.on('pointerover', (a, b) => {
+			switch(panel.direction) {
+			case DIRECTION.EAST:
+				panelSprite.setFrame(3);
+				break;
+			case DIRECTION.SOUTH:
+				panelSprite.setFrame(1);
+				break;
+			case DIRECTION.WEST:
+				panelSprite.setFrame(3);
+				break;
+			case DIRECTION.NORTH:
+				panelSprite.setFrame(5);
+				break;
+			}
+		});
+
+		panelSprite.on('pointerout', (a, b) => {
+			switch(panel.direction) {
+			case DIRECTION.EAST:
+				panelSprite.setFrame(2);
+				break;
+			case DIRECTION.SOUTH:
+				panelSprite.setFrame(0);
+				break;
+			case DIRECTION.WEST:
+				panelSprite.setFrame(2);
+				break;
+			case DIRECTION.NORTH:
+				panelSprite.setFrame(4);
+				break;
+			}
+		});
+
+		panelSprite.on('pointerdown', (a, b) => {
+			// TODO: Add the player here
+			this.scene.start(KEYS.scene.puzzleScene, { 
+				dungeon: this.dungeon, 
+				puzzle: this.puzzle, 
+				playerPosition: { x: this.playerImg.x, y: this.playerImg.y }  
+			});
+		});
 	}
 
 	/** Helper method. Returns the midpoint of the line provided. */
 	midpointOfLine(line) {
 		return { x: (line.x2 + line.x1) / 2, y: (line.y2 + line.y1) / 2 }
-	}
-
-	/** Helper method. Draws a laser line using the graphics provided.*/
-	drawLaserLine(line, graphics, group) {
-		let midpoint = this.midpointOfLine(line);
-		let zone;
-
-		if (line.isHorizontal) {
-			zone = this.add.zone(midpoint.x, midpoint.y, Math.abs(line.x2 - line.x1), 8);
-		} else {
-			zone = this.add.zone(midpoint.x, midpoint.y, 8, Math.abs(line.y2 - line.y1));
-		}
-
-		group.add(zone);
-		graphics.strokeLineShape({
-			x1: line.x1,
-			y1: line.y1,
-			x2: line.x2,
-			y2: line.y2
-		});
 	}
 }

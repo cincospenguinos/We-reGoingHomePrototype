@@ -22,24 +22,6 @@ export class Surface extends PuzzleItem {
 
 		this.laserInteractable = true;
 		this.terminatesLaser = this.type === Surface.REFLECTIVE ? false : true;
-		this.hasMouse = false;
-	}
-
-	setProperFrame(isRoom = false) {
-		if (this.img) {
-			let frame = 0;
-			
-			if (!isRoom) {
-				if (this.movable) frame += 2;
-				if (this.rotatable) frame += 4;
-				if (this.hasMouse) frame += 1;
-			}
-
-			this.img.setFrame(frame);
-
-			let angle = Direction.angleFromDirection(this.direction);
-			this.img.setAngle(angle);
-		}
 	}
 
 	/** Returns the reflective direction of this surface given the direction the laser is approaching, or null if it does not reflect.*/
@@ -80,16 +62,6 @@ export class Surface extends PuzzleItem {
 				return null;
 			}
 		}
-	}
-
-	mouseOver() {
-		this.hasMouse = true;
-		this.setProperFrame();
-	}
-
-	mouseOut() {
-		this.hasMouse = false;
-		this.setProperFrame();
 	}
 
 	/** Helper method. Returns the surface type enum from the string provided. */
