@@ -68,15 +68,15 @@ export class Exit extends PuzzleItem {
 
 			switch(this.direction) {
 			case Direction.EAST:
-				frame += 1;
-				break;
-			case Direction.SOUTH:
-				frame += 3;
-				break;
-			case Direction.WEST:
 				frame += 2;
 				break;
+			case Direction.SOUTH:
+				break;
+			case Direction.WEST:
+				frame += 1;
+				break;
 			case Direction.NORTH:
+				frame += 3;
 				break;
 			default:
 				throw 'No direction found for exit!';
