@@ -5,22 +5,22 @@ import { TestHelper } from '../testHelper.js'
 
 QUnit.module('Laser', () => {
 	QUnit.test('sameColoredLasersMayCross', (assert) => {
-		// let puzzle = TestHelper.createPuzzle();
+		let puzzle = TestHelper.createPuzzle();
 
-		let l1 = new Laser({
+		let l1 = TestHelper.createLaser({
 			key: 'l1',
 			position: { x: 10, y: 10 },
-			direction: Direction.EAST,
-			color: LaserColor.RED,
+			direction: TestHelper.directions.east,
+			color: TestHelper.laserColors.red,
 			dimensions: { width: 0, height: 0 },
 		});
 		puzzle.addLaser(l1);
 
-		let l2 = new Laser({
+		let l2 = TestHelper.createLaser({
 			key: 'l2',
 			position: { x: 75, y: 5 },
-			direction: Direction.SOUTH,
-			color: LaserColor.RED,
+			direction: TestHelper.directions.south,
+			color: TestHelper.laserColors.red,
 			dimensions: { width: 0, height: 0 },
 		});
 		puzzle.addLaser(l2);
@@ -30,27 +30,22 @@ QUnit.module('Laser', () => {
 	});
 
 	QUnit.test('differentColoredLasersMayNotCross', (assert) => {
-		let puzzle = new Puzzle({
-			dimensions: { width: 100, height: 100 },
-			key: 'somepuzzle',
-			roomKey: 'someroom',
-			mapName: 'name'
-		});
+		let puzzle = TestHelper.createPuzzle();
 
-		let l1 = new Laser({
+		let l1 = TestHelper.createLaser({
 			key: 'l1',
 			position: { x: 10, y: 10 },
-			direction: Direction.EAST,
-			color: LaserColor.RED,
+			direction: TestHelper.directions.east,
+			color: TestHelper.laserColors.red,
 			dimensions: { width: 0, height: 0 },
 		});
 		puzzle.addLaser(l1);
 
-		let l2 = new Laser({
+		let l2 = TestHelper.createLaser({
 			key: 'l2',
 			position: { x: 75, y: 5 },
-			direction: Direction.SOUTH,
-			color: LaserColor.GREEN,
+			direction: TestHelper.directions.south,
+			color: TestHelper.laserColors.green,
 			dimensions: { width: 0, height: 0 },
 		});
 		puzzle.addLaser(l2);
