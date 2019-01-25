@@ -9,17 +9,25 @@
 		<!-- Libs -->
 		<script src='assets/js/lib/phaser.min.js'></script>
 		<script type='module' src='assets/js/lib/CONST.js'></script>
-
-		<!-- Sources -->
-		<script type='module' src='assets/js/src/model/surface.js'></script>
-		<script type='module' src='assets/js/src/model/laser.js'></script>
-		<script type='module' src='assets/js/src/model/puzzle.js'></script>
 	</head>
 
 	<body>
 		<div id="qunit"></div>
 		<div id="qunit-fixture"></div>
 		<script src="https://code.jquery.com/qunit/qunit-2.8.0.js"></script>
-		<script type='module' src="assets/js/test/modelTest.js"></script>
+		<script type='module' src='assets/js/test/testHelper.js'></script>
+
+		<!-- Model -->
+		<!-- <script type='module' src="assets/js/test/model/directionTest.js"></script>
+		<script type='module' src="assets/js/test/model/laserColorTest.js"></script>
+		<script type='module' src="assets/js/test/model/laserTest.js"></script> -->
+		<script type='module' src="assets/js/test/model/puzzleTest.js"></script>
+		<!-- <script type='module' src="assets/js/test/model/surfaceTest.js"></script>
+		<script type='module' src="assets/js/test/model/targetTest.js"></script> -->
+
+		<!-- Helpers -->
+		<!-- <script type='module' src="assets/js/test/helpers/dungeonHelperTest.js"></script> -->
+
+		<!-- Controllers -->
 	</body>
 </html>

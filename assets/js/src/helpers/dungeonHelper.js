@@ -40,7 +40,7 @@ export class DungeonHelper {
 		Object.keys(dungeonData.rooms).map((k) => { return dungeonData.rooms[k] }).forEach((roomData) => {
 			let puzzleItems = []
 			roomData.puzzleItems.forEach((itemData) => {
-				puzzleItems.push(this.instantiatePuzzleItem(itemData));
+				puzzleItems.push(this._instantiatePuzzleItem(itemData));
 			});
 			roomData.puzzleItems = puzzleItems;
 			roomData.player = new Player(roomData.player);
@@ -74,8 +74,8 @@ export class DungeonHelper {
 
 		puzzle.getLasers().forEach((laser) => {
 			room.addPuzzleItem(new Laser({
-				position: this.puzzlePosToRoomPos(laser.getPosition()),
-				dimensions: this.puzzleDimToRoomDim(laser.dimensions),
+				position: this._puzzlePosToRoomPos(laser.getPosition()),
+				dimensions: this._puzzleDimToRoomDim(laser.dimensions),
 				key: laser.key,
 				color: laser.color,
 				direction: laser.direction,
@@ -88,8 +88,8 @@ export class DungeonHelper {
 		puzzle.getExits().forEach((exit) => {
 			room.addPuzzleItem(new Exit({
 				key: exit.key,
-				position: this.puzzlePosToRoomPos(exit.getPosition()),
-				dimensions: this.puzzleDimToRoomDim(exit.dimensions),
+				position: this._puzzlePosToRoomPos(exit.getPosition()),
+				dimensions: this._puzzleDimToRoomDim(exit.dimensions),
 				color: exit.color,
 				direction: exit.direction,
 				isOpen: exit.isOpen
@@ -98,8 +98,8 @@ export class DungeonHelper {
 
 		puzzle.panels.forEach((panel) => {
 			room.addPuzzleItem(new Panel({
-				position: this.puzzlePosToRoomPos(panel.getPosition()),
-				dimensions: this.puzzleDimToRoomDim(panel.dimensions),
+				position: this._puzzlePosToRoomPos(panel.getPosition()),
+				dimensions: this._puzzleDimToRoomDim(panel.dimensions),
 				direction: panel.direction
 			}));
 		});
@@ -107,8 +107,8 @@ export class DungeonHelper {
 		puzzle.getTargets().forEach((target) => {
 			room.addPuzzleItem(new Target({
 				key: target.key,
-				position: this.puzzlePosToRoomPos(target.getPosition()),
-				dimensions: this.puzzleDimToRoomDim(target.dimensions),
+				position: this._puzzlePosToRoomPos(target.getPosition()),
+				dimensions: this._puzzleDimToRoomDim(target.dimensions),
 				color: target.color,
 				lasersStruck: target.lasersStruck
 			}));
@@ -116,8 +116,8 @@ export class DungeonHelper {
 
 		puzzle.surfaces.forEach((surface) => {
 			room.addPuzzleItem(new Surface({
-				position: this.puzzlePosToRoomPos(surface.getPosition()),
-				dimensions: this.puzzleDimToRoomDim(surface.dimensions),
+				position: this._puzzlePosToRoomPos(surface.getPosition()),
+				dimensions: this._puzzleDimToRoomDim(surface.dimensions),
 				type: surface.type,
 				direction: surface.direction,
 				movable: surface.movable,
@@ -126,8 +126,8 @@ export class DungeonHelper {
 		});
 
 		room.player = new Player({
-			position: this.puzzlePosToRoomPos(puzzle.player.getPosition()),
-			dimensions: this.puzzleDimToRoomDim(puzzle.player.dimensions)
+			position: this._puzzlePosToRoomPos(puzzle.player.getPosition()),
+			dimensions: this._puzzleDimToRoomDim(puzzle.player.dimensions)
 		});
 
 		return room;
@@ -144,8 +144,8 @@ export class DungeonHelper {
 		});
 
 		room.puzzleItems.forEach((item) => {
-			let position = this.roomPosToPuzzlePos(item.position);
-			let dimensions = this.roomDimToPuzzleDim(item.dimensions);
+			let position = this._roomPosToPuzzlePos(item.position);
+			let dimensions = this._roomDimToPuzzleDim(item.dimensions);
 
 			if (item instanceof Laser) {
 				puzzle.addLaser(new Laser({
@@ -193,42 +193,48 @@ export class DungeonHelper {
 		});
 
 		puzzle.setPlayer(new Player({
-			position: this.roomPosToPuzzlePos(room.player.getPosition()),
-			dimensions: this.roomDimToPuzzleDim(room.player.dimensions)
+			position: this._roomPosToPuzzlePos(room.player.getPosition()),
+			dimensions: this._roomDimToPuzzleDim(room.player.dimensions)
 		}));
 
 		return puzzle;
 	}
 
+	/*--PRIVATE */
+
+	static _cleanData(opts) {
+		if (opts.color) opts.color = LaserColor.colorFromKey(opts.color);
+		if (opts.direction) opts.direction = Direction.directionFromString(opts.direction);
+		if (opts.type) opts.type = Surface.typeFromString(opts.type);
+	}
+
 	/** Helper method. Converts position provided in puzzle dimensions to dimension in room. */
-	static puzzlePosToRoomPos(puzzlePos) {
+	static _puzzlePosToRoomPos(puzzlePos) {
 		return puzzlePos ? { x: puzzlePos.x * PUZZLE_ROOM_SCALE, y: puzzlePos.y * PUZZLE_ROOM_SCALE } : null;
 	}
 
 	/** Helper method. Converts the puzzle dimensions to the room dimensions. */
-	static puzzleDimToRoomDim(puzzleDim) {
+	static _puzzleDimToRoomDim(puzzleDim) {
 		return puzzleDim ? { width: puzzleDim.width * PUZZLE_ROOM_SCALE, height: puzzleDim.height * PUZZLE_ROOM_SCALE } : null;
 	}
 
 	/** Helper method. Converts position provided in room dimensions to puzzle dimensions. */
-	static roomPosToPuzzlePos(roomPos) {
+	static _roomPosToPuzzlePos(roomPos) {
 		return { x: roomPos.x / PUZZLE_ROOM_SCALE, y: roomPos.y / PUZZLE_ROOM_SCALE };
 	}
 
 	/** Helper method. Converts room dimensions to puzzle dimensions. */
-	static roomDimToPuzzleDim(roomDim) {
+	static _roomDimToPuzzleDim(roomDim) {
 		return { width: roomDim.width / PUZZLE_ROOM_SCALE, height: roomDim.height / PUZZLE_ROOM_SCALE };
 	}
 
 	/** Helper method. Instantiates a puzzle item given some item data. Determines type.*/
-	static instantiatePuzzleItem(itemData) {
+	static _instantiatePuzzleItem(itemData) {
 		if (!itemData.class) {
 			throw 'No class associated with itemData. Key was "' + itemData.key + '".'
 		}
 
-		if (itemData.color) itemData.color = LaserColor.colorFromKey(itemData.color);
-		if (itemData.direction) itemData.direction = Direction.directionFromString(itemData.direction);
-		if (itemData.type) itemData.type = Surface.typeFromString(itemData.type);
+		this._cleanData(itemData);
 
 		switch(itemData.class) {
 			case 'Exit':
@@ -239,6 +245,8 @@ export class DungeonHelper {
 				return new Surface(itemData);
 			case 'Target':
 				return new Target(itemData);
+			case 'Panel':
+				return new Panel(itemData);
 			default:
 				return new PuzzleItem(itemData);
 		}
