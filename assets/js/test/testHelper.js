@@ -10,6 +10,7 @@ import { Direction } from '../src/model/direction.js';
 import { Exit } from '../src/model/exit.js';
 import { Target } from '../src/model/target.js';
 import { Surface } from '../src/model/surface.js';
+import { Player } from '../src/model/player.js';
 
 export class TestHelper {
 	static createPuzzle(opts) {
@@ -30,6 +31,10 @@ export class TestHelper {
 
 	static createExit(opts) {
 		return new Exit({...TestHelper.defaults.exit, ...opts})
+	}
+
+	static createPlayer(opts) {
+		return new Player({...TestHelper.defaults.player, ...opts});
 	}
 }
 
@@ -79,5 +84,7 @@ TestHelper.defaults = {
 	exit: {
 		key: 'exit',
 		color: TestHelper.laserColors.red,
-	}
+	},
+
+	player: {},
 };

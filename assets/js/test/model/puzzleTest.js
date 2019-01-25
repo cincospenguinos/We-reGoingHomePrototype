@@ -81,50 +81,40 @@ QUnit.module('Puzzle', () => {
 	});
 
 	QUnit.test('notSolvedButThenSolved', (assert) => {
-		let puzzle = new Puzzle({
-			dimensions: { width: 200, height: 200 },
-			key: 'somepuzzle',
-			roomKey: 'someroom',
-			mapName: 'name'
-		});
-
-		puzzle.addLaser(new Laser({
-			key: 'laserKey',
-			color: LaserColor.RED,
-			direction: Direction.EAST,
-			position: { x: 10, y: 10 },
-			dimensions: { width: 0, height: 0 },
-			laserInteractable: true
-		}));
-
-		let mirror = new Surface({
-			type: Surface.REFLECTIVE,
-			direction: Direction.WEST,
+		let puzzle = TestHelper.createPuzzle();
+		let mirror = TestHelper.createSurface({
+			direction: TestHelper.directions.west,
 			position: { x: 100, y: 50 },
 			dimensions: { width: 20, height: 20 },
-			laserInteractable: true
 		});
-		puzzle.addSurface(mirror);
 
-		puzzle.addExit(new Exit({
-			key: 'exitKey',
-			color: LaserColor.RED,
-			position: { x: 100, height: 190},
-			dimensions: { width: 10, height: 10 },
-			direction: Direction.EAST
+		puzzle.addLaser(TestHelper.createLaser({
+			key: 'laserKey',
+			direction: TestHelper.directions.east,
+			position: { x: 10, y: 10 },
+			dimensions: { width: 0, height: 0 },
 		}));
 
-		puzzle.addTarget(new Target({
+		puzzle.addSurface(mirror);
+
+		puzzle.addExit(TestHelper.createExit({
+			key: 'exitKey',
+			color: TestHelper.laserColors.red,
+			position: { x: 100, height: 190},
+			dimensions: { width: 10, height: 10 },
+			direction: TestHelper.directions.east
+		}));
+
+		puzzle.addTarget(TestHelper.createTarget({
 			key: 'targetKey',
 			position: { x: 90, y: 100 },
 			dimensions: { width: 20, height: 20 },
-			laserInteractable: true
 		}));
 
 		puzzle.solve();
 
 		assert.notOk(puzzle.targets['targetKey'].isLit(), 'Target should not be lit');
-		assert.notOk(puzzle.targets['targetKey'].isStruckBy(LaserColor.RED), 'Target should not be struck by laserKey');
+		assert.notOk(puzzle.targets['targetKey'].isStruckBy(TestHelper.laserColors.red), 'Target should not be struck by laserKey');
 		assert.notOk(puzzle.exits['exitKey'].isOpen, 'Exit should not be open');
 
 		mirror.position.y = 10;
@@ -133,40 +123,31 @@ QUnit.module('Puzzle', () => {
 
 		assert.ok(puzzle.lasers['laserKey'].path, 'Laser should have a path assigned to it');
 		assert.ok(puzzle.targets['targetKey'].isLit(), 'Target should be lit');
-		assert.ok(puzzle.targets['targetKey'].isStruckBy(LaserColor.RED), 'Target should be struck by laserKey');
+		assert.ok(puzzle.targets['targetKey'].isStruckBy(TestHelper.laserColors.red), 'Target should be struck by laserKey');
 		assert.ok(puzzle.exits['exitKey'].isOpen, 'Exit should be open');
 	});
 
 	QUnit.test('weirdLaserBug', (assert) => {
-		let puzzle = new Puzzle({
-			dimensions: { width: 200, height: 200 },
-			key: 'somepuzzle',
-			roomKey: 'someroom',
-			mapName: 'name'
-		});
+		let puzzle = TestHelper.createPuzzle();
 
-		puzzle.addLaser(new Laser({
-			key: 'laserKey',
-			color: LaserColor.RED,
-			direction: Direction.NORTH,
+		puzzle.addLaser(TestHelper.createLaser({
+			direction: TestHelper.directions.north,
 			position: { x: 10, y: 10 },
 			dimensions: { width: 0, height: 0 },
-			laserInteractable: true
 		}));
 
-		puzzle.addExit(new Exit({
+		puzzle.addExit(TestHelper.createExit({
 			key: 'exitKey',
-			color: LaserColor.RED,
+			color: TestHelper.laserColors.red,
 			position: { x: 100, height: 190},
 			dimensions: { width: 10, height: 10 },
-			direction: Direction.EAST
+			direction: TestHelper.directions.east
 		}));
 
-		puzzle.addTarget(new Target({
+		puzzle.addTarget(TestHelper.createTarget({
 			key: 'targetKey',
 			position: { x: 10, y: 100 },
 			dimensions: { width: 20, height: 20 },
-			laserInteractable: true
 		}));
 
 		puzzle.solve();
@@ -175,23 +156,15 @@ QUnit.module('Puzzle', () => {
 	});
 
 	QUnit.test('laserCannotHitPlayer', (assert) => {
-		let puzzle = new Puzzle({
-			dimensions: { width: 200, height: 200 },
-			key: 'somepuzzle',
-			roomKey: 'someroom',
-			mapName: 'name'
-		});
+		let puzzle = TestHelper.createPuzzle();
 
-		puzzle.addLaser(new Laser({
-			key: 'laserKey',
-			color: LaserColor.RED,
-			direction: Direction.SOUTH,
+		puzzle.addLaser(TestHelper.createLaser({
+			direction: TestHelper.directions.south,
 			position: { x: 10, y: 10 },
 			dimensions: { width: 0, height: 0 },
-			laserInteractable: true
 		}));
 
-		puzzle.player = new Player({
+		puzzle.player = TestHelper.createPlayer({
 			position: { x: 6, y: 20 },
 			dimensions: { width: 10, height: 10 },
 		});
