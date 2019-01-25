@@ -6,6 +6,8 @@ import { TestHelper } from '../testHelper.js';
 QUnit.module('Puzzle', () => {
 	QUnit.test('solvedPuzzle', (assert) => {
 		let puzzle = TestHelper.createPuzzle();
+		puzzle.setTranslation({ x: 0, y: 0 });
+
 		let laser = TestHelper.createLaser({
 			direction: TestHelper.directions.east,
 			position: { x: 10, y: 10 },
@@ -42,6 +44,8 @@ QUnit.module('Puzzle', () => {
 
 	QUnit.test('solvedPuzzleWithBlendedColor', (assert) => {
 		let puzzle = TestHelper.createPuzzle();
+		puzzle.setTranslation({ x: 0, y: 0 });
+
 		let laser = TestHelper.createLaser({
 			direction: TestHelper.directions.east,
 			position: { x: 10, y: 10 },
@@ -82,6 +86,8 @@ QUnit.module('Puzzle', () => {
 
 	QUnit.test('notSolvedButThenSolved', (assert) => {
 		let puzzle = TestHelper.createPuzzle();
+		puzzle.setTranslation({ x: 0, y: 0 });
+
 		let mirror = TestHelper.createSurface({
 			direction: TestHelper.directions.west,
 			position: { x: 100, y: 50 },
@@ -129,6 +135,7 @@ QUnit.module('Puzzle', () => {
 
 	QUnit.test('weirdLaserBug', (assert) => {
 		let puzzle = TestHelper.createPuzzle();
+		puzzle.setTranslation({ x: 0, y: 0 });
 
 		puzzle.addLaser(TestHelper.createLaser({
 			direction: TestHelper.directions.north,
@@ -157,6 +164,7 @@ QUnit.module('Puzzle', () => {
 
 	QUnit.test('laserCannotHitPlayer', (assert) => {
 		let puzzle = TestHelper.createPuzzle();
+		puzzle.setTranslation({ x: 0, y: 0 });
 
 		puzzle.addLaser(TestHelper.createLaser({
 			direction: TestHelper.directions.south,

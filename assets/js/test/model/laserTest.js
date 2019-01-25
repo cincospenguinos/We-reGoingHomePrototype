@@ -6,6 +6,7 @@ import { TestHelper } from '../testHelper.js'
 QUnit.module('Laser', () => {
 	QUnit.test('sameColoredLasersMayCross', (assert) => {
 		let puzzle = TestHelper.createPuzzle();
+		puzzle.setTranslation({ x: 0, y: 0 });
 
 		let l1 = TestHelper.createLaser({
 			key: 'l1',
@@ -31,6 +32,7 @@ QUnit.module('Laser', () => {
 
 	QUnit.test('differentColoredLasersMayNotCross', (assert) => {
 		let puzzle = TestHelper.createPuzzle();
+		puzzle.setTranslation({ x: 0, y: 0 });
 
 		let l1 = TestHelper.createLaser({
 			key: 'l1',

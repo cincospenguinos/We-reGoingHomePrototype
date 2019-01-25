@@ -34,6 +34,10 @@ export class Laser extends PuzzleItem {
 		this.setProperFrame();
 	}
 
+	setPath(path) {
+		this.path = path;
+	}
+
 	/** Sets the img to the img provided. */
 	setImg(img) {
 		super.setImg(img);

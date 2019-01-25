@@ -33,118 +33,30 @@ export class Puzzle {
 		}
 	}
 
-	/** Add surface to the puzzle. */
-	addSurface(surface) {
-		surface instanceof Surface ? this.surfaces.push(surface) : (() => { throw 'surface must be an instance of Surface!'});
-	}
-
-	/** Adds the exit provided to the puzzle. */
-	addExit(exit) {
-		exit instanceof Exit ? this.exits[exit.key] = exit : (() => { throw 'exit must ben an instance of Exit!'});
-	}
-
-	/** Adds the laser provided. */
-	addLaser(laser) {
-		laser instanceof Laser ? this.lasers[laser.key] = laser : (() => { throw 'laser must be an instance of Laser!' });
-	}
-
-	/** Adds the target provided. */
-	addTarget(target) {
-		target instanceof Target ? this.targets[target.key] = target : (() => { throw 'target must be an instance of Target!' });
-	}
-
-	/** Adds the panel provided to the puzzle. */
-	addPanel(panel) {
-		panel instanceof PuzzleItem ? this.panels.push(panel) : (() => { throw 'panel must be an instance of Panel!'});
-	}
-
-	setPlayer(player) {
-		if (!(player instanceof Player)) {
-			throw 'Player provided is not a Player object!';
-		}
-
-		this.player = player;
-	}
-
 	/** Solves the puzzle. Sets up the solution variables of the various pieces according to its current state. Optional
 		parameter for calculating laser paths in the puzzle scene included.*/
-	solve(translation = { x: 0, y: 0 }) {
+	solve() {
 		this.resetSolution();
 
 		let interactable = this.getLaserInteractable();
 
 		// 1) Calculate the full path of every laser and assign it to the laser itself
-		let targetLaserPairs = {}; // Pairs each target to the lasers that are striking it
+		let targetLaserPairs = {};
 		this.getLasers().forEach((laser) => {
-			let currentPoint = laser.getLaserPoint(); // Current point we're looking at
-			let currentDirection = laser.direction; // Current direction the laser is facing
-			let path = [currentPoint]; // The path we will assign to our laser
-			let terminated = false; // Whether or not the laser's path terminated by hitting a surface or other colored laser
-			let lastItem = null;
+			let pathInfo = this._generateLaserPath(laser);
+			Object.keys(pathInfo.pairs).forEach((targetKey) => {
+				const incomingLaserArray = pathInfo.pairs[targetKey];
+				let resultingArray = targetLaserPairs[targetKey];
 
-			// Get the closest item
-			while(!terminated) {
-				let closestItem = this.findClosestItem(interactable, currentPoint, currentDirection);
-
-				if (closestItem && closestItem !== lastItem) {
-					let collisionPoint = closestItem.getLaserCollisionPoint(currentPoint, currentDirection);
-					path.push(collisionPoint);
-					lastItem = closestItem;
-
-					// Now that we know that the laser hits this item, we can handle it as we need to
-					if (closestItem instanceof Target) {
-						// closestItem.addStrikingLaser(laser.color);
-						// Add this laser to the laser target pairs
-						if (!targetLaserPairs[closestItem.key]) {
-							targetLaserPairs[closestItem.key] = [];
-						}
-
-						targetLaserPairs[closestItem.key].push(laser.key);
-					} 
-
-					// Now we check our cases. If what we have terminates the laser, then terminate it. If it
-					// doesn't, then check if it's reflective and whether or not it reflects. If it isn't
-					// reflective, then we keep on truckin'
-					if (closestItem.terminatesLaser) {
-						terminated = true;
-					} else if (closestItem.type === Surface.REFLECTIVE) {
-						currentDirection = closestItem.reflectiveDirection(currentDirection);
-
-						if (!currentDirection) {
-							terminated = true;
-						} else {
-							currentPoint = collisionPoint;
-						}
-					} else {
-						currentPoint = collisionPoint;
-						currentDirection = closestItem.direction;
-					}
+				if (targetLaserPairs[targetKey]) {
+					resultingArray = resultingArray.concat(incomingLaserArray);
 				} else {
-					break;
+					resultingArray = incomingLaserArray;
 				}
-			}
-
-			// Handle final point of non-terminated laser
-			if (!terminated) {
-				let newPoint = { x: currentPoint.x, y: currentPoint.y };
-				switch(currentDirection) {
-				case Direction.EAST:
-					newPoint.x = this.dimensions.width + translation.x;
-					break;
-				case Direction.SOUTH:
-					newPoint.y = this.dimensions.height + translation.y;
-					break;
-				case Direction.WEST:
-					newPoint.x = translation.x;
-					break;
-				case Direction.NORTH:
-					newPoint.y = translation.y;
-					break;
-				}
-				path.push(newPoint);
-			}
-
-			laser.path = path;
+				
+				targetLaserPairs[targetKey] = resultingArray;
+			});
+			laser.setPath(pathInfo.path);
 		});
 
 		// 2) Calculate the trimmed paths of the lasers, using every other laser's path
@@ -256,8 +168,126 @@ export class Puzzle {
 		this.getLaserInteractable().forEach((i) => { i.resetImg(); });
 	}
 
+	/** Add surface to the puzzle. */
+	addSurface(surface) {
+		surface instanceof Surface ? this.surfaces.push(surface) : (() => { throw 'surface must be an instance of Surface!'});
+	}
+
+	/** Adds the exit provided to the puzzle. */
+	addExit(exit) {
+		exit instanceof Exit ? this.exits[exit.key] = exit : (() => { throw 'exit must ben an instance of Exit!'});
+	}
+
+	/** Adds the laser provided. */
+	addLaser(laser) {
+		laser instanceof Laser ? this.lasers[laser.key] = laser : (() => { throw 'laser must be an instance of Laser!' });
+	}
+
+	/** Adds the target provided. */
+	addTarget(target) {
+		target instanceof Target ? this.targets[target.key] = target : (() => { throw 'target must be an instance of Target!' });
+	}
+
+	/** Adds the panel provided to the puzzle. */
+	addPanel(panel) {
+		panel instanceof PuzzleItem ? this.panels.push(panel) : (() => { throw 'panel must be an instance of Panel!'});
+	}
+
+	setPlayer(player) {
+		if (!(player instanceof Player)) {
+			throw 'Player provided is not a Player object!';
+		}
+
+		this.player = player;
+	}
+
+	setTranslation(translation) {
+		this.translation = translation;
+	}
+
+	/*--PRIVATE */
+
+	/** Helper method. Generates the path of the laser provided, along with all of the targets that are struck by a laser. */
+	_generateLaserPath(laser) {
+		let interactable = this.getLaserInteractable(); // All laser interactable objects
+		let currentPoint = laser.getLaserPoint(); // Current point we're looking at
+		let currentDirection = laser.direction; // Current direction the laser is facing
+		let path = [currentPoint]; // The path we will assign to our laser
+		let terminated = false; // Whether or not the laser's path terminated by hitting a surface or other colored laser
+		let lastItem = null;
+		let pairs = {};
+
+		// Get the closest item
+		while(!terminated) {
+			let closestItem = this._findClosestItem(interactable, currentPoint, currentDirection);
+
+			if (closestItem && closestItem !== lastItem) {
+				let collisionPoint = closestItem.getLaserCollisionPoint(currentPoint, currentDirection);
+				path.push(collisionPoint);
+				lastItem = closestItem;
+
+				// Now that we know that the laser hits this item, we can handle it as we need to
+				if (closestItem instanceof Target) {
+
+					// Add this laser to the laser target pairs
+					if (!pairs[closestItem.key]) {
+						pairs[closestItem.key] = [];
+					}
+
+					pairs[closestItem.key].push(laser.key);
+				} 
+
+				// Now we check our cases. If what we have terminates the laser, then terminate it. If it
+				// doesn't, then check if it's reflective and whether or not it reflects. If it isn't
+				// reflective, then we keep on truckin'
+				if (closestItem.terminatesLaser) {
+					terminated = true;
+				} else if (closestItem.type === Surface.REFLECTIVE) {
+					currentDirection = closestItem.reflectiveDirection(currentDirection);
+
+					if (!currentDirection) {
+						terminated = true;
+					} else {
+						currentPoint = collisionPoint;
+					}
+				} else {
+					currentPoint = collisionPoint;
+					currentDirection = closestItem.direction;
+				}
+			} else {
+				break;
+			}
+		}
+
+		// Handle final point of non-terminated laser
+		if (!terminated) { path.push(this._getWallTerminationPoint(currentPoint, currentDirection)); }
+
+		return { path: path, pairs: pairs };
+	}
+
+	/** Helper method. Returns the point of termination on the wall of a room or puzzle, given the previous point
+		and the direction the laser is traveling. To be used in calculating a laser's path. */
+	_getWallTerminationPoint(point, direction) {
+		let newPoint = { x: point.x, y: point.y };
+		switch(direction) {
+		case Direction.EAST:
+			newPoint.x = this.dimensions.width + this.translation.x;
+			break;
+		case Direction.SOUTH:
+			newPoint.y = this.dimensions.height + this.translation.y;
+			break;
+		case Direction.WEST:
+			newPoint.x = this.translation.x;
+			break;
+		case Direction.NORTH:
+			newPoint.y = this.translation.y;
+			break;
+		}
+		return newPoint;
+	}
+
 	/** Helper method. Returns the closest item in the list that the laser is intersecting, or null if none exists. */
-	findClosestItem(items, origin, direction) {
+	_findClosestItem(items, origin, direction) {
 		let relevantItems = items.filter((s) => s.getLaserCollisionPoint(origin, direction) !== null);
 
 		if (relevantItems.length === 1) {

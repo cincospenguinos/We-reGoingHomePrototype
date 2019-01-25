@@ -37,6 +37,7 @@ export class PuzzleScene extends Phaser.Scene {
 		// Since we want to have the puzzle scene appear in the center of the screen, we need to do the math to figure out where
 		// exactly things go
 		this.translation = this.getPuzzleTranslation(this.puzzle.dimensions);
+		this.puzzle.setTranslation(translation);
 	}
 
 	preload() {
