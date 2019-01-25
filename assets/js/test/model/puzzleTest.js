@@ -3,6 +3,7 @@
  */
 import { TestHelper } from '../testHelper.js';
 
+// TODO: Migrate these chunks to a separate puzzle solver.
 QUnit.module('Puzzle', () => {
 	QUnit.test('solvedPuzzle', (assert) => {
 		let puzzle = TestHelper.createPuzzle();

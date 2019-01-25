@@ -103,6 +103,8 @@ Andre will need to talk to Stefano about this idea.
 - [ ] Lasers could be specific colors, and when a target is hit by a laser, it lights up that color, but if it's hit by more than one color, it mixes the colors together to make a new color and that new color opens a door specific to that color
 - [ ] What if only certain panels can modify certain puzzle pieces? This would give us even more to tinker with, but may cause frustration in the player
 - [ ] A beam splitter that allowed a beam to be split into two different directions
+- [ ] Multiple targets in rooms
+	* This would require adjusting the rules about things a bit--like do all targets have to be hit to open a door, or only one target needs to be hit?
 
 ## Notes
 

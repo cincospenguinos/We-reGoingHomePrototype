@@ -119,10 +119,6 @@ export class PuzzleItem {
 		}
 	}
 
-	terminatesLaser() {
-		return this.terminatesLaser;
-	}
-
 	/** Override toJSON(). Ensures that puzzle items have all their necessary components. */
 	toJSON() {
 		return {

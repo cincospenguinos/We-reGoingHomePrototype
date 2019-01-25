@@ -160,7 +160,8 @@ export class Puzzle {
 		this.valid = true;
 	}
 
-	/** Helper method. To ensure that no weird bugs with position occur switching between scenes, this will reset images of the various pieces. */
+	/** Helper method. To ensure that no weird bugs with position occur switching between scenes, 
+		this will reset images of the various pieces. */
 	resetImgs() {
 		this.getExits().forEach((i) => { i.img = null; });
 		this.getLasers().forEach((i) => { i.resetImg(); });
@@ -191,6 +192,20 @@ export class Puzzle {
 	/** Adds the panel provided to the puzzle. */
 	addPanel(panel) {
 		panel instanceof PuzzleItem ? this.panels.push(panel) : (() => { throw 'panel must be an instance of Panel!'});
+	}
+
+	/** Adds a striking laser to the target. */
+	addStrikingLaser(laserKey, targetKey) {
+		if (!this.lasers[laserKey] || !this.targets[targetKey]) {
+			throw `Cannot find target or laser! ${laserKey} || ${targetKey}`;
+		}
+
+		this.targets[targetKey].addStrikingLaser(this.lasers[laserKey].color);
+		this.getTargets().forEach((target) => {
+			this.getExits().forEach((exit) => {
+				exit.colorStruck(target.color);
+			});
+		});
 	}
 
 	setPlayer(player) {

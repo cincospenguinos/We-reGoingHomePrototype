@@ -27,6 +27,12 @@ export class Exit extends PuzzleItem {
 		}
 	}
 
+	/** Notification method to this object that the target has a certain color. */
+	colorStruck(color) {
+		this.color === color ? this.setOpen(true) : this.setOpen(false);
+		this.setProperFrame();
+	}
+
 	/** Sets whether or not the door is open. */
 	setOpen(open) {
 		this.isOpen = open;
