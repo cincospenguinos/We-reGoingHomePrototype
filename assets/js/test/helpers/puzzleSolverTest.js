@@ -90,6 +90,50 @@ QUnit.module('PuzzleSolver', () => {
 			assert.notOk(puzzle.targets['target'].isStruckBy(TestHelper.laserColors.red), 'Target should not be struck by red laser');
 			assert.notOk(puzzle.exits['exit'].isOpen, 'Exit should not be open');
 		});
+
+		QUnit.test('puzzle solved when same colors cross', (assert) => {
+			let puzzle = TestHelper.createPuzzle();
+			puzzle.setTranslation({ x: 0, y: 0 });
+
+			let laser1 = TestHelper.createLaser({
+				direction: TestHelper.directions.east,
+				position: { x: 50, y: 50 },
+				dimensions: { width: 0, height: 0 },
+			});
+
+			let laser2 = TestHelper.createLaser({
+				key: 'otherlaser',
+				position: { x: 80, y: 10 },
+				dimensions: { width: 0, height: 0 },
+				color: TestHelper.laserColors.red,
+				direction: TestHelper.directions.south,
+			})
+
+			let target = TestHelper.createTarget({
+				position: { x: 100, y: 55 },
+				dimensions: { width: 20, height: 20 },
+			});
+
+			let exit = TestHelper.createExit({
+				direction: TestHelper.directions.east,
+				position: { x: 100, height: 190},
+				dimensions: { width: 10, height: 10 },
+			});
+
+			puzzle.addLaser(laser1);
+			puzzle.addLaser(laser2);
+			puzzle.addTarget(target);
+			puzzle.addExit(exit);
+
+			const puzzleSolver = new PuzzleSolver(puzzle);
+			puzzleSolver.solve();
+
+			assert.ok(puzzle.lasers['laser'].path, 'Laser should have a path assigned to it');
+			assert.ok(puzzle.lasers['otherlaser'].path, 'Other laser should have a path assigned to it');
+			assert.ok(puzzle.targets['target'].isLit(), 'Target should be lit');
+			assert.ok(puzzle.targets['target'].isStruckBy(TestHelper.laserColors.red), 'Target should be struck by red laser');
+			assert.ok(puzzle.exits['exit'].isOpen, 'Exit should be open');
+		});
 	})
 
 });

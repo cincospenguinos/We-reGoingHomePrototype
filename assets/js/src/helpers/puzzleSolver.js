@@ -31,6 +31,7 @@ export class PuzzleSolver {
 		// 3. Establish which targets are hit by what lasers
 		// 4. Manage modification of exits according to targets hit by lasers
 		// 5. Check the validity of the puzzle to ensure that it's acceptable
+
 		// 6. Set the puzzle object according to the current state
 		this._setPuzzleToCurrentState();
 
@@ -65,7 +66,9 @@ export class PuzzleSolver {
 				path.push(collisionPoint);
 				lastItem = closestItem;
 
-				if (closestItem instanceof Target) { this._addStrikingLaserToState(closestItem.key, laser.key); }
+				if (closestItem instanceof Target) {
+					this._addStrikingLaserToState(closestItem.key, laser.key); 
+				}
 
 				if (closestItem.terminatesLaser || !closestItem.reflectiveDirection(currentDirection)) {
 					terminated = true;
@@ -91,14 +94,16 @@ export class PuzzleSolver {
 			Object.keys(this.puzzleState.current.laserPaths)
 				.filter((k) => k !== laser1key)
 				.forEach((laser2key) => {
-					let laser1Path = this.puzzleState.current.laserPaths[laser1key];
-					let laser2Path = this.puzzleState.current.laserPaths[laser2key];
+					if (this.puzzle.lasers[laser1key].color.key !== this.puzzle.lasers[laser2key].color.key) {
+						let laser1Path = this.puzzleState.current.laserPaths[laser1key];
+						let laser2Path = this.puzzleState.current.laserPaths[laser2key];
 
-					const intersection = this._getIntersectionBetween(laser1Path, laser2Path);
+						const intersection = this._getIntersectionBetween(laser1Path, laser2Path);
 
-					if (intersection) {
-						this._removeStrikingLaserFromState(laser1key);
-						this._removeStrikingLaserFromState(laser2key);
+						if (intersection) {
+							this._removeStrikingLaserFromState(laser1key);
+							this._removeStrikingLaserFromState(laser2key);
+						}
 					}
 				});
 		});
