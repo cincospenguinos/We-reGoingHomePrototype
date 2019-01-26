@@ -27,28 +27,45 @@ export class PuzzleSolver {
 		});
 
 		this._trimLaserPaths();
-
-		// 3. Establish which targets are hit by what lasers
-		// 4. Manage modification of exits according to targets hit by lasers
-		// 5. Check the validity of the puzzle to ensure that it's acceptable
-
-		// 6. Set the puzzle object according to the current state
 		this._setPuzzleToCurrentState();
-
-		// TODO: set puzzle state diff here
-	}
-
-	puzzleStateCurrent() {
-		return this.puzzleState.current;
 	}
 
 	/** Returns the changes in puzzle state between the moment before solve() was called and the moment after.
 		To be used to help handle things like animations and things. */
-	puzzleStateDiff() { // TODO: Calculating state differences?
+	puzzleStateDiff() {
+		if (!this.puzzleState.diff) {
+			this.puzzleState.diff = this._generateStateDiff();
+		}
+
 		return this.puzzleState.diff;
 	}
 
 	/*--PRIVATE */
+
+	/** Helper method. Returns difference between previous and current puzzle states. */
+	_generateStateDiff() {
+		const diff = { targets: {} }
+		const previousState = this.puzzleState.previous;
+		const currentState = this.puzzleState.current;
+
+		Object.keys(previousState.strikingLasers).forEach((targetKey) => {
+			diff.targets[targetKey] = { previous: previousState };
+
+			if (currentState[targetKey]) {
+				diff.targets[targetKey].current = currentState[targetKey];
+			} else {
+				diff.targets[targetKey].current = null;
+			}
+		});
+
+		Object.keys(currentState.strikingLasers).forEach((targetKey) => {
+			diff.targets[targetKey].current = currentState[targetKey];
+		});
+
+		diff.valid = { previous: this.puzzleState.previous.valid, current: this.puzzleState.current.valid };
+
+		return diff;
+	}
 
 	/** Helper method. Returns the laser's path through the puzzle, disregarding other lasers. */
 	_determineLaserPath(laser) {
@@ -248,6 +265,7 @@ export class PuzzleSolver {
 
 	/** Helper method. Sets the internals of puzzle object to match the current state object. */
 	_setPuzzleToCurrentState() {
+		this.puzzle.reset();
 		Object.keys(this.puzzleState.current.strikingLasers).forEach((targetKey) => {
 			this.puzzleState.current.strikingLasers[targetKey].forEach((laserKey) => {
 				this.puzzle.addStrikingLaser(laserKey, targetKey);

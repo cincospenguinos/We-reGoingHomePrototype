@@ -62,4 +62,4 @@ export const COLORS = {
 	RED: 0xFF1010
 };
 
-export const PUZZLE_ROOM_SCALE = 4; // puzzle dimensions * SCALE = room dimensions
+export const PUZZLE_ROOM_SCALE = 4;

@@ -154,10 +154,10 @@ export class Puzzle {
 	}
 
 	/** Helper method. Resets the various state variables so that they can be properly set by solve() */
-	resetSolution() {
+	reset() {
 		this.getExits().forEach((exit) => { exit.reset(); });
 		this.getTargets().forEach((target) => { target.resetStrikingLasers(); });
-		this.valid = true;
+		this.valid = null;
 	}
 
 	/** Helper method. To ensure that no weird bugs with position occur switching between scenes, 
