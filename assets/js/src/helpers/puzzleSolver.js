@@ -64,7 +64,7 @@ export class PuzzleSolver {
 				lastItem = closestItem;
 
 				if (closestItem instanceof Target) {
-					this.factory.addStrikingLaser(closestItem.key, laser.key); 
+					this.factory.addStrikingLaser(closestItem.key, laser); 
 				}
 
 				if (closestItem.terminatesLaser || !closestItem.reflectiveDirection(currentDirection)) {
@@ -266,8 +266,8 @@ export class PuzzleSolver {
 		this.puzzleState.current = this.factory.getState();
 
 		Object.keys(this.puzzleState.current.targets).forEach((targetKey) => {
-			this.puzzleState.current.targets[targetKey].forEach((laserKey) => {
-				this.puzzle.addStrikingLaser(laserKey, targetKey);
+			this.puzzleState.current.targets[targetKey].forEach((laser) => {
+				this.puzzle.addStrikingLaser(laser.key, targetKey);
 			});
 		});
 

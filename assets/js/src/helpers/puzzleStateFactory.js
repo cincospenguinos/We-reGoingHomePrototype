@@ -8,18 +8,18 @@ export class PuzzleStateFactory {
 	}
 
 	/** Add a laser/target pair to state. */
-	addStrikingLaser(target, laserKey) {
+	addStrikingLaser(target, laser) {
 		if (!this.current.targets[target]) {
 			this.current.targets[target] = [];
 		}
 
-		this.current.targets[target].push(laserKey);
+		this.current.targets[target].push(laser);
 	}
 
 	/** Removes the laser provided from the state. */
-	removeStrikingLaser(laserKey) {
+	removeStrikingLaser(laser) {
 		Object.keys(this.current.targets).forEach((targetKey) => {
-			const idx = this.current.targets[targetKey].indexOf(laserKey);
+			const idx = this.current.targets[targetKey].indexOf(laser);
 
 			if (idx > -1) {
 				this.current.targets[targetKey].splice(idx, 1);
@@ -34,6 +34,7 @@ export class PuzzleStateFactory {
 
 	/** Returns the state as an object. */
 	getState() {
+		// TODO: Modify this?
 		return this.current;
 	}
 
@@ -44,12 +45,44 @@ export class PuzzleStateFactory {
 
 	/** Static method. Returns difference between two state objects. */
 	static diff(previous, current) {
-		const diff = { targets: { previous: [], current: [] }, valid: { previous: previous.valid, current: current.valid } };
+		const diff = { 
+			targets: { 
+				previous: {}, 
+				current: {},
+			}, 
+			valid: { 
+				previous: previous.valid, 
+				current: current.valid 
+			},
+		};
 
-		// TODO: Figure out how we are going to do the diff
-		// Object.keys(previous.targets).forEach((targetKey) => {
-		// 	diff.targets[targetKey].push()
-		// });
+		Object.keys(previous.targets).forEach((targetKey) => {
+			const lasers = previous.targets[targetKey];
+
+			if (!diff.targets.previous[targetKey]) {
+				diff.targets.previous[targetKey] = [];
+			}
+
+			lasers.forEach((laser) => {
+				if (diff.targets.previous[targetKey].indexOf(laser.color.key) === -1) {
+					diff.targets.previous[targetKey].push(laser.color.key);
+				}
+			});
+		});
+
+		Object.keys(current.targets).forEach((targetKey) => {
+			const lasers = current.targets[targetKey];
+
+			if (!diff.targets.current[targetKey]) {
+				diff.targets.current[targetKey] = [];
+			}
+
+			lasers.forEach((laser) => {
+				if (diff.targets.current[targetKey].indexOf(laser.color.key) === -1) {
+					diff.targets.current[targetKey].push(laser.color.key);
+				}
+			});
+		});
 
 		return diff;
 	}
@@ -59,5 +92,4 @@ export class PuzzleStateFactory {
 	_generateNewState() {
 		return { targets: {}, valid: undefined };
 	}
-
 }

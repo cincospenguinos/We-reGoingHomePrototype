@@ -93,7 +93,10 @@ QUnit.module('PuzzleSolver', () => {
 
 			const diffState = { 
 				targets: {
-					target: { previousColor: null, currentColor: TestHelper.laserColors.red.key },
+					previous: {},
+					current: {
+						target: [TestHelper.laserColors.red.key],
+					},
 				},
 
 				valid: { previous: true, current: true }
