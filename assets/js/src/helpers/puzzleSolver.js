@@ -101,8 +101,8 @@ export class PuzzleSolver {
 						const intersection = this._getIntersectionBetween(laser1Path, laser2Path);
 
 						if (intersection) {
-							this.factory.removeStrikingLaser(laser1.color.key);
-							this.factory.removeStrikingLaser(laser2.color.key);
+							this.factory.removeStrikingLaser(laser1);
+							this.factory.removeStrikingLaser(laser2);
 						}
 					}
 				});
