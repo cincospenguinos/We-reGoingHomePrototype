@@ -46,6 +46,7 @@ export class PuzzleStateFactory {
 	static diff(previous, current) {
 		const diff = { targets: { previous: [], current: [] }, valid: { previous: previous.valid, current: current.valid } };
 
+		// TODO: Figure out how we are going to do the diff
 		// Object.keys(previous.targets).forEach((targetKey) => {
 		// 	diff.targets[targetKey].push()
 		// });

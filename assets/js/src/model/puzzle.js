@@ -153,8 +153,8 @@ export class Puzzle {
 		return this.valid;
 	}
 
-	isValid() {
-		
+	setValid(bool) {
+		this.valid = bool;
 	}
 
 	/** Helper method. Resets the various state variables so that they can be properly set by solve() */

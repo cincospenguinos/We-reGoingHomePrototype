@@ -31,10 +31,7 @@ export class PuzzleSolver {
 		});
 
 		this._trimLaserPaths();
-
-		// TODO: Validity?
-
-		this.puzzleState.current = this.factory.getState();
+		this._determinePuzzleValidity();
 		this._setPuzzleToCurrentState();
 	}
 
@@ -109,6 +106,39 @@ export class PuzzleSolver {
 						}
 					}
 				});
+		});
+	}
+
+	/** Helper method. Determines whether the puzzle is valid or not. */
+	_determinePuzzleValidity() {
+		this.puzzle.getLasers().forEach((laser) => {
+			if (this.puzzle.player) {
+				let path = this.laserPaths[laser.key];
+
+				let validity = true;
+				for (let i = 0; i < path.length - 1; i++) {
+					let line = { x1: path[i].x, y1: path[i].y, x2: path[i + 1].x, y2: path[i + 1].y };
+					let playerBounds = this.puzzle.player.getExtrema();
+
+					if (line.y1 === line.y2) { // line is horizontal
+						if (line.y1 > playerBounds.y.min && line.y2 < playerBounds.y.max 
+							&& this.puzzle.player.getPosition().x < Math.max(line.x1, line.x2)
+							&& this.puzzle.player.getPosition().x > Math.min(line.x1, line.x2)) {
+							validity = false;
+						}
+					} else { // line is vertical
+						if (line.x1 > playerBounds.x.min && line.x2 < playerBounds.x.max 
+							&& this.puzzle.player.getPosition().y < Math.max(line.y1, line.y2)
+							&& this.puzzle.player.getPosition().y > Math.min(line.y1, line.y2)) {
+							validity = false;
+						}
+					}
+				}
+
+				this.factory.setValid(validity);
+			} else {
+				this.factory.setValid(true);
+			}
 		});
 	}
 
@@ -240,6 +270,8 @@ export class PuzzleSolver {
 				this.puzzle.addStrikingLaser(laserKey, targetKey);
 			});
 		});
+
+		this.puzzle.setValid(this.puzzleState.current.valid);
 	}
 
 	_newPuzzleState() {
