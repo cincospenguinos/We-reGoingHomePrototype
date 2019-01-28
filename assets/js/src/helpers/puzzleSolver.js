@@ -3,6 +3,8 @@
  *
  * Class that handles solving the puzzle, and indicates changes of state.
  */
+import { PuzzleStateFactory } from './puzzleStateFactory.js';
+
 import { Target } from '../model/target.js';
 import { Direction } from '../model/direction.js';
 
@@ -10,23 +12,29 @@ export class PuzzleSolver {
 	constructor(puzzle) {
 		this.puzzle = puzzle;
 
+		this.factory = new PuzzleStateFactory();
+
+		this.laserPaths = {};
+
 		this.puzzleState = {
-			previous: this._newPuzzleState(),
-			current: this._newPuzzleState(),
-			diff: null,
+			previous: null,
+			current: null,
 		};
 	}
 
 	/** Solves the puzzle this solver holds. */
 	solve() {
-		this.puzzleState.previous = this.puzzleState.current;
-		this.puzzleState.current = this._newPuzzleState();
+		this._newPuzzleState();
 
 		this.puzzle.getLasers().forEach((laser) => {
-			this.puzzleState.current.laserPaths[laser.key] = this._determineLaserPath(laser);
+			this.laserPaths[laser.key] = this._determineLaserPath(laser);
 		});
 
 		this._trimLaserPaths();
+
+		// TODO: Validity?
+
+		this.puzzleState.current = this.factory.getState();
 		this._setPuzzleToCurrentState();
 	}
 
@@ -34,46 +42,13 @@ export class PuzzleSolver {
 		To be used to help handle things like animations and things. */
 	puzzleStateDiff() {
 		if (!this.puzzleState.diff) {
-			this.puzzleState.diff = this._generateStateDiff();
+			this.puzzleState.diff = PuzzleStateFactory.diff(this.puzzleState.previous, this.puzzleState.current);
 		}
 
 		return this.puzzleState.diff;
 	}
 
 	/*--PRIVATE */
-
-	/** Helper method. Returns difference between previous and current puzzle states. */
-	_generateStateDiff() {
-		const diff = { targets: {} }
-		const previousState = this.puzzleState.previous;
-		const currentState = this.puzzleState.current;
-
-		Object.keys(previousState.strikingLasers).forEach((targetKey) => {
-			diff.targets[targetKey] = { previous: previousState.strikingLasers[targetKey] };
-
-			if (currentState[targetKey]) {
-				diff.targets[targetKey].current = currentState.strikingLasers[targetKey];
-			} else {
-				diff.targets[targetKey].current = null;
-			}
-		});
-
-		Object.keys(currentState.strikingLasers).forEach((targetKey) => {
-			if (!diff.targets[targetKey]) {
-				diff.targets[targetKey] = { currentColor: currentState.strikingLasers[targetKey] };
-			}
-
-			if (previousState[targetKey]) {
-				diff.targets[targetKey].previous = previousState.strikingLasers[targetKey];
-			} else {
-				diff.targets[targetKey].previous = null;
-			}
-		});
-
-		diff.valid = { previous: this.puzzleState.previous.valid, current: this.puzzleState.current.valid };
-
-		return diff;
-	}
 
 	/** Helper method. Returns the laser's path through the puzzle, disregarding other lasers. */
 	_determineLaserPath(laser) {
@@ -92,7 +67,7 @@ export class PuzzleSolver {
 				lastItem = closestItem;
 
 				if (closestItem instanceof Target) {
-					this._addStrikingLaserToState(closestItem.key, laser.key); 
+					this.factory.addStrikingLaser(closestItem.key, laser.key); 
 				}
 
 				if (closestItem.terminatesLaser || !closestItem.reflectiveDirection(currentDirection)) {
@@ -115,19 +90,22 @@ export class PuzzleSolver {
 
 	/** Helper method. Trim the laser's path through the puzzle, ensuring that only like colored lasers may cross. */
 	_trimLaserPaths() {
-		Object.keys(this.puzzleState.current.laserPaths).forEach((laser1key) => {
-			Object.keys(this.puzzleState.current.laserPaths)
+		Object.keys(this.laserPaths).forEach((laser1key) => {
+			Object.keys(this.laserPaths)
 				.filter((k) => k !== laser1key)
 				.forEach((laser2key) => {
-					if (this.puzzle.lasers[laser1key].color.key !== this.puzzle.lasers[laser2key].color.key) {
-						let laser1Path = this.puzzleState.current.laserPaths[laser1key];
-						let laser2Path = this.puzzleState.current.laserPaths[laser2key];
+					const laser1 = this.puzzle.lasers[laser1key];
+					const laser2 = this.puzzle.lasers[laser2key];
+
+					if (laser1.color.key !== laser2.color.key) {
+						let laser1Path = this.laserPaths[laser1.key];
+						let laser2Path = this.laserPaths[laser2.key];
 
 						const intersection = this._getIntersectionBetween(laser1Path, laser2Path);
 
 						if (intersection) {
-							this._removeStrikingLaserFromState(laser1key);
-							this._removeStrikingLaserFromState(laser2key);
+							this.factory.removeStrikingLaser(laser1.color.key);
+							this.factory.removeStrikingLaser(laser2.color.key);
 						}
 					}
 				});
@@ -170,25 +148,6 @@ export class PuzzleSolver {
 			break;
 		}
 		return newPoint;
-	}
-
-	/** Helper method. Adds striking laser to target in state. */
-	_addStrikingLaserToState(targetKey, laserKey) {
-		const strikingLasers = this.puzzleState.current.strikingLasers;
-
-		if (!strikingLasers[targetKey]) {
-			strikingLasers[targetKey] = [];
-		}
-
-		strikingLasers[targetKey].push(laserKey);
-	}
-
-	/** Helper method. Removes laser matching key provided from any target in the state. */
-	_removeStrikingLaserFromState(laserKey) {
-		const strikingLasers = this.puzzleState.current.strikingLasers;
-		Object.keys(strikingLasers).forEach((targetKey) => {
-			strikingLasers[targetKey] = strikingLasers[targetKey].filter(l => l === laserKey);
-		});
 	}
 
 	/** Helper method. Returns intersection between the two lasers provided, or null if none exists.*/
@@ -274,14 +233,17 @@ export class PuzzleSolver {
 	/** Helper method. Sets the internals of puzzle object to match the current state object. */
 	_setPuzzleToCurrentState() {
 		this.puzzle.reset();
-		Object.keys(this.puzzleState.current.strikingLasers).forEach((targetKey) => {
-			this.puzzleState.current.strikingLasers[targetKey].forEach((laserKey) => {
+		this.puzzleState.current = this.factory.getState();
+
+		Object.keys(this.puzzleState.current.targets).forEach((targetKey) => {
+			this.puzzleState.current.targets[targetKey].forEach((laserKey) => {
 				this.puzzle.addStrikingLaser(laserKey, targetKey);
 			});
 		});
 	}
 
 	_newPuzzleState() {
-		return { laserPaths: {}, strikingLasers: {}, valid: false }
+		this.puzzleState.previous = this.puzzleState.current;
+		this.puzzleState.current = this.factory.newState();
 	}
 }

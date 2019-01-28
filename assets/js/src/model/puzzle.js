@@ -153,6 +153,10 @@ export class Puzzle {
 		return this.valid;
 	}
 
+	isValid() {
+		
+	}
+
 	/** Helper method. Resets the various state variables so that they can be properly set by solve() */
 	reset() {
 		this.getExits().forEach((exit) => { exit.reset(); });
