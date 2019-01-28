@@ -5,7 +5,6 @@ import { TestHelper } from '../testHelper.js';
 import { PuzzleSolver } from '../../src/helpers/puzzleSolver.js';
 
 QUnit.module('PuzzleSolver', () => {
-
 	QUnit.module('single laser puzzle', (assert) => {
 		QUnit.test('solves a puzzle with a single laser', (assert) => {
 			let puzzle = TestHelper.createPuzzle();
