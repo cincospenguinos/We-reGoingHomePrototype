@@ -6,6 +6,7 @@
 import { KEYS, SPRITES } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
 import { ItemFactory } from '../helpers/itemFactory.js';
+import { PuzzleSolver } from '../helpers/puzzleSolver.js';
 
 import { Surface } from '../model/surface.js';
 import { Laser } from '../model/laser.js';
@@ -37,7 +38,8 @@ export class PuzzleScene extends Phaser.Scene {
 		// Since we want to have the puzzle scene appear in the center of the screen, we need to do the math to figure out where
 		// exactly things go
 		this.translation = this.getPuzzleTranslation(this.puzzle.dimensions);
-		this.puzzle.setTranslation(translation);
+		this.puzzle.setTranslation(this.translation);
+		this.puzzleSolver = new PuzzleSolver(this.puzzle);
 	}
 
 	preload() {
@@ -100,7 +102,7 @@ export class PuzzleScene extends Phaser.Scene {
 
 	update() {
 		this.handleInput();
-		this.puzzle.solve(this.translation);
+		this.puzzleSolver.solve();
 		this.puzzle.getLasers().forEach(laser => this._drawLaserPath(this.laserGraphics[laser.key], laser.path));
 	}
 

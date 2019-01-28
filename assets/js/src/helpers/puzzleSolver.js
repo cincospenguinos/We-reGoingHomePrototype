@@ -271,6 +271,10 @@ export class PuzzleSolver {
 			});
 		});
 
+		Object.keys(this.laserPaths).forEach((laserKey) => {
+			this.puzzle.lasers[laserKey].setPath(this.laserPaths[laserKey]);
+		});
+
 		this.puzzle.setValid(this.puzzleState.current.valid);
 	}
 

@@ -60,9 +60,11 @@ export class DungeonHelper {
 
 	/** Helper method. Converts puzzle to a room object with the dimensions established in Room. */
 	static puzzleToRoom(puzzle) {
-		if (!puzzle.solve()) {
+		if (!puzzle.valid) {
 			throw 'Puzzle is not valid! Cannot convert to room!';
 		}
+
+		puzzle.undoTranslation();
 
 		let room = new Room({
 			key: puzzle.roomKey,

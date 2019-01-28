@@ -100,6 +100,20 @@ export class Puzzle {
 		this.player = player;
 	}
 
+	/** Takes all of the items and removes the translation from them. */
+	undoTranslation() {
+		if (this.translation) {
+			this.getAllItems().forEach((item) => {
+				const newPosition = { 
+					x: item.getPosition().x - this.translation.x,
+					y: item.getPosition().y - this.translation.y,
+				};
+				
+				item.setPosition(newPosition);
+			});
+		}
+	}
+
 	setTranslation(translation) {
 		this.translation = translation;
 	}
