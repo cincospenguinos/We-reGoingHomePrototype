@@ -49,17 +49,25 @@ export class PuzzleSolver {
 		const currentState = this.puzzleState.current;
 
 		Object.keys(previousState.strikingLasers).forEach((targetKey) => {
-			diff.targets[targetKey] = { previous: previousState };
+			diff.targets[targetKey] = { previous: previousState.strikingLasers[targetKey] };
 
 			if (currentState[targetKey]) {
-				diff.targets[targetKey].current = currentState[targetKey];
+				diff.targets[targetKey].current = currentState.strikingLasers[targetKey];
 			} else {
 				diff.targets[targetKey].current = null;
 			}
 		});
 
 		Object.keys(currentState.strikingLasers).forEach((targetKey) => {
-			diff.targets[targetKey].current = currentState[targetKey];
+			if (!diff.targets[targetKey]) {
+				diff.targets[targetKey] = { currentColor: currentState.strikingLasers[targetKey] };
+			}
+
+			if (previousState[targetKey]) {
+				diff.targets[targetKey].previous = previousState.strikingLasers[targetKey];
+			} else {
+				diff.targets[targetKey].previous = null;
+			}
 		});
 
 		diff.valid = { previous: this.puzzleState.previous.valid, current: this.puzzleState.current.valid };
