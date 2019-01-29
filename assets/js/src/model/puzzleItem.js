@@ -79,6 +79,8 @@ export class PuzzleItem {
 	/** Helper method. To be used by children classes to modify their sprite when moused over in puzzle mode. */
 	mouseOut() { throw 'Implement me in children!'; }
 
+	runAnimation() { throw 'Implement me in children!';	}
+
 	/** Returns the collision point of this puzzle item. Returns null if this item does not interact with a laser, or if the laser does not hit this item. 
 		Note that the direction provided is the direction the item at the point provided is facing. */
 	getLaserCollisionPoint(point, direction) {

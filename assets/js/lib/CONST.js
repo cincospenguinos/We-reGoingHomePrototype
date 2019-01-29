@@ -36,11 +36,22 @@ export const SPRITES = {
 	roomPanel: { key: 'roomPanel', location: spriteDir + 'room/panel.png', frameWidth: 64, frameHeight: 64 },
 	roomPlayer: { key: 'roomPlayer', location: spriteDir + 'room/player.png', frameWidth: 64, frameHeight: 64 },
 
+	roomTargetRedLit: { key: 'roomTargetRedLit', location: spriteDir + 'room/target_red_animated.png', frameWidth: 256, frameHeight: 256 },
+
 	mainCharacter: { key: 'mainCharacter', location: spriteDir + 'mainCharacter.png' },
 
 	// Tilesheet shit
 	malkhutTilesheet: { key: 'malkhut_winter_tilesheet', location: `${spriteDir}tilesheets/malkhut_winter_tilesheet.png` },
 	doorTilesheet: { key: 'door_tilesheet', location: `${spriteDir}tilesheets/door_tilesheet.png`},
+};
+
+export const ANIMS = {
+	roomTargetRedLit: {
+		key: 'roomTargetRedLit',
+		frameRate: 10,
+		yoyo: false,
+		repeat: -1,
+	},
 };
 
 export const PADDING = {

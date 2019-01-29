@@ -4,7 +4,7 @@
  * Scene to manage a top-down scrolling view. Mostly for experimentation.
  */
 import { ItemFactory } from '../helpers/itemFactory.js';
-import { KEYS, SPRITES, COLORS, PUZZLE_ROOM_SCALE, PADDING } from '../../lib/CONST.js';
+import { KEYS, SPRITES, COLORS, PUZZLE_ROOM_SCALE, PADDING, ANIMS } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
 import { DungeonHelper } from '../helpers/dungeonHelper.js';
 
@@ -59,6 +59,7 @@ export class TopDownScene extends Phaser.Scene {
 		SceneHelper.loadSpritesheet(this, SPRITES.roomLaser);
 		SceneHelper.loadSpritesheet(this, SPRITES.roomMirror);
 		SceneHelper.loadSpritesheet(this, SPRITES.roomTarget);
+		SceneHelper.loadSpritesheet(this, SPRITES.roomTargetRedLit)
 
 		this.load.json('dungeon0', 'assets/data/dungeons/dungeon0.json');
 	}
@@ -77,9 +78,19 @@ export class TopDownScene extends Phaser.Scene {
 				this._drawLaserPath(item, puzzleItemGroup);
 			} else if (item instanceof Panel) {
 				this._setupPanel(item);
+			} 
+
+			if (item instanceof Target && item.isLit()) {
+				const config = {...ANIMS.roomTargetRedLit};
+				config.frames = this.anims.generateFrameNumbers(SPRITES.roomTargetRedLit.key)
+				this.anims.create(config);
+				img.anims.load(ANIMS.roomTargetRedLit.key);
+				img.anims.play(ANIMS.roomTargetRedLit.key);
+			} else {
+				item.setProperFrame(true);
 			}
 
-			item.setProperFrame(true);
+
 		});
 
 		let playerImg = this._createPlayer();
