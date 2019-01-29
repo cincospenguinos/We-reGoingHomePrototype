@@ -38,9 +38,6 @@ export class SceneHelper {
 	/** Helper method. Transitions to the top down scene, setting up all the necessary scaling as we go. */
 	static transitionToTopDownScene(currentScene, data) {
 		this.assertTransitionDataCorrect(data, { puzzle: true });
-
-		new PuzzleSolver(data.puzzle).solve();
-		debugger;
 		data.room = DungeonHelper.puzzleToRoom(data.puzzle, data.dungeon.getRoom(data.puzzle.roomKey).mapKey);
 		currentScene.scene.start(KEYS.scene.topDownScene, data);
 	}

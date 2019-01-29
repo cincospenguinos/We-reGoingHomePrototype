@@ -191,6 +191,7 @@ export class TopDownScene extends Phaser.Scene {
 		});
 		
 		laser.getPathAsLines().forEach((line) => {
+			// debugger;
 			let adjustedLine = {
 				x1: line.x1 + this.padding.x,
 				y1: line.y1 + this.padding.y,

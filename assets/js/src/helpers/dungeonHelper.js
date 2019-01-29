@@ -64,8 +64,6 @@ export class DungeonHelper {
 			throw 'Puzzle is not valid! Cannot convert to room!';
 		}
 
-		puzzle.undoTranslation();
-
 		let room = new Room({
 			key: puzzle.roomKey,
 			puzzleKey: puzzle.key,

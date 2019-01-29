@@ -7,7 +7,10 @@
 import { KEYS, SPRITES } from '../../lib/CONST.js';
 import { DungeonHelper } from '../helpers/dungeonHelper.js';
 import { Player } from '../model/player.js';
+
 import { SceneHelper } from '../helpers/sceneHelper.js';
+import { PuzzleSolver } from '../helpers/puzzleSolver.js';
+
 import { ThoughtsController } from '../controllers/thoughtsController.js';
 
 export class MenuScene extends Phaser.Scene {
@@ -33,6 +36,7 @@ export class MenuScene extends Phaser.Scene {
 			let puzzleText = this.add.text(32, i * 32 + 16, roomName, { fontSize: '16px', fill: '#FFFFFF'}).setInteractive();
 			puzzleText.on('pointerdown', (evt, objects) => {
 				let puzzle = DungeonHelper.roomToPuzzle(dungeon.getRoom(roomName));
+				new PuzzleSolver(puzzle).solve();
 				SceneHelper.transitionToTopDownScene(this, { dungeon: dungeon, puzzle: puzzle, thoughtsController: this.thoughtsController });
 			});
 		}
