@@ -38,11 +38,7 @@ export class PuzzleSolver {
 	/** Returns the changes in puzzle state between the moment before solve() was called and the moment after.
 		To be used to help handle things like animations and things. */
 	puzzleStateDiff() {
-		if (!this.puzzleState.diff) {
-			this.puzzleState.diff = PuzzleStateFactory.diff(this.puzzleState.previous, this.puzzleState.current);
-		}
-
-		return this.puzzleState.diff;
+		return PuzzleStateFactory.diff(this.puzzleState.previous, this.puzzleState.current);
 	}
 
 	/*--PRIVATE */
@@ -280,6 +276,6 @@ export class PuzzleSolver {
 
 	_newPuzzleState() {
 		this.puzzleState.previous = this.puzzleState.current;
-		this.puzzleState.current = this.factory.newState();
+		this.factory.newState();
 	}
 }

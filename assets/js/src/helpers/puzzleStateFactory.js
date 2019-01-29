@@ -50,37 +50,53 @@ export class PuzzleStateFactory {
 				current: {},
 			}, 
 			valid: { 
-				previous: previous.valid, 
-				current: current.valid 
+				previous: previous ? previous.valid : undefined, 
+				current: current ? current.valid : undefined, 
 			},
 		};
 
-		Object.keys(previous.targets).forEach((targetKey) => {
-			const lasers = previous.targets[targetKey];
+		if (previous) {
+			Object.keys(previous.targets).forEach((targetKey) => {
+				const lasers = previous.targets[targetKey];
 
-			if (!diff.targets.previous[targetKey]) {
-				diff.targets.previous[targetKey] = [];
-			}
-
-			lasers.forEach((laser) => {
-				if (diff.targets.previous[targetKey].indexOf(laser.color.key) === -1) {
-					diff.targets.previous[targetKey].push(laser.color.key);
+				if (!diff.targets.previous[targetKey]) {
+					diff.targets.previous[targetKey] = [];
 				}
+
+				lasers.forEach((laser) => {
+					if (diff.targets.previous[targetKey].indexOf(laser.color.key) === -1) {
+						diff.targets.previous[targetKey].push(laser.color.key);
+					}
+				});
 			});
-		});
+		}
 
-		Object.keys(current.targets).forEach((targetKey) => {
-			const lasers = current.targets[targetKey];
+		if (current) {
+			Object.keys(current.targets).forEach((targetKey) => {
+				const lasers = current.targets[targetKey];
 
+				if (!diff.targets.current[targetKey]) {
+					diff.targets.current[targetKey] = [];
+				}
+
+				lasers.forEach((laser) => {
+					if (diff.targets.current[targetKey].indexOf(laser.color.key) === -1) {
+						diff.targets.current[targetKey].push(laser.color.key);
+					}
+				});
+			});
+		}
+
+		Object.keys(diff.targets.previous).forEach((targetKey) => {
 			if (!diff.targets.current[targetKey]) {
 				diff.targets.current[targetKey] = [];
 			}
+		});
 
-			lasers.forEach((laser) => {
-				if (diff.targets.current[targetKey].indexOf(laser.color.key) === -1) {
-					diff.targets.current[targetKey].push(laser.color.key);
-				}
-			});
+		Object.keys(diff.targets.current).forEach((targetKey) => {
+			if (!diff.targets.previous[targetKey]) {
+				diff.targets.previous[targetKey] = [];
+			}
 		});
 
 		return diff;

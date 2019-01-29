@@ -102,7 +102,14 @@ export class PuzzleScene extends Phaser.Scene {
 
 	update() {
 		this.handleInput();
+
 		this.puzzleSolver.solve();
+		const diff = this.puzzleSolver.puzzleStateDiff();
+
+		if (this._requiresAnimationChange(diff)) {
+			console.log('Required animation!');
+		}
+
 		this.puzzle.getLasers().forEach(laser => this._drawLaserPath(this.laserGraphics[laser.key], laser.path));
 	}
 
@@ -180,6 +187,7 @@ export class PuzzleScene extends Phaser.Scene {
 		});
 	}
 
+	/** Helper method. Draws the laser's path onto the scene. */
 	_drawLaserPath(laserGraphics, points) {
 		laserGraphics.clear();
 		for (let i = 0; i < points.length - 1; i++) {
@@ -192,6 +200,7 @@ export class PuzzleScene extends Phaser.Scene {
 		}
 	}
 
+	/** Helper method. Adds laser graphics to this scene for the laser provided.*/
 	_addLaserGraphicsFor(laser) {
 		this.laserGraphics[laser.key] = this.add.graphics({
 			add: true,
@@ -201,5 +210,41 @@ export class PuzzleScene extends Phaser.Scene {
 				alpha: 1
 			}
 		});
+	}
+
+	/** Helper method. Returns whether or not we need to trigger any animations for the laser. */
+	_requiresAnimationChange(diff) {
+		let flag = false;
+
+		this.puzzle.getTargets().forEach((target) => {
+			const prevTarget = diff.targets.previous[target.key];
+			const currentTarget = diff.targets.current[target.key];
+
+			if (prevTarget && currentTarget) {
+				if (prevTarget.length === 0 && currentTarget.length > 0) {
+					flag = true;
+					return;
+				} else if (prevTarget.length > 0 && currentTarget.length === 0) {
+					flag = true;
+					return;
+				} else if (prevTarget.length === currentTarget.length) {
+					prevTarget.forEach((color) => {
+						if (currentTarget.indexOf(color) === -1) {
+							flag = true;
+							return;
+						}
+					});
+
+					currentTarget.forEach((color) => {
+						if (prevTarget.indexOf(color) === -1) {
+							flag = true;
+							return;
+						}
+					})
+				}
+			}
+		});
+
+		return flag;
 	}
 }

@@ -2,6 +2,7 @@
  * puzzleSolverTest.js
  */
 import { TestHelper } from '../testHelper.js';
+
 import { PuzzleSolver } from '../../src/helpers/puzzleSolver.js';
 
 QUnit.module('PuzzleSolver', () => {
@@ -92,7 +93,9 @@ QUnit.module('PuzzleSolver', () => {
 
 			const diffState = { 
 				targets: {
-					previous: {},
+					previous: {
+						target: [],
+					},
 					current: {
 						target: [TestHelper.laserColors.red.key],
 					},
@@ -101,7 +104,7 @@ QUnit.module('PuzzleSolver', () => {
 				valid: { previous: true, current: true }
 			};
 
-			assert.deepEqual(puzzleSolver.puzzleStateDiff(), diffState, 'Diff should notify change in targets and exits');
+			assert.deepEqual(diffState, puzzleSolver.puzzleStateDiff(), 'Diff should notify change in targets and exits');
 		});
 
 		QUnit.test('solved but then not solved', (assert) => {
@@ -155,13 +158,15 @@ QUnit.module('PuzzleSolver', () => {
 					previous: {
 						target: [TestHelper.laserColors.red.key],
 					},
-					current: {},
+					current: {
+						target: [],
+					},
 				},
 
 				valid: { previous: true, current: true }
 			};
 
-			assert.deepEqual(puzzleSolver.puzzleStateDiff(), diffState, 'Diff should notify change in targets and exits');
+			assert.deepEqual(diffState, puzzleSolver.puzzleStateDiff(), 'Diff should notify change in targets and exits');
 		});
 	});
 
@@ -253,6 +258,5 @@ QUnit.module('PuzzleSolver', () => {
 			assert.ok(puzzle.targets['target'].isStruckBy(TestHelper.laserColors.red), 'Target should be struck by red laser');
 			assert.ok(puzzle.exits['exit'].isOpen, 'Exit should be open');
 		});
-	})
-
+	});
 });
