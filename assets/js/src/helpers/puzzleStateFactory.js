@@ -34,7 +34,6 @@ export class PuzzleStateFactory {
 
 	/** Returns the state as an object. */
 	getState() {
-		// TODO: Modify this?
 		return this.current;
 	}
 
