@@ -29,7 +29,10 @@ export class Surface extends PuzzleItem {
 		if (this.img) {
 			let frame = 0;
 			
-			if (!isRoom) {
+			if (isRoom) {
+				if (this.movable) frame += 1;
+				if (this.rotatable) frame += 2;
+			} else {
 				if (this.movable) frame += 2;
 				if (this.rotatable) frame += 4;
 				if (this.hasMouse) frame += 1;

@@ -64,7 +64,6 @@ export class PuzzleScene extends Phaser.Scene {
 				this.puzzle.dimensions.width, 
 				this.puzzle.dimensions.height);
 
-		debugger;
 		this.physics.world.setBounds(this.translation.x, this.translation.y, 
 			this.puzzle.dimensions.width, this.puzzle.dimensions.height);
 
