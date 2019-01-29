@@ -202,7 +202,6 @@ export class TopDownScene extends Phaser.Scene {
 		});
 		
 		laser.getPathAsLines().forEach((line) => {
-			// debugger;
 			let adjustedLine = {
 				x1: line.x1 + this.padding.x,
 				y1: line.y1 + this.padding.y,
@@ -210,6 +209,15 @@ export class TopDownScene extends Phaser.Scene {
 				y2: line.y2 + this.padding.y,
 				isHorizontal: line.isHorizontal
 			};
+
+			// TODO: Is there a better way to do this?
+			if (adjustedLine.x1 > this.room.dimensions.width) {
+				adjustedLine.x1 = this.room.dimensions.width;
+			}
+
+			if (adjustedLine.x2 > this.room.dimensions.width) {
+				adjustedLine.x2 = this.room.dimensions.width;
+			}
 
 			this._drawLaserLine(adjustedLine, laserGraphics, group);
 		});
