@@ -59,7 +59,7 @@ export class TopDownScene extends Phaser.Scene {
 		SceneHelper.loadSpritesheet(this, SPRITES.roomLaser);
 		SceneHelper.loadSpritesheet(this, SPRITES.roomMirror);
 		SceneHelper.loadSpritesheet(this, SPRITES.roomTarget);
-		SceneHelper.loadSpritesheet(this, SPRITES.roomTargetRedLit)
+		SceneHelper.loadSpritesheet(this, SPRITES.roomTargetRedLit);
 
 		this.load.json('dungeon0', 'assets/data/dungeons/dungeon0.json');
 	}
@@ -81,16 +81,14 @@ export class TopDownScene extends Phaser.Scene {
 			} 
 
 			if (item instanceof Target && item.isLit()) {
-				const config = {...ANIMS.roomTargetRedLit};
+				const config = {...ANIMS.room.targetRedLit};
 				config.frames = this.anims.generateFrameNumbers(SPRITES.roomTargetRedLit.key)
 				this.anims.create(config);
-				img.anims.load(ANIMS.roomTargetRedLit.key);
-				img.anims.play(ANIMS.roomTargetRedLit.key);
+				img.anims.load(ANIMS.room.targetRedLit.key);
+				img.anims.play(ANIMS.room.targetRedLit.key);
 			} else {
 				item.setProperFrame(true);
 			}
-
-
 		});
 
 		let playerImg = this._createPlayer();

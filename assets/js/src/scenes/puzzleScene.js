@@ -3,7 +3,7 @@
  *
  * Scene for the puzzle component of the game.
  */
-import { KEYS, SPRITES } from '../../lib/CONST.js';
+import { KEYS, SPRITES, ANIMS } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
 import { ItemFactory } from '../helpers/itemFactory.js';
 import { PuzzleSolver } from '../helpers/puzzleSolver.js';
@@ -48,12 +48,13 @@ export class PuzzleScene extends Phaser.Scene {
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleMirror);
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleExit);
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzlePanel);
+		SceneHelper.loadSpritesheet(this, SPRITES.puzzleTargetRed);
 		
 		SceneHelper.loadImage(this, SPRITES.puzzlePlayer);
+		this.anims.create({...ANIMS.puzzle.targetRedTurnedOn});
 	}
 
 	create() {
-		// TODO: Better backgrounds
 		this.add.graphics({
 				add: true,
 				fillStyle: {
@@ -89,7 +90,7 @@ export class PuzzleScene extends Phaser.Scene {
 		let playerImage = this.add.image(playerPosition.x, playerPosition.y, SPRITES.puzzlePlayer.key);
 		this.puzzle.player.setImg(playerImage);
 
-		// // Handle other input bits
+		// Handle other input bits
 		this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
 		this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 		this.keyEsc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
@@ -105,13 +106,12 @@ export class PuzzleScene extends Phaser.Scene {
 
 		this.puzzleSolver.solve();
 		const diff = this.puzzleSolver.puzzleStateDiff();
-
-		if (this._requiresAnimationChange(diff)) {
-			console.log('Required animation!');
-		}
+		this._handleTargetAnimations(diff);
 
 		this.puzzle.getLasers().forEach(laser => this._drawLaserPath(this.laserGraphics[laser.key], laser.path));
 	}
+
+	/*--PRIVATE */
 
 	/** Checks for rotation buttons and handles the rotation on the game object in question. */
 	handleInput() {
@@ -246,5 +246,40 @@ export class PuzzleScene extends Phaser.Scene {
 		});
 
 		return flag;
+	}
+
+	/** Helper method. Triggers target animations according to the diff provided. */
+	_handleTargetAnimations(diff) {
+		this.puzzle.getTargets().forEach((target) => {
+			const prevTarget = diff.targets.previous[target.key];
+			const currentTarget = diff.targets.current[target.key];
+
+			if (prevTarget && currentTarget) {
+				const targetTurnedOn = (prevTarget.length === 0 && currentTarget.length > 0);
+				const targetTurnedOff = (prevTarget.length > 0 && currentTarget.length === 0);
+
+				if (targetTurnedOn) {
+					// TODO: Setup animation bullshit here
+					console.log('target turned on');
+				} else if (targetTurnedOff) {
+					// TODO: Get the animation running here
+					console.log('target turned off');
+				} else if (prevTarget.length === currentTarget.length) {
+					prevTarget.forEach((color) => {
+						if (currentTarget.indexOf(color) === -1) {
+							// TODO: Get the proper colored animation up and running here
+							console.log('target changed color');
+						}
+					});
+
+					// TODO: do we need this?
+					// currentTarget.forEach((color) => {
+					// 	if (prevTarget.indexOf(color) === -1) {
+					// 		// TODO: Get the proper colored animation up and running here
+					// 	}
+					// })
+				}
+			}
+		});
 	}
 }

@@ -4,8 +4,8 @@
  * Set of constants for the game. Enumerated types, keys, etc.
  */
 let spriteDir = 'assets/sprites/';
-
 let dungeonDir = 'assets/data/dungeons/';
+
 export const KEYS = {
 	scene: {
 		puzzleScene: 'PuzzleScene',
@@ -27,7 +27,7 @@ export const SPRITES = {
 	puzzlePanel: { key: 'puzzlePanel', location: spriteDir + 'puzzle/panel.png', frameWidth: 16, frameHeight: 16 },
 	puzzleExit: { key: 'puzzleExit', location: spriteDir + 'puzzle/exit.png', frameWidth: 32, frameHeight: 32 },
 	puzzlePlayer: { key: 'puzzlePlayer', location: spriteDir + 'puzzle/player.png' },
-	closePanelButton: { key: 'closePanelButton', location: spriteDir + 'puzzle/closePanelButton.png' },
+	puzzleTargetRed: { key: 'puzzleTargetRed', location: spriteDir + 'puzzle/targetRed.png', frameWidth: 64, frameHeight: 64 },
 
 	// Room-sized sprites
 	roomLaser: { key: 'roomLaser', location: spriteDir + 'room/laser.png', frameWidth: 256, frameHeight: 256 },
@@ -46,11 +46,29 @@ export const SPRITES = {
 };
 
 export const ANIMS = {
-	roomTargetRedLit: {
-		key: 'roomTargetRedLit',
-		frameRate: 10,
-		yoyo: false,
-		repeat: -1,
+	puzzle: {
+		targetRedTurnedOn: {
+			key: 'targetRedTurnedOn',
+			frameRate: 10,
+			yoyo: false,
+			frames: [
+				{ key: 'targetRedTurnedOn', frame: 0 },
+				{ key: 'targetRedTurnedOn', frame: 1 },
+				{ key: 'targetRedTurnedOn', frame: 2 },
+				{ key: 'targetRedTurnedOn', frame: 3 },
+				{ key: 'targetRedTurnedOn', frame: 4 },
+				{ key: 'targetRedTurnedOn', frame: 5 },
+				{ key: 'targetRedTurnedOn', frame: 6 },
+			]
+		},
+	},
+	room: {
+		targetRedLit: {
+			key: 'roomTargetRedLit',
+			frameRate: 10,
+			yoyo: false,
+			repeat: -1,
+		},
 	},
 };
 
