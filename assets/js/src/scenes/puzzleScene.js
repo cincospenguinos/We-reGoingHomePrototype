@@ -64,13 +64,14 @@ export class PuzzleScene extends Phaser.Scene {
 				this.puzzle.dimensions.width, 
 				this.puzzle.dimensions.height);
 
+		debugger;
 		this.physics.world.setBounds(this.translation.x, this.translation.y, 
 			this.puzzle.dimensions.width, this.puzzle.dimensions.height);
 
 		const itemGroup = this.physics.add.staticGroup();
 		const itemFactory = new ItemFactory(this, this.translation);
 		this.puzzle.getAllItems().forEach((item) => {
-			let group = (item.interactable()) ? itemGroup : null;
+			let group = (!item.interactable()) ? itemGroup : null;
 			let img = itemFactory.instantiateItem(item, group, false);
 
 			if (item instanceof Laser) {
