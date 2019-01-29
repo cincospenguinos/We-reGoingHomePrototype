@@ -212,42 +212,6 @@ export class PuzzleScene extends Phaser.Scene {
 		});
 	}
 
-	/** Helper method. Returns whether or not we need to trigger any animations for the laser. */
-	_requiresAnimationChange(diff) {
-		let flag = false;
-
-		this.puzzle.getTargets().forEach((target) => {
-			const prevTarget = diff.targets.previous[target.key];
-			const currentTarget = diff.targets.current[target.key];
-
-			if (prevTarget && currentTarget) {
-				if (prevTarget.length === 0 && currentTarget.length > 0) {
-					flag = true;
-					return;
-				} else if (prevTarget.length > 0 && currentTarget.length === 0) {
-					flag = true;
-					return;
-				} else if (prevTarget.length === currentTarget.length) {
-					prevTarget.forEach((color) => {
-						if (currentTarget.indexOf(color) === -1) {
-							flag = true;
-							return;
-						}
-					});
-
-					currentTarget.forEach((color) => {
-						if (prevTarget.indexOf(color) === -1) {
-							flag = true;
-							return;
-						}
-					})
-				}
-			}
-		});
-
-		return flag;
-	}
-
 	/** Helper method. Triggers target animations according to the diff provided. */
 	_handleTargetAnimations(diff) {
 		this.puzzle.getTargets().forEach((target) => {
