@@ -170,6 +170,13 @@ export class PuzzleScene extends Phaser.Scene {
 		this.puzzle.getAllItems().concat([this.puzzle.player]).forEach((item) => {
 			let newPos = { x: item.getPosition().x - this.translation.x, y: item.getPosition().y - this.translation.y };
 			item.setPosition(newPos);
+
+			if (item.constructor.name === 'Laser') {
+				item.path.forEach((pnt) => {
+					pnt.x -= this.translation.x;
+					pnt.y -= this.translation.y;
+				})
+			}
 		});
 	}
 
