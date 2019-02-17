@@ -45,6 +45,8 @@ export class ItemFactory {
 
 		if (!spriteKey) {
 			switch(item.constructor.name) {
+			case 'Target':
+				return 'shit'; // TODO: This is throwaway code to prove that we can use the shit that we need to
 			case 'Surface':
 				if (item.type === Surface.REFLECTIVE) {
 					spriteKey = isRoom ? SPRITES.roomMirror.key : SPRITES.puzzleMirror.key;

@@ -51,10 +51,27 @@ export class PuzzleScene extends Phaser.Scene {
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleTargetRed);
 		
 		SceneHelper.loadImage(this, SPRITES.puzzlePlayer);
-		this.anims.create({...ANIMS.puzzle.targetRedTurnedOn});
+
+		this.load.spritesheet('shit', 'assets/sprites/tmp/target.png', { frameWidth: 64, frameHeight: 64 });
 	}
 
 	create() {
+		const anim = this.anims.create({
+			key: 'shitty',
+			frames: this.anims.generateFrameNumbers('shit'),
+			frameRate: 12,
+			yoyo: false,
+			repeat: -1,
+		});
+
+		// console.log(anim);
+
+		const sprite = this.add.sprite(64, 64, 'shit');
+		sprite.anims.load('shitty');
+		sprite.anims.play('shitty');
+
+		debugger;
+
 		this.add.graphics({
 				add: true,
 				fillStyle: {
@@ -82,7 +99,12 @@ export class PuzzleScene extends Phaser.Scene {
 				this._setupInteractivity(item, img);
 			}
 
-			item.setProperFrame();
+			if (item instanceof Target) {
+				img.anims.load('shitty');
+				img.anims.play('shitty');
+			} else {
+				item.setProperFrame();
+			}
 		});
 
 		let playerPosition = { x: this.puzzle.player.getPosition().x + this.translation.x,
