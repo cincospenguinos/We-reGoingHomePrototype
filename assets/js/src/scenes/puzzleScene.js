@@ -7,6 +7,7 @@ import { KEYS, SPRITES, ANIMS } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
 import { ItemFactory } from '../helpers/itemFactory.js';
 import { PuzzleSolver } from '../helpers/puzzleSolver.js';
+import { AnimationHelper } from '../helpers/animationHelper.js';
 
 import { Surface } from '../model/surface.js';
 import { Laser } from '../model/laser.js';
@@ -32,6 +33,7 @@ export class PuzzleScene extends Phaser.Scene {
 		this.thoughtsController.setScene(this);
 
 		this.mouseOverController = new MouseOverController(this);
+		this.animationHelper = new AnimationHelper(this);
 
 		this.laserGraphics = {};
 
@@ -54,9 +56,7 @@ export class PuzzleScene extends Phaser.Scene {
 	}
 
 	create() {
-		const anim = this.anims.create(ANIMS.puzzle.targetRedTurnedOn);
-
-		debugger;
+		this.animationHelper.createAnimations(this.puzzle);
 
 		this.add.graphics({
 				add: true,

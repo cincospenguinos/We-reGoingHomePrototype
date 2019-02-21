@@ -16,6 +16,7 @@ export class PuzzleItem {
 		this.rotatable = opts.rotatable || false;
 		this.laserInteractable = opts.laserInteractable || false;
 		this.terminatesLaser = opts.terminatesLaser || false;
+		this.animations = [];
 
 		if (!this.position || !this.dimensions) {
 			console.warn('PuzzleItem must have starting position and dimensions!');
@@ -78,6 +79,9 @@ export class PuzzleItem {
 
 	/** Helper method. To be used by children classes to modify their sprite when moused over in puzzle mode. */
 	mouseOut() { throw 'Implement me in children!'; }
+
+	/** Adds animation key to the list of keys kept internally. */
+	addAnimation(animKey) { this.animations.push(animKey); }
 
 	runAnimation() { throw 'Implement me in children!';	}
 

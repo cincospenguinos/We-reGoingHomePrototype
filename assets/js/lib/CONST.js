@@ -49,8 +49,9 @@ export const ANIMS = {
 	puzzle: {
 		targetRedTurnedOn: {
 			key: 'targetRedTurnedOn',
-			frameRate: 10,
+			frameRate: 12,
 			yoyo: false,
+			repeat: 0,
 			frames: [
 				{ key: SPRITES.puzzleTargetRed.key, frame: 0 },
 				{ key: SPRITES.puzzleTargetRed.key, frame: 1 },
@@ -60,8 +61,22 @@ export const ANIMS = {
 				{ key: SPRITES.puzzleTargetRed.key, frame: 5 },
 				{ key: SPRITES.puzzleTargetRed.key, frame: 6 },
 			],
-			repeat: 0,
 		},
+		targetRedTurnedOff: {
+			key: 'targetRedTurnedOff',
+			frameRate: 12,
+			yoyo: false,
+			repeat: 0,
+			frames: [
+				{ key: SPRITES.puzzleTargetRed.key, frame: 6 },
+				{ key: SPRITES.puzzleTargetRed.key, frame: 12 },
+				{ key: SPRITES.puzzleTargetRed.key, frame: 13 },
+				{ key: SPRITES.puzzleTargetRed.key, frame: 14 },
+				{ key: SPRITES.puzzleTargetRed.key, frame: 15 },
+				{ key: SPRITES.puzzleTargetRed.key, frame: 16 },
+				{ key: SPRITES.puzzleTargetRed.key, frame: 17 },
+			]
+		}
 	},
 	room: {
 		targetRedLit: {
