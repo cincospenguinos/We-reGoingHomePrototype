@@ -7,6 +7,7 @@ import { KEYS, SPRITES, ANIMS } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
 import { ItemFactory } from '../helpers/itemFactory.js';
 import { PuzzleSolver } from '../helpers/puzzleSolver.js';
+import { AnimationHelper } from '../helpers/animationHelper.js';
 
 import { Surface } from '../model/surface.js';
 import { Laser } from '../model/laser.js';
@@ -32,6 +33,7 @@ export class PuzzleScene extends Phaser.Scene {
 		this.thoughtsController.setScene(this);
 
 		this.mouseOverController = new MouseOverController(this);
+		this.animationHelper = new AnimationHelper(this);
 
 		this.laserGraphics = {};
 
@@ -51,10 +53,11 @@ export class PuzzleScene extends Phaser.Scene {
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleTargetRed);
 		
 		SceneHelper.loadImage(this, SPRITES.puzzlePlayer);
-		this.anims.create({...ANIMS.puzzle.targetRedTurnedOn});
 	}
 
 	create() {
+		this.animationHelper.createAnimations(this.puzzle);
+
 		this.add.graphics({
 				add: true,
 				fillStyle: {
@@ -82,7 +85,12 @@ export class PuzzleScene extends Phaser.Scene {
 				this._setupInteractivity(item, img);
 			}
 
-			item.setProperFrame();
+			if (item instanceof Target) {
+				img.anims.load(ANIMS.puzzle.targetRedTurnedOn.key);
+				img.anims.play(ANIMS.puzzle.targetRedTurnedOn.key);
+			} else {
+				item.setProperFrame();
+			}
 		});
 
 		let playerPosition = { x: this.puzzle.player.getPosition().x + this.translation.x,
@@ -105,8 +113,6 @@ export class PuzzleScene extends Phaser.Scene {
 		this.handleInput();
 
 		this.puzzleSolver.solve();
-		const diff = this.puzzleSolver.puzzleStateDiff();
-		this._handleTargetAnimations(diff);
 
 		this.puzzle.getLasers().forEach(laser => this._drawLaserPath(this.laserGraphics[laser.key], laser.path));
 	}
@@ -208,41 +214,6 @@ export class PuzzleScene extends Phaser.Scene {
 				width: 2,
 				color: laser.color.val,
 				alpha: 1
-			}
-		});
-	}
-
-	/** Helper method. Triggers target animations according to the diff provided. */
-	_handleTargetAnimations(diff) {
-		this.puzzle.getTargets().forEach((target) => {
-			const prevTarget = diff.targets.previous[target.key];
-			const currentTarget = diff.targets.current[target.key];
-
-			if (prevTarget && currentTarget) {
-				const targetTurnedOn = (prevTarget.length === 0 && currentTarget.length > 0);
-				const targetTurnedOff = (prevTarget.length > 0 && currentTarget.length === 0);
-
-				if (targetTurnedOn) {
-					// TODO: Setup animation bullshit here
-					console.log('target turned on');
-				} else if (targetTurnedOff) {
-					// TODO: Get the animation running here
-					console.log('target turned off');
-				} else if (prevTarget.length === currentTarget.length) {
-					prevTarget.forEach((color) => {
-						if (currentTarget.indexOf(color) === -1) {
-							// TODO: Get the proper colored animation up and running here
-							console.log('target changed color');
-						}
-					});
-
-					// TODO: do we need this?
-					// currentTarget.forEach((color) => {
-					// 	if (prevTarget.indexOf(color) === -1) {
-					// 		// TODO: Get the proper colored animation up and running here
-					// 	}
-					// })
-				}
 			}
 		});
 	}
