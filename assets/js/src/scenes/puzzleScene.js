@@ -113,8 +113,6 @@ export class PuzzleScene extends Phaser.Scene {
 		this.handleInput();
 
 		this.puzzleSolver.solve();
-		const diff = this.puzzleSolver.puzzleStateDiff();
-		this._handleTargetAnimations(diff);
 
 		this.puzzle.getLasers().forEach(laser => this._drawLaserPath(this.laserGraphics[laser.key], laser.path));
 	}
@@ -216,41 +214,6 @@ export class PuzzleScene extends Phaser.Scene {
 				width: 2,
 				color: laser.color.val,
 				alpha: 1
-			}
-		});
-	}
-
-	/** Helper method. Triggers target animations according to the diff provided. */
-	_handleTargetAnimations(diff) {
-		this.puzzle.getTargets().forEach((target) => {
-			const prevTarget = diff.targets.previous[target.key];
-			const currentTarget = diff.targets.current[target.key];
-
-			if (prevTarget && currentTarget) {
-				const targetTurnedOn = (prevTarget.length === 0 && currentTarget.length > 0);
-				const targetTurnedOff = (prevTarget.length > 0 && currentTarget.length === 0);
-
-				if (targetTurnedOn) {
-					// TODO: Setup animation bullshit here
-					console.log('target turned on');
-				} else if (targetTurnedOff) {
-					// TODO: Get the animation running here
-					console.log('target turned off');
-				} else if (prevTarget.length === currentTarget.length) {
-					prevTarget.forEach((color) => {
-						if (currentTarget.indexOf(color) === -1) {
-							// TODO: Get the proper colored animation up and running here
-							console.log('target changed color');
-						}
-					});
-
-					// TODO: do we need this?
-					// currentTarget.forEach((color) => {
-					// 	if (prevTarget.indexOf(color) === -1) {
-					// 		// TODO: Get the proper colored animation up and running here
-					// 	}
-					// })
-				}
 			}
 		});
 	}

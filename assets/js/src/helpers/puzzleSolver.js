@@ -33,6 +33,7 @@ export class PuzzleSolver {
 		this._trimLaserPaths();
 		this._determinePuzzleValidity();
 		this._setPuzzleToCurrentState();
+		this._handleTargetAnimations();
 	}
 
 	/** Returns the changes in puzzle state between the moment before solve() was called and the moment after.
@@ -274,8 +275,45 @@ export class PuzzleSolver {
 		this.puzzle.setValid(this.puzzleState.current.valid);
 	}
 
+	/** Helper method. Creates a new puzzle state. */
 	_newPuzzleState() {
 		this.puzzleState.previous = this.puzzleState.current;
 		this.factory.newState();
+	}
+
+	/** Helper method. Triggers target animations according to the diff provided. */
+	_handleTargetAnimations() {
+		const diff = this.puzzleStateDiff();
+		this.puzzle.getTargets().forEach((target) => {
+			const prevTarget = diff.targets.previous[target.key];
+			const currentTarget = diff.targets.current[target.key];
+
+			if (prevTarget && currentTarget) {
+				const targetTurnedOn = (prevTarget.length === 0 && currentTarget.length > 0);
+				const targetTurnedOff = (prevTarget.length > 0 && currentTarget.length === 0);
+
+				if (targetTurnedOn) {
+					// TODO: Setup animation bullshit here
+					console.log('target turned on');
+				} else if (targetTurnedOff) {
+					// TODO: Get the animation running here
+					console.log('target turned off');
+				} else if (prevTarget.length === currentTarget.length) {
+					prevTarget.forEach((color) => {
+						if (currentTarget.indexOf(color) === -1) {
+							// TODO: Get the proper colored animation up and running here
+							console.log('target changed color');
+						}
+					});
+
+					// TODO: do we need this?
+					// currentTarget.forEach((color) => {
+					// 	if (prevTarget.indexOf(color) === -1) {
+					// 		// TODO: Get the proper colored animation up and running here
+					// 	}
+					// })
+				}
+			}
+		});
 	}
 }
