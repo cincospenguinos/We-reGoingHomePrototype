@@ -27,7 +27,7 @@ export const SPRITES = {
 	puzzlePanel: { key: 'puzzlePanel', location: spriteDir + 'puzzle/panel.png', frameWidth: 16, frameHeight: 16 },
 	puzzleExit: { key: 'puzzleExit', location: spriteDir + 'puzzle/exit.png', frameWidth: 32, frameHeight: 32 },
 	puzzlePlayer: { key: 'puzzlePlayer', location: spriteDir + 'puzzle/player.png' },
-	puzzleTargetRed: { key: 'puzzleTargetRed', location: spriteDir + 'puzzle/targetRed.png', frameWidth: 64, frameHeight: 64 },
+	puzzleTargetRed: { key: 'puzzleTargetRed', location: spriteDir + 'puzzle/target_red.png', frameWidth: 64, frameHeight: 64 },
 
 	// Room-sized sprites
 	roomLaser: { key: 'roomLaser', location: spriteDir + 'room/laser.png', frameWidth: 256, frameHeight: 256 },
@@ -52,14 +52,15 @@ export const ANIMS = {
 			frameRate: 10,
 			yoyo: false,
 			frames: [
-				{ key: 'targetRedTurnedOn', frame: 0 },
-				{ key: 'targetRedTurnedOn', frame: 1 },
-				{ key: 'targetRedTurnedOn', frame: 2 },
-				{ key: 'targetRedTurnedOn', frame: 3 },
-				{ key: 'targetRedTurnedOn', frame: 4 },
-				{ key: 'targetRedTurnedOn', frame: 5 },
-				{ key: 'targetRedTurnedOn', frame: 6 },
-			]
+				{ key: SPRITES.puzzleTargetRed.key, frame: 0 },
+				{ key: SPRITES.puzzleTargetRed.key, frame: 1 },
+				{ key: SPRITES.puzzleTargetRed.key, frame: 2 },
+				{ key: SPRITES.puzzleTargetRed.key, frame: 3 },
+				{ key: SPRITES.puzzleTargetRed.key, frame: 4 },
+				{ key: SPRITES.puzzleTargetRed.key, frame: 5 },
+				{ key: SPRITES.puzzleTargetRed.key, frame: 6 },
+			],
+			repeat: 0,
 		},
 	},
 	room: {

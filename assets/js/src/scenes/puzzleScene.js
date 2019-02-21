@@ -51,24 +51,10 @@ export class PuzzleScene extends Phaser.Scene {
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleTargetRed);
 		
 		SceneHelper.loadImage(this, SPRITES.puzzlePlayer);
-
-		this.load.spritesheet('shit', 'assets/sprites/tmp/target.png', { frameWidth: 64, frameHeight: 64 });
 	}
 
 	create() {
-		const anim = this.anims.create({
-			key: 'shitty',
-			frames: this.anims.generateFrameNumbers('shit'),
-			frameRate: 12,
-			yoyo: false,
-			repeat: -1,
-		});
-
-		// console.log(anim);
-
-		const sprite = this.add.sprite(64, 64, 'shit');
-		sprite.anims.load('shitty');
-		sprite.anims.play('shitty');
+		const anim = this.anims.create(ANIMS.puzzle.targetRedTurnedOn);
 
 		debugger;
 
@@ -100,8 +86,8 @@ export class PuzzleScene extends Phaser.Scene {
 			}
 
 			if (item instanceof Target) {
-				img.anims.load('shitty');
-				img.anims.play('shitty');
+				img.anims.load(ANIMS.puzzle.targetRedTurnedOn.key);
+				img.anims.play(ANIMS.puzzle.targetRedTurnedOn.key);
 			} else {
 				item.setProperFrame();
 			}
