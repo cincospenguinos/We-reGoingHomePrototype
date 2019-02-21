@@ -61,6 +61,24 @@ export class Target extends PuzzleItem {
 		// this.setProperFrame();
 	}
 
+	/** Gets called indicating that the target is turned on. */
+	turnedOn() {
+		if (this.img) {
+			const turnedOnKey = this.animations['turnedOnRed'];
+			this.img.anims.load(turnedOnKey);
+			this.img.anims.play(turnedOnKey);
+		}
+	}
+
+	/** Gets called indicating that the target got turned off. */
+	turnedOff(scene) {
+		if (this.img) {
+			const turnedOffKey = this.animations['turnedOffRed'];
+			this.img.anims.load(turnedOffKey);
+			this.img.anims.play(turnedOffKey);
+		}
+	}
+
 	/** Overrides super. Ensures proper frame. */
 	setImg(img) {
 		this.img = img;

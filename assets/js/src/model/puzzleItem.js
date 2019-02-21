@@ -16,7 +16,7 @@ export class PuzzleItem {
 		this.rotatable = opts.rotatable || false;
 		this.laserInteractable = opts.laserInteractable || false;
 		this.terminatesLaser = opts.terminatesLaser || false;
-		this.animations = [];
+		this.animations = {};
 
 		if (!this.position || !this.dimensions) {
 			console.warn('PuzzleItem must have starting position and dimensions!');
@@ -81,9 +81,7 @@ export class PuzzleItem {
 	mouseOut() { throw 'Implement me in children!'; }
 
 	/** Adds animation key to the list of keys kept internally. */
-	addAnimation(animKey) { this.animations.push(animKey); }
-
-	runAnimation() { throw 'Implement me in children!';	}
+	addAnimation(key, name) { this.animations[key] = name; }
 
 	/** Returns the collision point of this puzzle item. Returns null if this item does not interact with a laser, or if the laser does not hit this item. 
 		Note that the direction provided is the direction the item at the point provided is facing. */

@@ -293,11 +293,9 @@ export class PuzzleSolver {
 				const targetTurnedOff = (prevTarget.length > 0 && currentTarget.length === 0);
 
 				if (targetTurnedOn) {
-					// TODO: Setup animation bullshit here
-					console.log('target turned on');
+					target.turnedOn(this.scene);
 				} else if (targetTurnedOff) {
-					// TODO: Get the animation running here
-					console.log('target turned off');
+					target.turnedOff(this.scene);
 				} else if (prevTarget.length === currentTarget.length) {
 					prevTarget.forEach((color) => {
 						if (currentTarget.indexOf(color) === -1) {
@@ -305,13 +303,6 @@ export class PuzzleSolver {
 							console.log('target changed color');
 						}
 					});
-
-					// TODO: do we need this?
-					// currentTarget.forEach((color) => {
-					// 	if (prevTarget.indexOf(color) === -1) {
-					// 		// TODO: Get the proper colored animation up and running here
-					// 	}
-					// })
 				}
 			}
 		});
