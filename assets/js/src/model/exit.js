@@ -54,42 +54,50 @@ export class Exit extends PuzzleItem {
 		return this.direction === Direction.NORTH || this.direction === Direction.SOUTH;
 	}
 
-	setProperFrame() {
+	triggerAnimation() {
 		if (this.img) {
-			let frame = 0;
-
-			if (this.color === LaserColor.RED) {
-				this.img.setFrame(0);
-			} else if (this.color === LaserColor.BLUE) {
-				this.img.setFrame(8);
-			} else if (this.color === LaserColor.GREEN) {
-				this.img.setFrame(16);
-			} else {
-				throw 'LaserColor is not valid!';
-			}
-
-			if (this.isOpen) {
-				frame += 4;
-			}
-
-			switch(this.direction) {
-			case Direction.EAST:
-				frame += 2;
-				break;
-			case Direction.SOUTH:
-				break;
-			case Direction.WEST:
-				frame += 1;
-				break;
-			case Direction.NORTH:
-				frame += 3;
-				break;
-			default:
-				throw 'No direction found for exit!';
-			}
-
-			this.img.setFrame(frame);
+			const animationKey = this.isOpen ? this.animations['turnedOn'] : this.animations['turnedOff']
+			this.img.anims.load(animationKey);
+			this.img.anims.play(animationKey);
 		}
+	}
+
+	setProperFrame() {
+		// if (this.img) {
+		// 	let frame = 0;
+
+		// 	if (this.color === LaserColor.RED) {
+		// 		this.img.setFrame(0);
+		// 	} else if (this.color === LaserColor.BLUE) {
+		// 		this.img.setFrame(8);
+		// 	} else if (this.color === LaserColor.GREEN) {
+		// 		this.img.setFrame(16);
+		// 	} else {
+		// 		throw 'LaserColor is not valid!';
+		// 	}
+
+		// 	if (this.isOpen) {
+		// 		frame += 4;
+		// 	}
+
+		// 	switch(this.direction) {
+		// 	case Direction.EAST:
+		// 		frame += 2;
+		// 		break;
+		// 	case Direction.SOUTH:
+		// 		break;
+		// 	case Direction.WEST:
+		// 		frame += 1;
+		// 		break;
+		// 	case Direction.NORTH:
+		// 		frame += 3;
+		// 		break;
+		// 	default:
+		// 		throw 'No direction found for exit!';
+		// 	}
+
+		// 	this.img.setFrame(frame);
+		// }
 	}
 
 	/** Resets this exit to be "closed" in accordance to the puzzle solution setting thigns up again. */

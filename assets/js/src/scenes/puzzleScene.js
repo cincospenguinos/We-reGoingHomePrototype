@@ -49,6 +49,7 @@ export class PuzzleScene extends Phaser.Scene {
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleTarget);
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleMirror);
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleExit);
+		SceneHelper.loadSpritesheet(this, SPRITES.puzzleExitRed);
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzlePanel);
 		SceneHelper.loadSpritesheet(this, SPRITES.puzzleTargetRed);
 		

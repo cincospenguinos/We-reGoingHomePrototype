@@ -18,5 +18,12 @@ export class AnimationHelper {
 			this.scene.anims.create(ANIMS.puzzle.targetRedTurnedOff);
 			target.addAnimation('turnedOffRed', ANIMS.puzzle.targetRedTurnedOff.key);
 		});
+
+		puzzle.getExits().forEach((exit) => {
+			this.scene.anims.create(ANIMS.puzzle.exitRedTurnedOn);
+			exit.addAnimation('turnedOn', ANIMS.puzzle.exitRedTurnedOn.key);
+			this.scene.anims.create(ANIMS.puzzle.exitRedTurnedOff);
+			exit.addAnimation('turnedOff', ANIMS.puzzle.exitRedTurnedOff.key);
+		});
 	}
 }

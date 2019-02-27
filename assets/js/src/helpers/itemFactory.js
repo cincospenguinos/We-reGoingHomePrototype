@@ -55,7 +55,11 @@ export class ItemFactory {
 				}
 				break;
 			case 'Exit':
-				return null;
+				if (isRoom) {
+					return null;
+				}
+
+				return SPRITES.puzzleExitRed.key;
 			default:
 				throw `No sprite key for ${item.constructor.name}!`;
 			}

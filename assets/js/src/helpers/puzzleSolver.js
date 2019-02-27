@@ -293,9 +293,19 @@ export class PuzzleSolver {
 				const targetTurnedOff = (prevTarget.length > 0 && currentTarget.length === 0);
 
 				if (targetTurnedOn) {
+					// debugger;
 					target.turnedOn(this.scene);
+					this.puzzle.getExits()
+						.filter(e => e.color.key === currentTarget[0])
+						.forEach((exit) => {
+							exit.triggerAnimation();
+						});
 				} else if (targetTurnedOff) {
 					target.turnedOff(this.scene);
+					this.puzzle.getExits()
+						.forEach((exit) => {
+							exit.triggerAnimation();
+						});
 				} else if (prevTarget.length === currentTarget.length) {
 					prevTarget.forEach((color) => {
 						if (currentTarget.indexOf(color) === -1) {
