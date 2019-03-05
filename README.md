@@ -6,7 +6,7 @@ Prototype of a game Stefano and I are making.
 
 These are important notes about the project that **MUST NEVER BE DELETED:**
 
-* Rooms in `TopDownScene` must always have a single tile of padding on the left, one on the right, and two on the top
+* Rooms in `TopDownScene` must always have a single tile of padding on the left, one on the right, and three on the top
 
 ## The Story
 
@@ -105,6 +105,10 @@ Andre will need to talk to Stefano about this idea.
 - [ ] A beam splitter that allowed a beam to be split into two different directions
 - [ ] Multiple targets in rooms
 	* This would require adjusting the rules about things a bit--like do all targets have to be hit to open a door, or only one target needs to be hit?
+
+## Sound Effects
+
+* I like [these](https://opengameart.org/content/4-dry-snow-steps) for walking in the snow
 
 ## Notes
 

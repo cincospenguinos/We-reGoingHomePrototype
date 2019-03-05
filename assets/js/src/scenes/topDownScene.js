@@ -154,22 +154,22 @@ export class TopDownScene extends Phaser.Scene {
 
 			if (north) {
 				playerImg.setVelocityY(-vel);
-				playerImg.setFrame(2);
+				playerImg.anims.play('north', true);
 			}
 
 			if (south) {
 				playerImg.setVelocityY(vel);
-				playerImg.setFrame(0);
+				playerImg.anims.play('south', true);
 			}
 
 			if (east) {
 				playerImg.setVelocityX(vel);
-				playerImg.setFrame(1);
+				playerImg.anims.play('east', true);
 			}
 
 			if (west) {
 				playerImg.setVelocityX(-vel);
-				playerImg.setFrame(3);
+				playerImg.anims.play('west', true);
 			}
 
 			if (!east && !west) {
@@ -178,6 +178,10 @@ export class TopDownScene extends Phaser.Scene {
 
 			if (!north && !south) {
 				playerImg.setVelocityY(0);
+			}
+
+			if (!north && !south && !east && !west) {
+				playerImg.anims.stop(null, true);
 			}
 		}
 	}
@@ -272,9 +276,41 @@ export class TopDownScene extends Phaser.Scene {
 
 	/** Helper method. Creates the player and handles world bounds collision. */
 	_createPlayer() {
-		let playerImg = this.physics.add.image(this.room.player.position.x + this.padding.x,
+		let playerImg = this.physics.add.sprite(this.room.player.position.x + this.padding.x,
 				this.room.player.position.y + this.padding.y, SPRITES.roomPlayer.key);
 		playerImg.setCollideWorldBounds(true);
+
+		// Let's also go ahead and create the player movement animations. We will probably want to adjust this
+		// as needed
+		// debugger;
+		this.anims.create({
+			key: 'south',
+			frames: this.anims.generateFrameNumbers(SPRITES.roomPlayer.key, { start: 0, end: 6 }),
+			frameRate: 10,
+			repeat: 0,
+		});
+
+		this.anims.create({
+			key: 'east',
+			frames: this.anims.generateFrameNumbers(SPRITES.roomPlayer.key, { start: 7, end: 13 }),
+			frameRate: 10,
+			repeat: 0,
+		});
+
+		this.anims.create({
+			key: 'north',
+			frames: this.anims.generateFrameNumbers(SPRITES.roomPlayer.key, { start: 14, end: 20 }),
+			frameRate: 10,
+			repeat: 0,
+		});
+
+		this.anims.create({
+			key: 'west',
+			frames: this.anims.generateFrameNumbers(SPRITES.roomPlayer.key, { start: 21, end: 27 }),
+			frameRate: 10,
+			repeat: 0,
+		});
+
 		this.room.player.setImg(playerImg);
 		return playerImg;
 	}
