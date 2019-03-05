@@ -4,9 +4,10 @@
  * Scene to manage a top-down scrolling view. Mostly for experimentation.
  */
 import { ItemFactory } from '../helpers/itemFactory.js';
-import { KEYS, SPRITES, COLORS, PUZZLE_ROOM_SCALE, PADDING, ANIMS } from '../../lib/CONST.js';
+import { KEYS, SPRITES, COLORS, PUZZLE_ROOM_SCALE, PADDING, ANIMS, SOUNDS } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
 import { DungeonHelper } from '../helpers/dungeonHelper.js';
+import { SoundHelper } from '../helpers/soundHelper.js';
 
 import { Surface } from '../model/surface.js';
 import { Laser } from '../model/laser.js';
@@ -41,6 +42,7 @@ export class TopDownScene extends Phaser.Scene {
 
 		this.mouseOverController = new MouseOverController(this);
 		this.doorsController = new DoorsController(this);
+		this.soundHelper = new SoundHelper(this);
 
 		this.mapLayers = {};
 		this.padding = { x: 64, y: 128 };
@@ -60,6 +62,8 @@ export class TopDownScene extends Phaser.Scene {
 		SceneHelper.loadSpritesheet(this, SPRITES.roomMirror);
 		SceneHelper.loadSpritesheet(this, SPRITES.roomTarget);
 		SceneHelper.loadSpritesheet(this, SPRITES.roomTargetRedLit);
+
+		this.soundHelper.loadSounds();
 
 		this.load.json('dungeon0', 'assets/data/dungeons/dungeon0.json');
 	}
@@ -249,6 +253,8 @@ export class TopDownScene extends Phaser.Scene {
 		panel.img.on('pointerover', () => { this.mouseOverController.mouseOver(panel.key) });
 		panel.img.on('pointerout', () => { this.mouseOverController.mouseOut(panel.key) });
 		panel.img.on('pointerdown', (evt) => {
+			this.soundHelper.playSound(SOUNDS.openPanel.key);
+
 			// Since we had the player move over according to padding, we will need to remove that
 			// padding before we jump right into the puzzle scene
 			let newPlayerPos = { 

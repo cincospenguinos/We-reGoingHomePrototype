@@ -28,4 +28,47 @@ export class AnimationHelper {
 			exit.addAnimation('turnedOff', ANIMS.puzzle.exitRedTurnedOff.key);
 		});
 	}
+
+	/** Handles all of the puzzle animations given the current puzzle and the state difference. Returns
+		a couple pieces of information to be picked up and used elsewhere. */
+	handlePuzzleAnimations(puzzle, puzzleStateDiff) {
+		let result = { targetTurnedOn: false, targetTurnedOff: false };
+
+		puzzle.getTargets().forEach((target) => {
+			const prevTarget = puzzleStateDiff.targets.previous[target.key];
+			const currentTarget = puzzleStateDiff.targets.current[target.key];
+
+			if (prevTarget && currentTarget) {
+				const targetTurnedOn = (prevTarget.length === 0 && currentTarget.length > 0);
+				const targetTurnedOff = (prevTarget.length > 0 && currentTarget.length === 0);
+
+				result.targetTurnedOn = result.targetTurnedOn || targetTurnedOn;
+				result.targetTurnedOff = result.targetTurnedOff || targetTurnedOff;
+
+				if (targetTurnedOn) {
+					target.turnedOn(this.scene);
+					puzzle.getExits()
+						.filter(e => e.color.key === currentTarget[0])
+						.forEach((exit) => {
+							exit.triggerAnimation();
+						});
+				} else if (targetTurnedOff) {
+					target.turnedOff(this.scene);
+					puzzle.getExits()
+						.forEach((exit) => {
+							exit.triggerAnimation();
+						});
+				} else if (prevTarget.length === currentTarget.length) {
+					prevTarget.forEach((color) => {
+						if (currentTarget.indexOf(color) === -1) {
+							// TODO: Get the proper colored animation up and running here
+							console.log('target changed color');
+						}
+					});
+				}
+			}
+		});
+
+		return result;
+	}
 }

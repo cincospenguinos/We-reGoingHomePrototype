@@ -3,11 +3,12 @@
  *
  * Scene for the puzzle component of the game.
  */
-import { KEYS, SPRITES, ANIMS } from '../../lib/CONST.js';
+import { KEYS, SPRITES, ANIMS, SOUNDS } from '../../lib/CONST.js';
 import { SceneHelper } from '../helpers/sceneHelper.js';
 import { ItemFactory } from '../helpers/itemFactory.js';
 import { PuzzleSolver } from '../helpers/puzzleSolver.js';
 import { AnimationHelper } from '../helpers/animationHelper.js';
+import { SoundHelper } from '../helpers/soundHelper.js';
 
 import { Surface } from '../model/surface.js';
 import { Laser } from '../model/laser.js';
@@ -34,6 +35,7 @@ export class PuzzleScene extends Phaser.Scene {
 
 		this.mouseOverController = new MouseOverController(this);
 		this.animationHelper = new AnimationHelper(this);
+		this.soundHelper = new SoundHelper(this);
 
 		this.laserGraphics = {};
 
@@ -58,6 +60,8 @@ export class PuzzleScene extends Phaser.Scene {
 
 	create() {
 		this.animationHelper.createAnimations(this.puzzle);
+
+		this.soundHelper.loadSounds();
 
 		this.add.graphics({
 				add: true,
@@ -108,9 +112,9 @@ export class PuzzleScene extends Phaser.Scene {
 	}
 
 	update() {
-		this.handleInput();
-
+		this._handleInput();
 		this.puzzleSolver.solve();
+		this._presentPuzzleSolution();
 
 		this.puzzle.getLasers().forEach(laser => this._drawLaserPath(this.laserGraphics[laser.key], laser.path));
 	}
@@ -118,7 +122,7 @@ export class PuzzleScene extends Phaser.Scene {
 	/*--PRIVATE */
 
 	/** Checks for rotation buttons and handles the rotation on the game object in question. */
-	handleInput() {
+	_handleInput() {
 		if (this.pointerOverObj && this.pointerOverObj.rotatable) {
 			if (Phaser.Input.Keyboard.JustDown(this.keyA)) {
 				this.pointerOverObj.rotate(-90);
@@ -130,6 +134,7 @@ export class PuzzleScene extends Phaser.Scene {
 		// Check if we're quitting
 		if (Phaser.Input.Keyboard.JustDown(this.keyEsc)) {
 			if (this.puzzle.valid) {
+				this.soundHelper.playSound(SOUNDS.closePanel.key);
 				this.removeTranslationFromPuzzleItems();
 				SceneHelper.transitionToTopDownScene(this, 
 					{ 
@@ -140,6 +145,15 @@ export class PuzzleScene extends Phaser.Scene {
 			} else {
 				// TODO: Inform the player why the puzzle currently isn't valid
 			}
+		}
+	}
+
+	/** Helper method. Presents the solution of the puzzle to the player, handling both animation and sound. */
+	_presentPuzzleSolution() {
+		let result = this.animationHelper.handlePuzzleAnimations(this.puzzle, this.puzzleSolver.puzzleStateDiff());
+
+		if (result.targetTurnedOn) {
+			this.soundHelper.playSound(SOUNDS.laserLit.key);
 		}
 	}
 

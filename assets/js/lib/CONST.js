@@ -19,6 +19,13 @@ export const KEYS = {
 	thoughts: { key: 'thoughts', location: 'assets/data/thoughts.json' }
 };
 
+const soundDir = 'assets/sound';
+export const SOUNDS = {
+	closePanel: { key: 'closePanel', location: `${soundDir}/closePanel.ogg` },
+	openPanel: { key: 'openPanel', location: `${soundDir}/openPanel.ogg` },
+	laserLit: { key: 'laserLit', location: `${soundDir}/laserLit.ogg` },
+}
+
 export const SPRITES = {
 	// Puzzle-sized sprites
 	puzzleLaser: { key: 'puzzleLaser', location: spriteDir + 'puzzle/laser.png', frameWidth: 64, frameHeight: 64 },

@@ -47,7 +47,6 @@ export class Target extends PuzzleItem {
 	addStrikingLaser(color) {
 		this.lasersStruck.push(color.key);
 		this.color = LaserColor.blend(this.laserColorsStruck());
-		// this.setProperFrame();
 	}
 
 	/** Removes the striking laser provided. */
@@ -57,8 +56,6 @@ export class Target extends PuzzleItem {
 		if (this.isLit()) {
 			this.color = LaserColor.blend(this.laserColorsStruck());
 		}
-
-		// this.setProperFrame();
 	}
 
 	/** Gets called indicating that the target is turned on. */
@@ -119,7 +116,6 @@ export class Target extends PuzzleItem {
 	resetStrikingLasers() {
 		this.lasersStruck = [];
 		this.color = null;
-		// this.setProperFrame();
 	}
 
 	/** Helper method. Returns the literal laser colors striking this target.*/

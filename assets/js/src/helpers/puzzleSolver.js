@@ -36,7 +36,7 @@ export class PuzzleSolver {
 		this._trimLaserPaths();
 		this._determinePuzzleValidity();
 		this._setPuzzleToCurrentState();
-		this._handleTargetAnimations();
+		// this._handleTargetAnimations();
 	}
 
 	/** Returns the changes in puzzle state between the moment before solve() was called and the moment after.
@@ -308,7 +308,6 @@ export class PuzzleSolver {
 				const targetTurnedOff = (prevTarget.length > 0 && currentTarget.length === 0);
 
 				if (targetTurnedOn) {
-					// debugger;
 					target.turnedOn(this.scene);
 					this.puzzle.getExits()
 						.filter(e => e.color.key === currentTarget[0])
