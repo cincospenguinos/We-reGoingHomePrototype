@@ -86,10 +86,7 @@ export class PuzzleScene extends Phaser.Scene {
 				this._setupInteractivity(item, img);
 			}
 
-			if (item instanceof Target) {
-				img.anims.load(ANIMS.puzzle.targetRedTurnedOn.key);
-				img.anims.play(ANIMS.puzzle.targetRedTurnedOn.key);
-			} else {
+			if (!(item instanceof Target)) {
 				item.setProperFrame();
 			}
 		});

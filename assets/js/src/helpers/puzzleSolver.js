@@ -12,6 +12,9 @@ export class PuzzleSolver {
 	constructor(puzzle) {
 		this.puzzle = puzzle;
 
+		if (!this.puzzle.translation)
+			this.puzzle.translation = this._getPuzzleTranslation();
+
 		this.factory = new PuzzleStateFactory();
 
 		this.laserPaths = {};
@@ -43,6 +46,18 @@ export class PuzzleSolver {
 	}
 
 	/*--PRIVATE */
+
+	/** Helper method. Returns hash indicating how far over and down everything needs to move. */
+	_getPuzzleTranslation() {
+		let puzzleDim = this.puzzle.dimensions;
+		let canvasDim = { width: 800, height: 600 }; // TODO: This should be extracted out to a higher order function
+
+		if (puzzleDim.width > canvasDim.width || puzzleDim.height > canvasDim.height) {
+			throw 'Puzzle size invalid for this canvas! Canvas must be larger to accomodate!';
+		}
+
+		return { x: (canvasDim.width - puzzleDim.width) / 2, y: (canvasDim.height - puzzleDim.height) / 2 };
+	}
 
 	/** Helper method. Returns the laser's path through the puzzle, disregarding other lasers. */
 	_determineLaserPath(laser) {
