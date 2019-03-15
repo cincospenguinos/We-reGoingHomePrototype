@@ -151,25 +151,39 @@ export class TopDownScene extends Phaser.Scene {
 			let west = this.keyboard.A.isDown;
 
 			let vel = 300;
+			let animationPlaying = false;
 
 			if (north) {
 				playerImg.setVelocityY(-vel);
-				playerImg.anims.play('north', true);
+				playerImg.anims.play(ANIMS.room.playerMoveNorth.key, true);
+				animationPlaying = true;
 			}
 
 			if (south) {
 				playerImg.setVelocityY(vel);
-				playerImg.anims.play('south', true);
+
+				if (!animationPlaying) {
+					playerImg.anims.play(ANIMS.room.playerMoveSouth.key, true);
+					animationPlaying = true;
+				}
 			}
 
 			if (east) {
 				playerImg.setVelocityX(vel);
-				playerImg.anims.play('east', true);
+
+				if (!animationPlaying) {
+					playerImg.anims.play(ANIMS.room.playerMoveEast.key, true);
+					animationPlaying = true;
+				}
 			}
 
 			if (west) {
 				playerImg.setVelocityX(-vel);
-				playerImg.anims.play('west', true);
+
+				if (!animationPlaying) {
+					playerImg.anims.play(ANIMS.room.playerMoveWest.key, true);
+					animationPlaying = true;
+				}
 			}
 
 			if (!east && !west) {
@@ -283,33 +297,10 @@ export class TopDownScene extends Phaser.Scene {
 		// Let's also go ahead and create the player movement animations. We will probably want to adjust this
 		// as needed
 		// debugger;
-		this.anims.create({
-			key: 'south',
-			frames: this.anims.generateFrameNumbers(SPRITES.roomPlayer.key, { start: 0, end: 6 }),
-			frameRate: 10,
-			repeat: 0,
-		});
-
-		this.anims.create({
-			key: 'east',
-			frames: this.anims.generateFrameNumbers(SPRITES.roomPlayer.key, { start: 7, end: 13 }),
-			frameRate: 10,
-			repeat: 0,
-		});
-
-		this.anims.create({
-			key: 'north',
-			frames: this.anims.generateFrameNumbers(SPRITES.roomPlayer.key, { start: 14, end: 20 }),
-			frameRate: 10,
-			repeat: 0,
-		});
-
-		this.anims.create({
-			key: 'west',
-			frames: this.anims.generateFrameNumbers(SPRITES.roomPlayer.key, { start: 21, end: 27 }),
-			frameRate: 10,
-			repeat: 0,
-		});
+		this.anims.create(ANIMS.room.playerMoveEast);
+		this.anims.create(ANIMS.room.playerMoveSouth);
+		this.anims.create(ANIMS.room.playerMoveWest);
+		this.anims.create(ANIMS.room.playerMoveNorth);
 
 		this.room.player.setImg(playerImg);
 		return playerImg;
